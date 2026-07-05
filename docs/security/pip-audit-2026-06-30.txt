@@ -1,0 +1,19 @@
+=== pip-audit (georef-service venv) ===
+WARNING:pip_audit._dependency_source.pip:pip-audit will run pip against D:\Octa\Documents\Proyects\Amazonia\georef-service\venv\Scripts\python.exe, but you have a virtual environment loaded at C:\Users\Octa\AppData\Local\Python\pythoncore-3.14-64. This may result in unintuitive audits, since your local environment will not be audited. You can forcefully override this behavior by setting PIPAPI_PYTHON_LOCATION to the location of your virtual environment's Python interpreter.
+Found 14 known vulnerabilities in 4 packages
+Name      Version ID                  Fix Versions
+--------- ------- ------------------- ------------
+msgpack   1.2.0   GHSA-6v7p-g79w-8964 1.2.1
+pip       25.0.1  PYSEC-2026-196      26.1.2
+pip       25.0.1  CVE-2025-8869       25.3
+pip       25.0.1  CVE-2026-1703       26.0
+pip       25.0.1  CVE-2026-3219       26.1
+pip       25.0.1  CVE-2026-6357       26.1
+pytest    8.3.5   CVE-2025-71176      9.0.3
+starlette 0.48.0  PYSEC-2026-161      1.0.1
+starlette 0.48.0  PYSEC-2026-161      1.0.1
+starlette 0.48.0  PYSEC-2026-249      1.3.1
+starlette 0.48.0  PYSEC-2026-248      1.3.0
+starlette 0.48.0  CVE-2025-62727      0.49.1
+starlette 0.48.0  CVE-2026-48818      1.1.0
+starlette 0.48.0  CVE-2026-48817      1.1.0

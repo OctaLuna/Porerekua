@@ -1,0 +1,41 @@
+# ── Python / GeoRef ──────────────────────────────────────────────────────────
+georef-service/venv/
+georef-service/__pycache__/
+georef-service/**/__pycache__/
+georef-service/**/*.pyc
+georef-service/**/*.pyo
+georef-service/data/*.geojson
+georef-service/data/*.pmtiles
+georef-service/.env
+georef-service/.pytest_cache/
+
+# ── Node / NestJS ─────────────────────────────────────────────────────────────
+api-rest-amazonia/node_modules/
+api-rest-amazonia/dist/
+api-rest-amazonia/.env
+api-rest-amazonia/uploads/
+
+# ── DB dump de Supabase (datos reales: hashes/PII — NO versionar) ─────────────
+api-rest-amazonia/database/snapshots/supabase-full.sql
+
+# ── Environment files (NEVER version) ────────────────────────────────────────
+.env
+*.env.local
+*.env.production
+*.env.staging
+
+# ── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+logs/
+npm-debug.log*
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Editor ───────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo

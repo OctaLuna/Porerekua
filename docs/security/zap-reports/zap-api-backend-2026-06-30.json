@@ -1,0 +1,1207 @@
+{
+	"@programName": "ZAP",
+	"@version": "2.17.0",
+	"@generated": "Wed, 1 Jul 2026 03:37:15",
+	"created": "2026-07-01T03:37:15.632391029Z",
+	"site":[ 
+		{
+			"@name": "https://kaaiya-backend.onrender.com",
+			"@host": "kaaiya-backend.onrender.com",
+			"@port": "443",
+			"@ssl": "true",
+			"alerts": [ 
+				{
+					"pluginid": "10035",
+					"alertRef": "10035-1",
+					"alert": "Strict-Transport-Security Header Not Set",
+					"name": "Strict-Transport-Security Header Not Set",
+					"riskcode": "1",
+					"confidence": "3",
+					"riskdesc": "Low (High)",
+					"desc": "<p>HTTP Strict Transport Security (HSTS) is a web security policy mechanism whereby a web server declares that complying user agents (such as a web browser) are to interact with it using only secure HTTPS connections (i.e. HTTP layered over TLS/SSL). HSTS is an IETF standards track protocol and is specified in RFC 6797.</p>",
+					"instances":[ 
+						{
+							"id": "12",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/me",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/me",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "10",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/login",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/login ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "13",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/logout",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/logout",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "14",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/register",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/register ()({email,nombre,password,rol})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "11",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/me",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/me ()({nombre})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>Ensure that your web server, application server, load balancer, etc. is configured to enforce Strict-Transport-Security.</p>",
+					"otherinfo": "",
+					"reference": "<p>https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Strict_Transport_Security_Cheat_Sheet.html</p><p>https://owasp.org/www-community/Security_Headers</p><p>https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security</p><p>https://caniuse.com/stricttransportsecurity</p><p>https://datatracker.ietf.org/doc/html/rfc6797</p>",
+					"cweid": "319",
+					"wascid": "15",
+					"sourceid": "9"
+				},
+				{
+					"pluginid": "100000",
+					"alertRef": "100000-1",
+					"alert": "A Client Error response code was returned by the server",
+					"name": "A Client Error response code was returned by the server",
+					"riskcode": "0",
+					"confidence": "3",
+					"riskdesc": "Informational (High)",
+					"desc": "<p>A response code of 404 was returned by the server.</p><p>This may indicate that the application is failing to handle unexpected input correctly.</p><p>Raised by the 'Alert on HTTP Response Code Error' script</p>",
+					"instances":[ 
+						{
+							"id": "20",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/usuarios/1.2",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/usuarios\/1.2",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "71",
+							"uri": "https://kaaiya-backend.onrender.com/api/empresas/1.2/logo",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/empresas\/1.2\/logo",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "66",
+							"uri": "https://kaaiya-backend.onrender.com/api/organizaciones/1.2/logo",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/organizaciones\/1.2\/logo",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "79",
+							"uri": "https://kaaiya-backend.onrender.com/api/proyectos/1.2/galeria/imagenId",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/proyectos\/1.2\/galeria\/imagenId",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "77",
+							"uri": "https://kaaiya-backend.onrender.com/api/proyectos/1.2/imagen-principal",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/proyectos\/1.2\/imagen-principal",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "101",
+							"uri": "https://kaaiya-backend.onrender.com/api/publicaciones/id",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/publicaciones\/id",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "52",
+							"uri": "https://kaaiya-backend.onrender.com/api/actores-municipales/forms",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/actores-municipales\/forms",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "104",
+							"uri": "https://kaaiya-backend.onrender.com/api/admin/logs?page=1&limit=10&tipo=aplicacion&severidad=info&usuario_id=1.2&fecha_desde=2026-01-01&fecha_hasta=2026-12-31",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/admin\/logs (fecha_desde,fecha_hasta,limit,page,severidad,tipo,usuario_id)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "56",
+							"uri": "https://kaaiya-backend.onrender.com/api/apoyos/forms",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/apoyos\/forms",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "54",
+							"uri": "https://kaaiya-backend.onrender.com/api/areas",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/areas",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "34",
+							"uri": "https://kaaiya-backend.onrender.com/api/areas-desarrollo",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/areas-desarrollo",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "3",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/me",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/me",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "30",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/solicitudes?page=1&limit=10&estado=pendiente",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/solicitudes (estado,limit,page)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "8",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/usuarios?page=1&limit=10&rol=1&activo=true&search=Mar%C3%ADa",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/usuarios (activo,limit,page,rol,search)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "9",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/usuarios/1.2",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/usuarios\/1.2",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "51",
+							"uri": "https://kaaiya-backend.onrender.com/api/ayudas/forms",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/ayudas\/forms",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "89",
+							"uri": "https://kaaiya-backend.onrender.com/api/dashboard/empresas?page=1&limit=10&departamento=1&forma_juridica=1&motivo=1&apoyo=1&ods=13&search=Amazona&sort=nombre:asc",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/dashboard\/empresas (apoyo,departamento,forma_juridica,limit,motivo,ods,page,search,sort)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "90",
+							"uri": "https://kaaiya-backend.onrender.com/api/dashboard/empresas/1.2",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/dashboard\/empresas\/1.2",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "92",
+							"uri": "https://kaaiya-backend.onrender.com/api/dashboard/filtros-disponibles",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/dashboard\/filtros-disponibles",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "84",
+							"uri": "https://kaaiya-backend.onrender.com/api/dashboard/por-region",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/dashboard\/por-region",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "91",
+							"uri": "https://kaaiya-backend.onrender.com/api/dashboard/por-tipo?departamento=2&area=1",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/dashboard\/por-tipo (area,departamento)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "87",
+							"uri": "https://kaaiya-backend.onrender.com/api/dashboard/proyectos?page=1&limit=10&area=1&departamento=1&municipio=49&comunidad=22&tipo=1&ayuda=2&actor=1&activo=true&anio_desde=2020&anio_hasta=2025&search=jaguar&sort=anio_inicio:desc",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/dashboard\/proyectos (activo,actor,anio_desde,anio_hasta,area,ayuda,comunidad,departamento,limit,municipio,page,search,sort,tipo)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "88",
+							"uri": "https://kaaiya-backend.onrender.com/api/dashboard/proyectos/1.2",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/dashboard\/proyectos\/1.2",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "94",
+							"uri": "https://kaaiya-backend.onrender.com/api/dashboard/publico/por-region",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/dashboard\/publico\/por-region",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "93",
+							"uri": "https://kaaiya-backend.onrender.com/api/dashboard/publico/resumen",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/dashboard\/publico\/resumen",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "83",
+							"uri": "https://kaaiya-backend.onrender.com/api/dashboard/resumen",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/dashboard\/resumen",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "86",
+							"uri": "https://kaaiya-backend.onrender.com/api/dashboard/salud",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/dashboard\/salud",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "85",
+							"uri": "https://kaaiya-backend.onrender.com/api/dashboard/timeline",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/dashboard\/timeline",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "59",
+							"uri": "https://kaaiya-backend.onrender.com/api/departamentos?page=1&limit=10&amazonico=true",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/departamentos (amazonico,limit,page)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "68",
+							"uri": "https://kaaiya-backend.onrender.com/api/empresas?page=1&limit=10&departamento=3&forma_juridica=1&search=Amazonia&sort=nombre:asc",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/empresas (departamento,forma_juridica,limit,page,search,sort)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "69",
+							"uri": "https://kaaiya-backend.onrender.com/api/empresas/1.2",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/empresas\/1.2",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "67",
+							"uri": "https://kaaiya-backend.onrender.com/api/empresas/filtros-disponibles",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/empresas\/filtros-disponibles",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "50",
+							"uri": "https://kaaiya-backend.onrender.com/api/especies-animales/forms",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/especies-animales\/forms",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "58",
+							"uri": "https://kaaiya-backend.onrender.com/api/formas-juridicas/forms",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/formas-juridicas\/forms",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "95",
+							"uri": "https://kaaiya-backend.onrender.com/api/health",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/health",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "96",
+							"uri": "https://kaaiya-backend.onrender.com/api/health/ready",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/health\/ready",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "55",
+							"uri": "https://kaaiya-backend.onrender.com/api/motivos/forms",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/motivos\/forms",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "60",
+							"uri": "https://kaaiya-backend.onrender.com/api/municipios?page=1&limit=10&departamento=3&search=Trinidad",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/municipios (departamento,limit,page,search)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "61",
+							"uri": "https://kaaiya-backend.onrender.com/api/municipios/10/comunidades",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/municipios\/10\/comunidades",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "57",
+							"uri": "https://kaaiya-backend.onrender.com/api/ods",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/ods",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "63",
+							"uri": "https://kaaiya-backend.onrender.com/api/organizaciones?page=1&limit=10&departamento=3&esNacional=true&tipo=2&search=Fundaci%C3%B3n",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/organizaciones (departamento,esNacional,limit,page,search,tipo)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "64",
+							"uri": "https://kaaiya-backend.onrender.com/api/organizaciones/1.2",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/organizaciones\/1.2",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "62",
+							"uri": "https://kaaiya-backend.onrender.com/api/organizaciones/filtros-disponibles",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/organizaciones\/filtros-disponibles",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "35",
+							"uri": "https://kaaiya-backend.onrender.com/api/practicas-agricolas/forms",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/practicas-agricolas\/forms",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "73",
+							"uri": "https://kaaiya-backend.onrender.com/api/proyectos?page=1&limit=10&area=1&departamento=3&tipo=2&anio=2023&search=Reforestaci%C3%B3n&municipio=10&anio_desde=2020&anio_hasta=2024&sort=anioInicio:desc",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/proyectos (anio,anio_desde,anio_hasta,area,departamento,limit,municipio,page,search,sort,tipo)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "75",
+							"uri": "https://kaaiya-backend.onrender.com/api/proyectos/1.2",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/proyectos\/1.2",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "72",
+							"uri": "https://kaaiya-backend.onrender.com/api/proyectos/filtros-disponibles",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/proyectos\/filtros-disponibles",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "74",
+							"uri": "https://kaaiya-backend.onrender.com/api/proyectos/map",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/proyectos\/map",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "97",
+							"uri": "https://kaaiya-backend.onrender.com/api/publicaciones?page=1&limit=10&estado=borrador&autor_id=1.2",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/publicaciones (autor_id,estado,limit,page)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "100",
+							"uri": "https://kaaiya-backend.onrender.com/api/publicaciones/el-jaguar-amazonia-a1b2c3d4",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/publicaciones\/el-jaguar-amazonia-a1b2c3d4",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "99",
+							"uri": "https://kaaiya-backend.onrender.com/api/publicaciones/mias?page=1&limit=10&estado=borrador&autor_id=1.2",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/publicaciones\/mias (autor_id,estado,limit,page)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "33",
+							"uri": "https://kaaiya-backend.onrender.com/api/tipos-organizaciones/forms",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/tipos-organizaciones\/forms",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "53",
+							"uri": "https://kaaiya-backend.onrender.com/api/tipos-proyectos/forms",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/tipos-proyectos\/forms",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "31",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/solicitudes/1.2/aprobar",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/solicitudes\/1.2\/aprobar ()({fechaExpiracionAcceso,passwordTemporal})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "32",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/solicitudes/1.2/rechazar",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/solicitudes\/1.2\/rechazar ()({notaRechazo})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "28",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/usuarios/1.2",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/usuarios\/1.2 ()({nombre,activo,rol})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "102",
+							"uri": "https://kaaiya-backend.onrender.com/api/publicaciones/id",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/publicaciones\/id ()({titulo,contenido:[{tipo,texto,url,descripcion}],estado})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "6",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/change-password",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/change-password ()({currentPassword,newPassword})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "0",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/login",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/login ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "2",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/logout",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/logout",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "7",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/register",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/register ()({email,nombre,password,rol})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "29",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/solicitar-acceso",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/solicitar-acceso ()({nombreSolicitante,emailSolicitante,institucion,proposito})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "70",
+							"uri": "https://kaaiya-backend.onrender.com/api/empresas/1.2/logo",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/empresas\/1.2\/logo ()(multipart:file)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "81",
+							"uri": "https://kaaiya-backend.onrender.com/api/formularios/empresas",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/formularios\/empresas ()({nombre,formaJuridica:{id,otro},departamentos:[{}],anioInicioApoyo,apoyos:{seleccionados:[{}],otros:[]},organizaciones:[],motivosApoyo:{seleccionados:[{}],otros:[]},ods:[{}],proyectos:[{fechaInicio,fechaFin,nombre,descripcion,anioInicio,anioFin,tipo:{id,otros},departamento,municipiosTrabajo:[{idMunicipio,idComunidadIndigena}],ayudas:{seleccionados:[{}],otros:[]},actores:{seleccionados:[{}],otros:[]},area,conservacion:{especies:{seleccionados:[{}],otros:[]},practicasAgricolas:{seleccionados:[{}],otros:[]}...)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "82",
+							"uri": "https://kaaiya-backend.onrender.com/api/formularios/organizaciones",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/formularios\/organizaciones ()({nombre,idDepartamento,esNacional,tipo:{id,otros},anioInicioTrabajo,proyectos:[{fechaInicio,fechaFin,nombre,descripcion,anioInicio,anioFin,tipo:{id,otros},departamento,municipiosTrabajo:[{idMunicipio,idComunidadIndigena}],ayudas:{seleccionados:[{}],otros:[]},actores:{seleccionados:[{}],otros:[]},area,conservacion:{especies:{seleccionados:[{}],otros:[]},practicasAgricolas:{seleccionados:[{}],otros:[]}},desarrollo:{seleccionados:[{}],otros:[]},lat,lng}],proyectosExistentes:[{idProyecto,fechaInicio,fechaFin}]})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "65",
+							"uri": "https://kaaiya-backend.onrender.com/api/organizaciones/1.2/logo",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/organizaciones\/1.2\/logo ()(multipart:file)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "78",
+							"uri": "https://kaaiya-backend.onrender.com/api/proyectos/1.2/galeria",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/proyectos\/1.2\/galeria ()(multipart:file,descripcion)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "76",
+							"uri": "https://kaaiya-backend.onrender.com/api/proyectos/1.2/imagen-principal",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/proyectos\/1.2\/imagen-principal ()(multipart:file)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "98",
+							"uri": "https://kaaiya-backend.onrender.com/api/publicaciones",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/publicaciones ()({titulo,contenido:[{tipo,texto,url,descripcion}],estado})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "103",
+							"uri": "https://kaaiya-backend.onrender.com/api/publicaciones/id/imagenes",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/publicaciones\/id\/imagenes ()(multipart:file,descripcion)",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "4",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/me",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/me ()({nombre})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "80",
+							"uri": "https://kaaiya-backend.onrender.com/api/proyectos/1.2/galeria/orden",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/proyectos\/1.2\/galeria\/orden ()([])",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						}
+					],
+					"count": "72",
+					"systemic": false,
+					"solution": "",
+					"otherinfo": "",
+					"reference": "",
+					"cweid": "388",
+					"wascid": "20",
+					"sourceid": "16"
+				},
+				{
+					"pluginid": "10111",
+					"alertRef": "10111",
+					"alert": "Authentication Request Identified",
+					"name": "Authentication Request Identified",
+					"riskcode": "0",
+					"confidence": "3",
+					"riskdesc": "Informational (High)",
+					"desc": "<p>The given request has been identified as an authentication request. The 'Other Info' field contains a set of key=value lines which identify any relevant fields. If the request is in a context which has an Authentication Method set to \"Auto-Detect\" then this rule will change the authentication to match the request identified.</p>",
+					"instances":[ 
+						{
+							"id": "17",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/login",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/login ()({email,password})",
+							"method": "POST",
+							"param": "email",
+							"attack": "",
+							"evidence": "password",
+							"otherinfo": "userParam=email\nuserValue=zaproxy@example.com\npasswordParam=password"
+						}
+					],
+					"count": "1",
+					"systemic": false,
+					"solution": "<p>This is an informational alert rather than a vulnerability and so there is nothing to fix.</p>",
+					"otherinfo": "<p>userParam=email</p><p>userValue=zaproxy@example.com</p><p>passwordParam=password</p>",
+					"reference": "<p>https://www.zaproxy.org/docs/desktop/addons/authentication-helper/auth-req-id/</p>",
+					"cweid": "-1",
+					"wascid": "-1",
+					"sourceid": "4"
+				},
+				{
+					"pluginid": "10049",
+					"alertRef": "10049-1",
+					"alert": "Non-Storable Content",
+					"name": "Non-Storable Content",
+					"riskcode": "0",
+					"confidence": "2",
+					"riskdesc": "Informational (Medium)",
+					"desc": "<p>The response contents are not storable by caching components such as proxy servers. If the response does not contain sensitive, personal or user-specific information, it may benefit from being stored and cached, to improve performance.</p>",
+					"instances":[ 
+						{
+							"id": "49",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/solicitudes/1.2/aprobar",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/solicitudes\/1.2\/aprobar ()({fechaExpiracionAcceso,passwordTemporal})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "PATCH ",
+							"otherinfo": ""
+						},
+						{
+							"id": "43",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/usuarios/1.2",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/usuarios\/1.2 ()({nombre,activo,rol})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "PATCH ",
+							"otherinfo": ""
+						},
+						{
+							"id": "24",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/me",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/me ()({nombre})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "PUT ",
+							"otherinfo": ""
+						}
+					],
+					"count": "3",
+					"systemic": false,
+					"solution": "<p>The content may be marked as storable by ensuring that the following conditions are satisfied:</p><p>The request method must be understood by the cache and defined as being cacheable (\"GET\", \"HEAD\", and \"POST\" are currently defined as cacheable)</p><p>The response status code must be understood by the cache (one of the 1XX, 2XX, 3XX, 4XX, or 5XX response classes are generally understood)</p><p>The \"no-store\" cache directive must not appear in the request or response header fields</p><p>For caching by \"shared\" caches such as \"proxy\" caches, the \"private\" response directive must not appear in the response</p><p>For caching by \"shared\" caches such as \"proxy\" caches, the \"Authorization\" header field must not appear in the request, unless the response explicitly allows it (using one of the \"must-revalidate\", \"public\", or \"s-maxage\" Cache-Control response directives)</p><p>In addition to the conditions above, at least one of the following conditions must also be satisfied by the response:</p><p>It must contain an \"Expires\" header field</p><p>It must contain a \"max-age\" response directive</p><p>For \"shared\" caches such as \"proxy\" caches, it must contain a \"s-maxage\" response directive</p><p>It must contain a \"Cache Control Extension\" that allows it to be cached</p><p>It must have a status code that is defined as cacheable by default (200, 203, 204, 206, 300, 301, 404, 405, 410, 414, 501).</p>",
+					"otherinfo": "",
+					"reference": "<p>https://datatracker.ietf.org/doc/html/rfc7234</p><p>https://datatracker.ietf.org/doc/html/rfc7231</p><p>https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html</p>",
+					"cweid": "524",
+					"wascid": "13",
+					"sourceid": "20"
+				},
+				{
+					"pluginid": "10049",
+					"alertRef": "10049-3",
+					"alert": "Storable and Cacheable Content",
+					"name": "Storable and Cacheable Content",
+					"riskcode": "0",
+					"confidence": "2",
+					"riskdesc": "Informational (Medium)",
+					"desc": "<p>The response contents are storable by caching components such as proxy servers, and may be retrieved directly from the cache, rather than from the origin server by the caching servers, in response to similar requests from other users. If the response data is sensitive, personal or user-specific, this may result in sensitive information being leaked. In some cases, this may even result in a user gaining complete control of the session of another user, depending on the configuration of the caching components in use in their environment. This is primarily an issue where \"shared\" caching servers such as \"proxy\" caches are configured on the local network. This configuration is typically found in corporate or educational environments, for instance.</p>",
+					"instances":[ 
+						{
+							"id": "23",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/me",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/me",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234."
+						},
+						{
+							"id": "26",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/usuarios?page=1&limit=10&rol=1&activo=true&search=Mar%C3%ADa",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/usuarios (activo,limit,page,rol,search)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234."
+						},
+						{
+							"id": "27",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/change-password",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/change-password ()({currentPassword,newPassword})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234."
+						},
+						{
+							"id": "19",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/login",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/login ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234."
+						},
+						{
+							"id": "22",
+							"uri": "https://kaaiya-backend.onrender.com/api/auth/register",
+							"nodeName": "https:\/\/kaaiya-backend.onrender.com\/api\/auth\/register ()({email,nombre,password,rol})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234."
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>Validate that the response does not contain sensitive, personal or user-specific information. If it does, consider the use of the following HTTP response headers, to limit, or prevent the content being stored and retrieved from the cache by another user:</p><p>Cache-Control: no-cache, no-store, must-revalidate, private</p><p>Pragma: no-cache</p><p>Expires: 0</p><p>This configuration directs both HTTP 1.0 and HTTP 1.1 compliant caching servers to not store the response, and to not retrieve the response (without validation) from the cache, in response to a similar request.</p>",
+					"otherinfo": "<p>In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234.</p>",
+					"reference": "<p>https://datatracker.ietf.org/doc/html/rfc7234</p><p>https://datatracker.ietf.org/doc/html/rfc7231</p><p>https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html</p>",
+					"cweid": "524",
+					"wascid": "13",
+					"sourceid": "9"
+				}
+			]
+		},
+		{
+			"@name": "http://host.docker.internal:3333",
+			"@host": "host.docker.internal",
+			"@port": "3333",
+			"@ssl": "false",
+			"alerts": [ 
+				{
+					"pluginid": "2",
+					"alertRef": "2",
+					"alert": "Private IP Disclosure",
+					"name": "Private IP Disclosure",
+					"riskcode": "1",
+					"confidence": "2",
+					"riskdesc": "Low (Medium)",
+					"desc": "<p>A private IP (such as 10.x.x.x, 172.x.x.x, 192.168.x.x) or an Amazon EC2 private hostname (for example, ip-10-0-56-78) has been found in the HTTP response body. This information might be helpful for further attacks targeting internal systems.</p>",
+					"instances":[ 
+						{
+							"id": "1",
+							"uri": "http://host.docker.internal:3333/api/documentation-json",
+							"nodeName": "http:\/\/host.docker.internal:3333\/api\/documentation-json",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "192.168.1.1",
+							"otherinfo": "192.168.1.1\n"
+						}
+					],
+					"count": "1",
+					"systemic": false,
+					"solution": "<p>Remove the private IP address from the HTTP response body. For comments, use JSP/ASP/PHP comment instead of HTML/JavaScript comment which can be seen by client browsers.</p>",
+					"otherinfo": "<p>192.168.1.1</p><p></p>",
+					"reference": "<p>https://datatracker.ietf.org/doc/html/rfc1918</p>",
+					"cweid": "497",
+					"wascid": "13",
+					"sourceid": "1"
+				},
+				{
+					"pluginid": "100000",
+					"alertRef": "100000-1",
+					"alert": "A Client Error response code was returned by the server",
+					"name": "A Client Error response code was returned by the server",
+					"riskcode": "0",
+					"confidence": "3",
+					"riskdesc": "Informational (High)",
+					"desc": "<p>A response code of 404 was returned by the server.</p><p>This may indicate that the application is failing to handle unexpected input correctly.</p><p>Raised by the 'Alert on HTTP Response Code Error' script</p>",
+					"instances":[ 
+						{
+							"id": "107",
+							"uri": "http://host.docker.internal:3333",
+							"nodeName": "http:\/\/host.docker.internal:3333",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "143",
+							"uri": "http://host.docker.internal:3333/",
+							"nodeName": "http:\/\/host.docker.internal:3333\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "105",
+							"uri": "http://host.docker.internal:3333/7805864545941981116",
+							"nodeName": "http:\/\/host.docker.internal:3333\/7805864545941981116",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "154",
+							"uri": "http://host.docker.internal:3333/actuator/health",
+							"nodeName": "http:\/\/host.docker.internal:3333\/actuator\/health",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "108",
+							"uri": "http://host.docker.internal:3333/api",
+							"nodeName": "http:\/\/host.docker.internal:3333\/api",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "144",
+							"uri": "http://host.docker.internal:3333/api/",
+							"nodeName": "http:\/\/host.docker.internal:3333\/api\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "106",
+							"uri": "http://host.docker.internal:3333/api/2446210658847346571",
+							"nodeName": "http:\/\/host.docker.internal:3333\/api\/2446210658847346571",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "128",
+							"uri": "http://host.docker.internal:3333/computeMetadata/v1/",
+							"nodeName": "http:\/\/host.docker.internal:3333\/computeMetadata\/v1\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "125",
+							"uri": "http://host.docker.internal:3333/latest/meta-data/",
+							"nodeName": "http:\/\/host.docker.internal:3333\/latest\/meta-data\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "136",
+							"uri": "http://host.docker.internal:3333/metadata/instance",
+							"nodeName": "http:\/\/host.docker.internal:3333\/metadata\/instance",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "137",
+							"uri": "http://host.docker.internal:3333/metadata/v1",
+							"nodeName": "http:\/\/host.docker.internal:3333\/metadata\/v1",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "130",
+							"uri": "http://host.docker.internal:3333/opc/v1/instance/",
+							"nodeName": "http:\/\/host.docker.internal:3333\/opc\/v1\/instance\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "132",
+							"uri": "http://host.docker.internal:3333/opc/v2/instance/",
+							"nodeName": "http:\/\/host.docker.internal:3333\/opc\/v2\/instance\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "138",
+							"uri": "http://host.docker.internal:3333/openstack/latest/meta_data.json",
+							"nodeName": "http:\/\/host.docker.internal:3333\/openstack\/latest\/meta_data.json",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						}
+					],
+					"count": "14",
+					"systemic": false,
+					"solution": "",
+					"otherinfo": "",
+					"reference": "",
+					"cweid": "388",
+					"wascid": "20",
+					"sourceid": "113"
+				},
+				{
+					"pluginid": "10049",
+					"alertRef": "10049-3",
+					"alert": "Storable and Cacheable Content",
+					"name": "Storable and Cacheable Content",
+					"riskcode": "0",
+					"confidence": "2",
+					"riskdesc": "Informational (Medium)",
+					"desc": "<p>The response contents are storable by caching components such as proxy servers, and may be retrieved directly from the cache, rather than from the origin server by the caching servers, in response to similar requests from other users. If the response data is sensitive, personal or user-specific, this may result in sensitive information being leaked. In some cases, this may even result in a user gaining complete control of the session of another user, depending on the configuration of the caching components in use in their environment. This is primarily an issue where \"shared\" caching servers such as \"proxy\" caches are configured on the local network. This configuration is typically found in corporate or educational environments, for instance.</p>",
+					"instances":[ 
+						{
+							"id": "5",
+							"uri": "http://host.docker.internal:3333/api/documentation-json",
+							"nodeName": "http:\/\/host.docker.internal:3333\/api\/documentation-json",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234."
+						}
+					],
+					"count": "1",
+					"systemic": true,
+					"solution": "<p>Validate that the response does not contain sensitive, personal or user-specific information. If it does, consider the use of the following HTTP response headers, to limit, or prevent the content being stored and retrieved from the cache by another user:</p><p>Cache-Control: no-cache, no-store, must-revalidate, private</p><p>Pragma: no-cache</p><p>Expires: 0</p><p>This configuration directs both HTTP 1.0 and HTTP 1.1 compliant caching servers to not store the response, and to not retrieve the response (without validation) from the cache, in response to a similar request.</p>",
+					"otherinfo": "<p>In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234.</p>",
+					"reference": "<p>https://datatracker.ietf.org/doc/html/rfc7234</p><p>https://datatracker.ietf.org/doc/html/rfc7231</p><p>https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html</p>",
+					"cweid": "524",
+					"wascid": "13",
+					"sourceid": "1"
+				}
+			]
+		}
+	],
+	"sequences":[
+	]
+
+}

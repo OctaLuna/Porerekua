@@ -1,0 +1,34 @@
+Sesión de remediación completada. Las 9 fases se ejecutaron en orden; rama audit/remediation-20260613 con 14 commits atómicos, working tree limpio, ambos servicios sanos (3333/8001 → 200).
+
+Resumen
+Hallazgos remediados (de docs/audit-report.md):
+
+ID	Sev	Estado	Commit
+AUDIT-001	🔴 CORS	✅ wildcard sin credenciales	deb5fc1
+AUDIT-002	🟠 Validación	✅ whitelist+forbidNonWhitelisted	4f97b7c
+AUDIT-003	🟠 Scaffolding	✅ eliminados (rutas 70→60)	20a7981
+AUDIT-004	🟠 helmet	✅ headers + sin X-Powered-By	4f97b7c
+AUDIT-005	🟠 CVEs	✅ backend prod 0 vulns; georef bumpeado	2f57a36
+AUDIT-006	🟡 filtro	✅ coerción booleana corregida	8e5f5a3
+AUDIT-008	🟡 tokens	✅ falso positivo (ya estaba) + tests	df6b55f
+AUDIT-009	🟡 GeoRef-en-tx	✅ pre-resuelto fuera de la transacción	360e741
+AUDIT-010	🔵 console.log	✅ → Logger	7c4d42d
+AUDIT-007/011/012/:any	—	⏸️ diferidos con plan	pending-issues.md
+Entregables:
+
+Tests: 0 → 47 (9 suites); georef sigue en 12. Cobertura 70% global diferida con plan por tandas (tu decisión: priorizar docs/deploy).
+database/ reestructurado declarativo + database/README.md (geografía queda en seeds/ para que la cargue el equipo, sin tocar la BD).
+/api/health + /api/health/ready (para healthchecks de PaaS).
+Swagger 100% tageado + openapi.json exportable (npm run openapi:export) para tipos del frontend.
+READMEs separados: backend y georef.
+DEPLOY.md en la raíz: despliegue de ambos servicios a Render/Railway (backend público + georef privado + Supabase), con verificación y guía para el frontend.
+session-summary-2026-06-13.md, architectural-improvements.md, pending-issues.md.
+Verificación: npm run build ✅ · npm test 47/47 ✅ · runtime (health 200, comunidades 404, helmet/CORS correctos, registro con GeoRef caído → 201 georefFailed=true) ✅ · cero secretos en la rama.
+
+Notas:
+
+Solo api-rest-amazonia recibió commits (es el repo). georef-service/ y los .md de raíz/docs/ son archivos (georef será repo aparte, como pediste).
+npm run lint aplica un reformateo Prettier masivo (~330 archivos) y reporta ~280 errores pre-existentes (:any/unused) — deuda técnica fuera de alcance; descarté el reformateo para no contaminar la rama.
+Veredicto: 🟢 Listo para desplegar tras aplicar el esquema en Supabase y configurar variables. La rama queda local (sin push, sin tocar main), lista para que crees el PR cuando quieras.
+
+¿Quiero que detenga los servicios en background (3333/8001) o los dejo corriendo?

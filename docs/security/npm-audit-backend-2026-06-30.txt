@@ -1,0 +1,116 @@
+# npm audit report
+
+@babel/core  <=7.29.0
+@babel/core: Arbitrary File Read via sourceMappingURL Comment - https://github.com/advisories/GHSA-4x5r-pxfx-6jf8
+fix available via `npm audit fix`
+node_modules/@babel/core
+
+brace-expansion  <1.1.13
+Severity: moderate
+brace-expansion: Zero-step sequence causes process hang and memory exhaustion - https://github.com/advisories/GHSA-f886-m6hf-6m8v
+fix available via `npm audit fix`
+node_modules/brace-expansion
+
+file-type  13.0.0 - 21.3.1
+Severity: moderate
+file-type affected by infinite loop in ASF parser on malformed input with zero-size sub-header - https://github.com/advisories/GHSA-5v7r-6r5c-r473
+file-type: ZIP Decompression Bomb DoS via [Content_Types].xml entry - https://github.com/advisories/GHSA-j47w-4g3g-c36v
+fix available via `npm audit fix --force`
+Will install @swc/cli@0.8.1, which is a breaking change
+node_modules/@xhmikosr/archive-type/node_modules/file-type
+node_modules/@xhmikosr/decompress-tar/node_modules/file-type
+node_modules/@xhmikosr/decompress-tarbz2/node_modules/file-type
+node_modules/@xhmikosr/decompress-targz/node_modules/file-type
+node_modules/@xhmikosr/decompress-unzip/node_modules/file-type
+node_modules/@xhmikosr/downloader/node_modules/file-type
+  @xhmikosr/archive-type  6.0.0 - 7.1.0
+  Depends on vulnerable versions of file-type
+  node_modules/@xhmikosr/archive-type
+    @xhmikosr/downloader  10.0.0 - 10.0.1 || 12.0.0 - 15.2.0
+    Depends on vulnerable versions of @xhmikosr/archive-type
+    Depends on vulnerable versions of @xhmikosr/decompress
+    Depends on vulnerable versions of file-type
+    node_modules/@xhmikosr/downloader
+      @xhmikosr/bin-wrapper  10.0.0 - 13.2.0
+      Depends on vulnerable versions of @xhmikosr/downloader
+      node_modules/@xhmikosr/bin-wrapper
+        @swc/cli  0.5.1 - 0.8.0
+        Depends on vulnerable versions of @xhmikosr/bin-wrapper
+        node_modules/@swc/cli
+  @xhmikosr/decompress-tar  6.0.0 - 8.1.0
+  Depends on vulnerable versions of file-type
+  node_modules/@xhmikosr/decompress-tar
+    @xhmikosr/decompress-tarbz2  6.0.0 - 9.0.0
+    Depends on vulnerable versions of @xhmikosr/decompress-tar
+    Depends on vulnerable versions of file-type
+    node_modules/@xhmikosr/decompress-tarbz2
+      @xhmikosr/decompress  8.0.0 - 10.2.1
+      Depends on vulnerable versions of @xhmikosr/decompress-tar
+      Depends on vulnerable versions of @xhmikosr/decompress-tarbz2
+      Depends on vulnerable versions of @xhmikosr/decompress-targz
+      Depends on vulnerable versions of @xhmikosr/decompress-unzip
+      node_modules/@xhmikosr/decompress
+    @xhmikosr/decompress-targz  6.0.0 - 9.0.0
+    Depends on vulnerable versions of @xhmikosr/decompress-tar
+    Depends on vulnerable versions of file-type
+    node_modules/@xhmikosr/decompress-targz
+  @xhmikosr/decompress-unzip  6.0.0 - 7.1.0
+  Depends on vulnerable versions of file-type
+  node_modules/@xhmikosr/decompress-unzip
+
+js-yaml  <=3.14.2 || 4.0.0 - 4.1.1
+Severity: moderate
+JS-YAML: Quadratic-complexity DoS in merge key handling via repeated aliases - https://github.com/advisories/GHSA-h67p-54hq-rp68
+JS-YAML: Quadratic-complexity DoS in merge key handling via repeated aliases - https://github.com/advisories/GHSA-h67p-54hq-rp68
+fix available via `npm audit fix`
+node_modules/@istanbuljs/load-nyc-config/node_modules/js-yaml
+node_modules/js-yaml
+  @nestjs/swagger  >=5.0.9
+  Depends on vulnerable versions of @nestjs/core
+  Depends on vulnerable versions of js-yaml
+  node_modules/@nestjs/swagger
+
+multer  1.0.0 - 2.1.1
+Severity: high
+Multer vulnerable to Denial of Service via deeply nested field names - https://github.com/advisories/GHSA-72gw-mp4g-v24j
+Multer vulnerable to Denial of Service via incomplete cleanup of aborted uploads - https://github.com/advisories/GHSA-3p4h-7m6x-2hcm
+fix available via `npm audit fix --force`
+Will install @nestjs/testing@7.5.5, which is a breaking change
+node_modules/multer
+  @nestjs/platform-express  *
+  Depends on vulnerable versions of @nestjs/core
+  Depends on vulnerable versions of multer
+  node_modules/@nestjs/platform-express
+    @nestjs/core  >=7.6.0-next.1
+    Depends on vulnerable versions of @nestjs/platform-express
+    node_modules/@nestjs/core
+      @nestjs/serve-static  >=3.0.0
+      Depends on vulnerable versions of @nestjs/core
+      node_modules/@nestjs/serve-static
+      @nestjs/testing  >=7.6.0-next.1
+      Depends on vulnerable versions of @nestjs/core
+      Depends on vulnerable versions of @nestjs/platform-express
+      node_modules/@nestjs/testing
+      @nestjs/typeorm  >=8.0.0
+      Depends on vulnerable versions of @nestjs/core
+      node_modules/@nestjs/typeorm
+
+piscina  <=4.9.2
+Severity: high
+piscina: Prototype Pollution Gadget → RCE via inherited options.filename - https://github.com/advisories/GHSA-x9g3-xrwr-cwfg
+fix available via `npm audit fix`
+node_modules/piscina
+
+typeorm  0.1.12 - 0.3.28
+Severity: moderate
+TypeORM: SQL Injection in UpdateQueryBuilder/SoftDeleteQueryBuilder orderBy (MySQL/MariaDB) - https://github.com/advisories/GHSA-9ggv-8w38-r7pm
+fix available via `npm audit fix`
+node_modules/typeorm
+
+22 vulnerabilities (1 low, 13 moderate, 8 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force

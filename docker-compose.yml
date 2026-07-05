@@ -1,0 +1,97 @@
+name: amazonia
+
+# Stack autocontenido: web (nginx+frontend) → api (NestJS) → postgres + georef.
+# Solo `web` publica puerto al host. Abrir http://localhost
+# Reset de datos: docker compose down -v
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-amazonia}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-amazonia}
+      POSTGRES_DB: ${POSTGRES_DB:-amazonia}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Réplica completa de Supabase (esquema public + datos) como init de la BD local.
+      # Regenerar el dump si Supabase cambia (pg_dump 17, ver DOCKER.md):
+      #   docker run --rm postgres:17-alpine pg_dump "<supabase-url>?sslmode=require" \
+      #     --schema=public --no-owner --no-privileges > api-rest-amazonia/database/snapshots/supabase-full.sql
+      - ./api-rest-amazonia/database/snapshots/supabase-full.sql:/docker-entrypoint-initdb.d/01_supabase-full.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-amazonia} -d ${POSTGRES_DB:-amazonia}"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+
+  georef:
+    build: ./georef-service
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: production
+      PORT: "8001"
+      GEOJSON_PATH: data/bolivia.geojson
+      ALLOWED_ORIGINS: '["http://localhost"]'
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8001/geo/health').status==200 else 1)\""]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+
+  api:
+    build: ./api-rest-amazonia
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: "3333"
+      DOMAIN_FRONTEND: http://localhost
+      DB_TYPE: postgres
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_USER: ${POSTGRES_USER:-amazonia}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-amazonia}
+      DB_NAME: ${POSTGRES_DB:-amazonia}
+      DB_LOGS: "false"
+      ACTIVE_JWT: "true"
+      JWT_SECRET: ${JWT_SECRET:-kaa-iya-docker-secret-change-me}
+      JWT_TIME_EXPIRE: 24h
+      GEOREF_URL: http://georef:8001
+      GEOREF_TIMEOUT_MS: "5000"
+      UPLOADS_PATH: ./uploads
+      UPLOADS_BASE_URL: http://localhost/uploads
+      SEED_SUPERADMIN_EMAIL: ${SEED_SUPERADMIN_EMAIL:-superadmin@kaaiya.test}
+      SEED_SUPERADMIN_PASSWORD: ${SEED_SUPERADMIN_PASSWORD:-SuperPass1!}
+    # Crea el superadmin (idempotente, con timeout de guarda) y arranca la API.
+    command: ["sh", "-c", "timeout 120 npm run seed:superadmin || true; node dist/src/main"]
+    volumes:
+      - uploads:/usr/src/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      georef:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:3333/api/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+
+  web:
+    build:
+      context: ./amazonia-viva-frontend
+      args:
+        VITE_API_URL: /api
+        VITE_MAPTILER_KEY: ${VITE_MAPTILER_KEY:-}
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-80}:80"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  uploads:

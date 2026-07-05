@@ -1,0 +1,17 @@
+node_modules
+dist
+.env
+.env.*
+.git
+.gitignore
+.vscode
+.idea
+tests
+test-results
+playwright-report
+.playwright
+.playwright-cli
+coverage
+*.log
+Dockerfile
+.dockerignore

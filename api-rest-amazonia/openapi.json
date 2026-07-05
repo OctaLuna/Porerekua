@@ -1,0 +1,4899 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/auth/login": {
+      "post": {
+        "description": "🔓 **Acceso público — sin token requerido.**\n\nValida email y contraseña y devuelve un token JWT de acceso.\n\n**Uso del token:** incluye el `accessToken` recibido en todas las peticiones protegidas:\n`Authorization: Bearer <accessToken>`\n\n**Seguridad:**\n- El tiempo de respuesta es constante independientemente de si el email existe, para prevenir enumeración de usuarios (OWASP A07).\n- **Rate limiting:** máximo 5 intentos por IP cada 60 segundos. Superar este límite devuelve `429`.",
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Login exitoso. Devuelve el token JWT y su tiempo de expiración.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Respuesta en caso de parametros invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationExceptionDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales inválidas, cuenta desactivada o acceso expirado (investigadores)."
+          },
+          "429": {
+            "description": "Demasiadas solicitudes desde esta IP. Espera antes de reintentar.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Iniciar sesión",
+        "tags": [
+          "Auth",
+          "Auth — Público"
+        ]
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "description": "🔒 **Requiere token válido (cualquier rol).**\n\nConfirma el cierre de sesión del usuario autenticado.\n\n**Importante:** los tokens JWT son stateless — la invalidación real ocurre eliminando el token en el cliente (localStorage, memoria, cookie). Este endpoint sirve como confirmación semántica del logout.\n\nEn una futura versión se puede extender con una blacklist de tokens para invalidación inmediata en servidor.",
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Sesión cerrada. El cliente debe eliminar el token localmente."
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Cerrar sesión",
+        "tags": [
+          "Auth",
+          "Auth — Usuario Autenticado"
+        ]
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "description": "🔒 **Requiere token válido (cualquier rol).**\n\nDevuelve los datos del perfil del usuario autenticado a partir del token JWT.\n\n**Campos devueltos:** `id`, `email`, `nombre`, `rol` (1=Superadmin, 2=Admin, 3=Investigador), `activo`, `fechaExpiracion` (null para Superadmin y Admin), `createdAt`, `updatedAt`.\n\n**Nunca se devuelve:** `passwordHash` ni ninguna credencial.",
+        "operationId": "AuthController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Perfil completo del usuario autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Obtener perfil propio",
+        "tags": [
+          "Auth",
+          "Auth — Usuario Autenticado"
+        ]
+      },
+      "put": {
+        "description": "🔒 **Requiere token válido (cualquier rol).**\n\nPermite al usuario actualizar su propio perfil.\n\n**Restricción:** solo se puede modificar el `nombre`. El `rol` y el estado `activo` no son editables desde este endpoint — esos campos son gestionados exclusivamente por Admin.",
+        "operationId": "AuthController_updateMe",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePerfilPropioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Perfil actualizado exitosamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Respuesta en caso de parametros invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationExceptionDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Actualizar perfil propio",
+        "tags": [
+          "Auth",
+          "Auth — Usuario Autenticado"
+        ]
+      }
+    },
+    "/api/auth/change-password": {
+      "post": {
+        "description": "🔒 **Requiere token válido (cualquier rol).**\n\nPermite cambiar la contraseña verificando primero la contraseña actual.\n\n**Reglas de la nueva contraseña:**\n- Mínimo 8 caracteres\n- Al menos una mayúscula\n- Al menos un número\n- Al menos un símbolo (por ejemplo: ! @ # $)\n\n**Nota:** las sesiones activas con el token anterior siguen siendo válidas hasta que expiren de forma natural (TTL del JWT). Para invalidación inmediata se requiere implementar blacklist de tokens (backlog).",
+        "operationId": "AuthController_changePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contraseña cambiada exitosamente."
+          },
+          "400": {
+            "description": "Respuesta en caso de parametros invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationExceptionDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401: token inválido/expirado, o la contraseña actual es incorrecta."
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Cambiar contraseña propia",
+        "tags": [
+          "Auth",
+          "Auth — Usuario Autenticado"
+        ]
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "description": "🔒 **Requiere rol: Admin o Superadmin.**\n\nCrea un nuevo usuario con rol Admin (2) o Superadmin (1).\n\n**Reglas de creación de usuarios:**\n- Un `Admin` solo puede crear usuarios con rol `Admin` (2). Intentar crear un `Superadmin` devuelve `403`.\n- Un `Superadmin` puede crear usuarios con cualquier rol.\n- Los `Investigadores` se crean únicamente a través del flujo de solicitud de acceso (`POST /auth/solicitar-acceso` → aprobación).\n\n**Reglas de contraseña:**\n- Mínimo 8 caracteres, al menos una mayúscula, un número y un símbolo.\n\n**Rate limiting:** máximo 10 creaciones por IP cada 60 segundos.",
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUsuarioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario creado exitosamente. Devuelve el perfil sin contraseña.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Respuesta en caso de parametros invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationExceptionDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403: rol insuficiente, o Admin intentando crear Superadmin."
+          },
+          "409": {
+            "description": "Respuesta en caso de un conflicto entre datos repetidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Demasiadas solicitudes desde esta IP. Espera antes de reintentar.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Crear nuevo usuario (Admin o Superadmin)",
+        "tags": [
+          "Auth",
+          "Auth — Admin"
+        ]
+      }
+    },
+    "/api/auth/usuarios": {
+      "get": {
+        "description": "🔒 **Requiere rol: Admin o Superadmin.**\n\nDevuelve el listado paginado de usuarios con filtros opcionales.\n\n**Filtros disponibles:**\n- `?rol=1` — Superadmin | `?rol=2` — Admin | `?rol=3` — Investigador\n- `?activo=true` — solo activos | `?activo=false` — solo inactivos\n- `?search=texto` — busca por nombre o email (parcial, insensible a mayúsculas)\n\n**Ejemplos:** `?rol=3&activo=true` → investigadores activos · `?search=Juan` → usuarios que contienen \"Juan\" en nombre o email\n\n**Paginación:** `?page=1&limit=10`. Límite máximo: 100.",
+        "operationId": "AuthController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número de la página (empieza en 1). Si no se envía, se toma por defecto el valor 1.",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Máximo 100",
+            "schema": {
+              "maximum": 100,
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "rol",
+            "required": false,
+            "in": "query",
+            "description": "1=Superadmin, 2=Admin, 3=Investigador",
+            "schema": {
+              "enum": [
+                1,
+                2,
+                3
+              ],
+              "type": "number"
+            }
+          },
+          {
+            "name": "activo",
+            "required": false,
+            "in": "query",
+            "description": "true=activos, false=inactivos",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Busca en nombre y email",
+            "schema": {
+              "maxLength": 100,
+              "example": "María",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Listado paginado de usuarios.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginationResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene el rol necesario para este recurso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Listar usuarios con filtros y paginación",
+        "tags": [
+          "Auth",
+          "Auth — Admin"
+        ]
+      }
+    },
+    "/api/auth/usuarios/{id}": {
+      "get": {
+        "description": "🔒 **Requiere rol: Admin o Superadmin.**\n\nDevuelve el perfil completo de un usuario específico.\n\n**Campos devueltos:** `id`, `email`, `nombre`, `rol`, `activo`, `fechaExpiracion`, `createdAt`, `updatedAt`.\n\n**Nunca se devuelve:** `passwordHash` ni `tokenValidFrom`.",
+        "operationId": "AuthController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Perfil del usuario solicitado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene el rol necesario para este recurso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Respuesta en caso de no encontrar un recurso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Obtener detalle de un usuario por ID",
+        "tags": [
+          "Auth",
+          "Auth — Admin"
+        ]
+      },
+      "patch": {
+        "description": "🔒 **Requiere rol: Admin o Superadmin.**\n\nPermite modificar `nombre`, `activo` y `rol` de cualquier usuario.\n\n**Restricciones:**\n- Solo un `Superadmin` puede asignar el rol `Superadmin` (1). Si un `Admin` intenta asignarlo, recibe `403`.\n- Cambiar `activo` a `false` desactiva la cuenta. El usuario no podrá hacer login hasta que se reactive.\n- Los tokens JWT existentes del usuario desactivado siguen siendo válidos hasta su expiración natural (el logout forzado requiere blacklist — backlog).",
+        "operationId": "AuthController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUsuarioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuario actualizado exitosamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Respuesta en caso de parametros invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationExceptionDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403: rol insuficiente, o Admin intentando asignar rol Superadmin."
+          },
+          "404": {
+            "description": "Respuesta en caso de no encontrar un recurso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Actualizar datos de un usuario",
+        "tags": [
+          "Auth",
+          "Auth — Admin"
+        ]
+      },
+      "delete": {
+        "description": "🔒 **Requiere rol: Superadmin exclusivamente.** Admin recibe `403`.\n\nElimina el usuario de forma permanente e irrecuperable de la base de datos.\n\n**Restricciones:**\n- Un Superadmin no puede eliminarse a sí mismo (`403`).\n- Esta acción es irreversible. Para desactivar temporalmente sin perder datos usa `PATCH /auth/usuarios/:id` con `{ \"activo\": false }`.",
+        "operationId": "AuthController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario eliminado exitosamente."
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403: el usuario autenticado no es Superadmin, o intenta eliminarse a sí mismo."
+          },
+          "404": {
+            "description": "Respuesta en caso de no encontrar un recurso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Eliminar usuario permanentemente",
+        "tags": [
+          "Auth",
+          "Auth — Admin"
+        ]
+      }
+    },
+    "/api/auth/solicitar-acceso": {
+      "post": {
+        "description": "🔓 **Acceso público — sin token requerido.**\n\nEnvía una solicitud de acceso temporal como investigador a la plataforma.\n\n**Flujo completo:**\n1. El solicitante envía este formulario con su nombre, email, institución y propósito de investigación.\n2. Un Admin revisa la solicitud en `GET /auth/solicitudes`.\n3. Si se aprueba (`PATCH /auth/solicitudes/:id/aprobar`), se crea automáticamente una cuenta de Investigador con acceso temporal hasta la fecha definida por el Admin.\n4. El investigador recibe las credenciales y puede hacer login con `POST /auth/login`.\n\n**Restricción:** no se puede enviar una nueva solicitud mientras haya una pendiente con el mismo email. Devuelve `409`.\n\n**Rate limiting:** máximo 3 solicitudes por IP cada 60 segundos.",
+        "operationId": "SolicitudesController_solicitar",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearSolicitudDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Solicitud enviada exitosamente. Será revisada por un administrador."
+          },
+          "400": {
+            "description": "Respuesta en caso de parametros invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationExceptionDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "409: ya existe una solicitud pendiente con ese correo electrónico."
+          },
+          "429": {
+            "description": "Demasiadas solicitudes desde esta IP. Espera antes de reintentar.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Solicitar acceso como investigador",
+        "tags": [
+          "Solicitudes",
+          "Auth — Público"
+        ]
+      }
+    },
+    "/api/auth/solicitudes": {
+      "get": {
+        "description": "🔒 **Requiere rol: Admin o Superadmin.**\n\nDevuelve el listado paginado de solicitudes de acceso enviadas por investigadores.\n\n**Filtrar por estado:**\n- `pendiente` — solicitudes sin revisar (las más relevantes para el admin)\n- `aprobada` — solicitudes que ya fueron aprobadas y tienen usuario creado\n- `rechazada` — solicitudes rechazadas\n- Sin filtro → devuelve todas.\n\n**Ejemplo de uso:** `GET /api/auth/solicitudes?estado=pendiente&page=1&limit=20`",
+        "operationId": "SolicitudesController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número de página (default: 1)",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Resultados por página (default: 10, máximo: 100)",
+            "schema": {
+              "maximum": 100,
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "estado",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar solicitudes por estado. Si no se envía, devuelve todas.",
+            "schema": {
+              "enum": [
+                "pendiente",
+                "aprobada",
+                "rechazada"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Listado paginado de solicitudes con has_next y has_prev.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginationResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene el rol necesario para este recurso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Listar solicitudes de acceso de investigadores",
+        "tags": [
+          "Solicitudes",
+          "Auth — Admin"
+        ]
+      }
+    },
+    "/api/auth/solicitudes/{id}/aprobar": {
+      "patch": {
+        "description": "🔒 **Requiere rol: Admin o Superadmin.**\n\nAprueba la solicitud de acceso e inmediatamente crea una cuenta de Investigador.\n\n**Al aprobar, el Admin define:**\n- `fechaExpiracionAcceso`: hasta cuándo tendrá acceso el investigador (ISO 8601).\n- `passwordTemporal`: contraseña inicial para el investigador (debe cumplir la política de seguridad).\n\n**Efecto:**\n- Se crea un usuario con rol Investigador (3) y el email de la solicitud.\n- La solicitud queda marcada como `aprobada`.\n- Esta operación es atómica (transaccional): si falla la creación del usuario, la solicitud no queda aprobada.\n\n**Condiciones de error:**\n- `400` si la solicitud ya fue procesada (aprobada o rechazada).\n- `409` si ya existe un usuario con ese email.",
+        "operationId": "SolicitudesController_aprobar",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AprobarSolicitudDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Solicitud aprobada y usuario investigador creado. Devuelve `idUsuario`."
+          },
+          "400": {
+            "description": "Respuesta en caso de parametros invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationExceptionDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene el rol necesario para este recurso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Respuesta en caso de no encontrar un recurso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "409: ya existe un usuario registrado con el email de la solicitud."
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Aprobar solicitud y crear usuario investigador",
+        "tags": [
+          "Solicitudes",
+          "Auth — Admin"
+        ]
+      }
+    },
+    "/api/auth/solicitudes/{id}/rechazar": {
+      "patch": {
+        "description": "🔒 **Requiere rol: Admin o Superadmin.**\n\nRechaza la solicitud de acceso. No se crea ningún usuario.\n\n**Opcional:** incluir una `notaRechazo` explicando el motivo (máx. 500 caracteres).\n\n**Condición:** la solicitud debe estar en estado `pendiente`. Intentar rechazar una solicitud ya procesada devuelve `400`.",
+        "operationId": "SolicitudesController_rechazar",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RechazarSolicitudDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Solicitud rechazada exitosamente."
+          },
+          "400": {
+            "description": "400: parámetros inválidos, o la solicitud ya fue procesada."
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene el rol necesario para este recurso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Respuesta en caso de no encontrar un recurso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Rechazar una solicitud de acceso",
+        "tags": [
+          "Solicitudes",
+          "Auth — Admin"
+        ]
+      }
+    },
+    "/api/tipos-organizaciones/forms": {
+      "get": {
+        "operationId": "TiposOrganizacionesController_findAllForms",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Respusta en caso de obtener los tipos de organizaciones",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindAllTiposOrganizacionesFormsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Api para obtener los tipos de organizacion",
+        "tags": [
+          "Tipos de organizaciones"
+        ]
+      }
+    },
+    "/api/areas-desarrollo": {
+      "get": {
+        "operationId": "AreasDesarrolloController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Resputa en caso de obtener las areas de desarrollo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindAllAreaDesarrolloDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Api para obtener las areas de desarrollo",
+        "tags": [
+          "Areas de desarrollo indigena"
+        ]
+      }
+    },
+    "/api/practicas-agricolas/forms": {
+      "get": {
+        "operationId": "PracticasAgricolasController_findAllForms",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Respuesta en caso de obtenre la practica agricolas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindAllPracticasAgricolasFormsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Api para obtener la practicas agricolas",
+        "tags": [
+          "Practicas agricolas"
+        ]
+      }
+    },
+    "/api/especies-animales/forms": {
+      "get": {
+        "operationId": "EspeciesAnimalesController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Respuesta al obtener las especies animales",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindAllEspeciesAnimalesFormsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Api para obtener la especies animales",
+        "tags": [
+          "Especies animales"
+        ]
+      }
+    },
+    "/api/ayudas/forms": {
+      "get": {
+        "operationId": "AyudasController_findAllForms",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Respuesta en caso de obtener las ayudas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindAllAyudasFormsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Api para obtener ayudas",
+        "tags": [
+          "Tipos de ayuda"
+        ]
+      }
+    },
+    "/api/actores-municipales/forms": {
+      "get": {
+        "operationId": "ActoresMunicipalesController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Respuesta en caso de obtener a los actores municipales",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindAllActoresMunicipalesFormsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Api para obtener actores municipales",
+        "tags": [
+          "Actores municipales"
+        ]
+      }
+    },
+    "/api/tipos-proyectos/forms": {
+      "get": {
+        "operationId": "TiposProyectosController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Respuesta en caso de obtener los tipos de proyectos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindAllTiposProyectosFormsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Api para obtener los tipos de proyectos",
+        "tags": [
+          "Tipos de proyectos"
+        ]
+      }
+    },
+    "/api/areas": {
+      "get": {
+        "operationId": "AreasController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Respuesta en caso de obtener las areas de proyectos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindAllAreasDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Api para obtener las areas de desarrollo de proyecto",
+        "tags": [
+          "Catálogos"
+        ]
+      }
+    },
+    "/api/motivos/forms": {
+      "get": {
+        "operationId": "MotivosController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Respuesta en caso de obtener los motivos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/findAllMotivosFormsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Api para obtener motivos de empresa de poyo a la amzonia para el formulario",
+        "tags": [
+          "Catálogos"
+        ]
+      }
+    },
+    "/api/apoyos/forms": {
+      "get": {
+        "operationId": "ApoyosController_findAllForms",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Respuesta en caso de obtener los apoyos para el formulario",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindAllApoyoFormsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Api para obtener los apoyos paraa el formulario",
+        "tags": [
+          "Catálogos"
+        ]
+      }
+    },
+    "/api/ods": {
+      "get": {
+        "operationId": "OdsController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Respuesta en caso de obtener los ods",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindAllOdsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Api para obtener los ods",
+        "tags": [
+          "Catálogos"
+        ]
+      }
+    },
+    "/api/formas-juridicas/forms": {
+      "get": {
+        "operationId": "FormasJuridicasController_findAllForms",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Repsuesta en caso de obtener las formas juridicas para el formulario",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindAllFormasJuridicasFormsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Api para obtener las formas juridicas paara el formulario",
+        "tags": [
+          "Formas Juridicas"
+        ]
+      }
+    },
+    "/api/departamentos": {
+      "get": {
+        "operationId": "DepartamentosController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número de la página (empieza en 1). Si no se envía, se toma por defecto el valor 1.",
+            "schema": {
+              "default": 1,
+              "example": 2,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Cantidad de resultados por página. Si no se envía, se toma por defecto el valor 10.",
+            "schema": {
+              "maximum": 100,
+              "default": 10,
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "amazonico",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar solo departamentos amazónicos (true) o todos (omitir/false)",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Listado paginado de departamentos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginationResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar departamentos. Filtrar amazónicos con ?amazonico=true",
+        "tags": [
+          "Departamentos"
+        ]
+      }
+    },
+    "/api/municipios": {
+      "get": {
+        "operationId": "MunicipiosController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número de la página (empieza en 1). Si no se envía, se toma por defecto el valor 1.",
+            "schema": {
+              "default": 1,
+              "example": 2,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Cantidad de resultados por página. Si no se envía, se toma por defecto el valor 10.",
+            "schema": {
+              "maximum": 100,
+              "default": 10,
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "departamento",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por ID de departamento",
+            "schema": {
+              "example": 3,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Buscar por nombre de municipio (búsqueda parcial, insensible a mayúsculas)",
+            "schema": {
+              "example": "Trinidad",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Listado paginado de municipios",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginationResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar municipios con paginación y filtros opcionales",
+        "tags": [
+          "Municipios"
+        ]
+      }
+    },
+    "/api/municipios/{id}/comunidades": {
+      "get": {
+        "operationId": "MunicipiosController_findComunidades",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID del municipio",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de comunidades indígenas del municipio, ordenadas por nombre"
+          }
+        },
+        "summary": "Comunidades indígenas de un municipio (carga en cascada para formularios)",
+        "tags": [
+          "Municipios"
+        ]
+      }
+    },
+    "/api/organizaciones/filtros-disponibles": {
+      "get": {
+        "operationId": "OrganizacionesController_filtrosDisponibles",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Tipos de organización y departamentos disponibles"
+          }
+        },
+        "summary": "Valores únicos disponibles para filtros de organizaciones. Sin autenticación. Caché 300 s.",
+        "tags": [
+          "Organizaciones",
+          "Organizaciones — Público"
+        ]
+      }
+    },
+    "/api/organizaciones": {
+      "get": {
+        "description": "Token opcional. Sin token → devuelve datos resumidos (card). Con token válido → devuelve objeto completo.",
+        "operationId": "OrganizacionesController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número de la página (empieza en 1). Si no se envía, se toma por defecto el valor 1.",
+            "schema": {
+              "default": 1,
+              "example": 2,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Cantidad de resultados por página. Si no se envía, se toma por defecto el valor 10.",
+            "schema": {
+              "maximum": 100,
+              "default": 10,
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "departamento",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por ID de departamento",
+            "schema": {
+              "example": 3,
+              "type": "number"
+            }
+          },
+          {
+            "name": "esNacional",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por organizaciones nacionales (true) o locales (false)",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "tipo",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por ID de tipo de organización",
+            "schema": {
+              "example": 2,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Buscar por nombre de organización (búsqueda parcial, insensible a mayúsculas)",
+            "schema": {
+              "example": "Fundación",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Listado paginado. Shape varía según autenticación.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginationResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar organizaciones con filtros y paginación",
+        "tags": [
+          "Organizaciones",
+          "Organizaciones — Público"
+        ]
+      }
+    },
+    "/api/organizaciones/{id}": {
+      "get": {
+        "operationId": "OrganizacionesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Organización con tipo, departamento, proyectos y empresas relacionadas"
+          },
+          "401": {
+            "description": "Sin token o token inválido"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "🔒 Detalle completo de una organización. Requiere token JWT.",
+        "tags": [
+          "Organizaciones",
+          "Organizaciones — Autenticado"
+        ]
+      }
+    },
+    "/api/organizaciones/{id}/logo": {
+      "post": {
+        "operationId": "OrganizacionesController_uploadLogo",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "{ logoUrl: string }"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "🔒 Subir o reemplazar logo de organización (máx 2 MB, JPEG/PNG/WebP → WebP 400×400)",
+        "tags": [
+          "Organizaciones",
+          "Organizaciones — Autenticado"
+        ]
+      },
+      "delete": {
+        "operationId": "OrganizacionesController_deleteLogo",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Logo eliminado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "🔒 Eliminar logo de organización",
+        "tags": [
+          "Organizaciones",
+          "Organizaciones — Autenticado"
+        ]
+      }
+    },
+    "/api/empresas/filtros-disponibles": {
+      "get": {
+        "operationId": "EmpresasController_filtrosDisponibles",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Formas jurídicas y departamentos disponibles"
+          }
+        },
+        "summary": "Valores únicos disponibles para filtros de empresas. Sin autenticación. Caché 300 s.",
+        "tags": [
+          "Empresas",
+          "Empresas — Público"
+        ]
+      }
+    },
+    "/api/empresas": {
+      "get": {
+        "description": "Token opcional. Sin token → devuelve datos resumidos (card). Con token válido → devuelve objeto completo.",
+        "operationId": "EmpresasController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número de la página (empieza en 1). Si no se envía, se toma por defecto el valor 1.",
+            "schema": {
+              "default": 1,
+              "example": 2,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Cantidad de resultados por página. Si no se envía, se toma por defecto el valor 10.",
+            "schema": {
+              "maximum": 100,
+              "default": 10,
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "departamento",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por ID de departamento",
+            "schema": {
+              "example": 3,
+              "type": "number"
+            }
+          },
+          {
+            "name": "forma_juridica",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por ID de forma jurídica",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Buscar por nombre de empresa (búsqueda parcial, insensible a mayúsculas)",
+            "schema": {
+              "example": "Amazonia",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Ordenar resultados. Formato: 'campo:asc' o 'campo:desc'. Campos válidos: nombre, anioInicioApoyo",
+            "schema": {
+              "example": "nombre:asc",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Listado paginado. Shape varía según autenticación.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginationResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar empresas con filtros y paginación",
+        "tags": [
+          "Empresas",
+          "Empresas — Público"
+        ]
+      }
+    },
+    "/api/empresas/{id}": {
+      "get": {
+        "operationId": "EmpresasController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Empresa con formaJuridica, departamentos, apoyos, motivos, ODS, organizaciones y proyectos"
+          },
+          "401": {
+            "description": "Sin token o token inválido"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "🔒 Detalle completo de una empresa. Requiere token JWT.",
+        "tags": [
+          "Empresas",
+          "Empresas — Autenticado"
+        ]
+      }
+    },
+    "/api/empresas/{id}/logo": {
+      "post": {
+        "operationId": "EmpresasController_uploadLogo",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "{ logoUrl: string }"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "🔒 Subir o reemplazar logo de empresa (máx 2 MB, JPEG/PNG/WebP → WebP 400×400)",
+        "tags": [
+          "Empresas",
+          "Empresas — Autenticado"
+        ]
+      },
+      "delete": {
+        "operationId": "EmpresasController_deleteLogo",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Logo eliminado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "🔒 Eliminar logo de empresa",
+        "tags": [
+          "Empresas",
+          "Empresas — Autenticado"
+        ]
+      }
+    },
+    "/api/proyectos/filtros-disponibles": {
+      "get": {
+        "operationId": "ProyectosController_filtrosDisponibles",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Áreas, tipos, departamentos, municipios y años disponibles"
+          }
+        },
+        "summary": "Valores únicos disponibles para construir filtros dinámicos. Sin autenticación. Caché 300 s.",
+        "tags": [
+          "Proyectos",
+          "Proyectos — Público"
+        ]
+      }
+    },
+    "/api/proyectos": {
+      "get": {
+        "description": "Token opcional. Sin token → devuelve datos resumidos (card). Con token válido → devuelve objeto completo con todas las relaciones.",
+        "operationId": "ProyectosController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número de la página (empieza en 1). Si no se envía, se toma por defecto el valor 1.",
+            "schema": {
+              "default": 1,
+              "example": 2,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Cantidad de resultados por página. Si no se envía, se toma por defecto el valor 10.",
+            "schema": {
+              "maximum": 100,
+              "default": 10,
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "area",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por área: 1 = Conservación, 2 = Desarrollo Comunitario",
+            "schema": {
+              "example": 1,
+              "type": "number",
+              "enum": [
+                1,
+                2
+              ]
+            }
+          },
+          {
+            "name": "departamento",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por ID de departamento donde opera el proyecto",
+            "schema": {
+              "example": 3,
+              "type": "number"
+            }
+          },
+          {
+            "name": "tipo",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por ID de tipo de proyecto",
+            "schema": {
+              "example": 2,
+              "type": "number"
+            }
+          },
+          {
+            "name": "anio",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por año de inicio del proyecto",
+            "schema": {
+              "example": 2023,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Buscar por nombre de proyecto (búsqueda parcial, insensible a mayúsculas)",
+            "schema": {
+              "example": "Reforestación",
+              "type": "string"
+            }
+          },
+          {
+            "name": "municipio",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por ID de municipio de trabajo del proyecto",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "anio_desde",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar proyectos que iniciaron desde este año (inclusive)",
+            "schema": {
+              "example": 2020,
+              "type": "number"
+            }
+          },
+          {
+            "name": "anio_hasta",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar proyectos que terminaron hasta este año (inclusive). Incluye proyectos activos (sin anio_fin)",
+            "schema": {
+              "example": 2024,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Ordenar resultados. Formato: 'campo:asc' o 'campo:desc'. Campos válidos: nombre, anioInicio",
+            "schema": {
+              "example": "anioInicio:desc",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Listado paginado. Shape varía según autenticación.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginationResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar proyectos con filtros y paginación",
+        "tags": [
+          "Proyectos",
+          "Proyectos — Público"
+        ]
+      }
+    },
+    "/api/proyectos/map": {
+      "get": {
+        "operationId": "ProyectosController_findForMap",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Array de proyectos con lat, lng, department, municipality y datos del actor principal."
+          }
+        },
+        "summary": "Proyectos con coordenadas para renderizar en el mapa (MapLibre GL). Solo proyectos que tienen lat/lng.",
+        "tags": [
+          "Proyectos",
+          "Proyectos — Público"
+        ]
+      }
+    },
+    "/api/proyectos/{id}": {
+      "get": {
+        "operationId": "ProyectosController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Proyecto con todas sus relaciones, galería e imagen principal"
+          },
+          "400": {
+            "description": "Respuesta en caso de parametros invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationExceptionDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token o token inválido — {\"error\":\"AUTHENTICATION_REQUIRED\",\"message\":\"...\",\"login_url\":\"/api/auth/login\"}"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "🔒 Detalle completo de un proyecto. Requiere token JWT.",
+        "tags": [
+          "Proyectos",
+          "Proyectos — Autenticado"
+        ]
+      }
+    },
+    "/api/proyectos/{id}/imagen-principal": {
+      "post": {
+        "operationId": "ProyectosController_uploadImagenPrincipal",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "{ imagenPrincipalUrl: string }"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "🔒 Subir o reemplazar imagen principal del proyecto (máx 5 MB, JPEG/PNG/WebP → WebP 1200×800)",
+        "tags": [
+          "Proyectos",
+          "Proyectos — Autenticado"
+        ]
+      },
+      "delete": {
+        "operationId": "ProyectosController_deleteImagenPrincipal",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Imagen eliminada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "🔒 Eliminar imagen principal del proyecto",
+        "tags": [
+          "Proyectos",
+          "Proyectos — Autenticado"
+        ]
+      }
+    },
+    "/api/proyectos/{id}/galeria": {
+      "post": {
+        "operationId": "ProyectosController_uploadGaleria",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "descripcion": {
+                    "type": "string",
+                    "description": "Descripción opcional de la imagen"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Imagen de galería creada con id, url y orden"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "🔒 Añadir imagen a la galería del proyecto (máx 5 MB, JPEG/PNG/WebP → WebP 1200×800)",
+        "tags": [
+          "Proyectos",
+          "Proyectos — Autenticado"
+        ]
+      }
+    },
+    "/api/proyectos/{id}/galeria/{imagenId}": {
+      "delete": {
+        "operationId": "ProyectosController_deleteGaleriaImagen",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "imagenId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Imagen eliminada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "🔒 Eliminar imagen de la galería",
+        "tags": [
+          "Proyectos",
+          "Proyectos — Autenticado"
+        ]
+      }
+    },
+    "/api/proyectos/{id}/galeria/orden": {
+      "put": {
+        "operationId": "ProyectosController_reordenarGaleria",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Orden actualizado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "🔒 Reordenar imágenes de la galería. Body: [{id: string, orden: number}]",
+        "tags": [
+          "Proyectos",
+          "Proyectos — Autenticado"
+        ]
+      }
+    },
+    "/api/formularios/empresas": {
+      "post": {
+        "operationId": "FormulariosController_registerEmpresa",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterFormularioEmpresaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Respuesta en caso de llenar el formulario exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Respuesta en caso de parametros invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationExceptionDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Respuesta en caso de no encontrar un recurso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Api para registrar formulario de empresas",
+        "tags": [
+          "Formularios"
+        ]
+      }
+    },
+    "/api/formularios/organizaciones": {
+      "post": {
+        "operationId": "FormulariosController_registerOrganizacion",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterFormularioOrganizacionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Respuesta en caso de llenar el formulario exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Respuesta en caso de parametros invalidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationExceptionDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Respuesta en caso de no encontrar un recurso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Api para registrar formulario de organizaciones",
+        "tags": [
+          "Formularios"
+        ]
+      }
+    },
+    "/api/dashboard/resumen": {
+      "get": {
+        "description": "Devuelve una única fila con todos los indicadores clave del sistema: totales de empresas, organizaciones y proyectos; desglose por área (conservación vs desarrollo); alcance geográfico (municipios y comunidades indígenas cubiertos); cobertura de ODS; y rango temporal de los datos. Úsalo para el encabezado del dashboard.\n\n_Caché: 60 segundos._",
+        "operationId": "DashboardController_getResumen",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Objeto único con todos los KPIs del sistema.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "total_empresas": {
+                      "type": "integer",
+                      "example": 4,
+                      "description": "Total de empresas registradas en el sistema"
+                    },
+                    "total_organizaciones": {
+                      "type": "integer",
+                      "example": 7,
+                      "description": "Total de organizaciones (ONG, fundaciones, cooperación internacional)"
+                    },
+                    "total_proyectos": {
+                      "type": "integer",
+                      "example": 10,
+                      "description": "Total de proyectos amazónicos registrados"
+                    },
+                    "proyectos_conservacion": {
+                      "type": "integer",
+                      "example": 8,
+                      "description": "Proyectos del área 1 — Conservación ambiental (biodiversidad, ecosistemas)"
+                    },
+                    "proyectos_desarrollo": {
+                      "type": "integer",
+                      "example": 2,
+                      "description": "Proyectos del área 2 — Desarrollo de comunidades indígenas (social, cultural, económico)"
+                    },
+                    "proyectos_activos": {
+                      "type": "integer",
+                      "example": 10,
+                      "description": "Proyectos sin año de fin registrado (en curso)"
+                    },
+                    "proyectos_finalizados": {
+                      "type": "integer",
+                      "example": 0,
+                      "description": "Proyectos con año de fin registrado (concluidos)"
+                    },
+                    "empresas_con_proyectos": {
+                      "type": "integer",
+                      "example": 4,
+                      "description": "Empresas que participan en al menos un proyecto"
+                    },
+                    "organizaciones_con_proyectos": {
+                      "type": "integer",
+                      "example": 7,
+                      "description": "Organizaciones que participan en al menos un proyecto"
+                    },
+                    "departamentos_amazonicos": {
+                      "type": "integer",
+                      "example": 5,
+                      "description": "Departamentos bolivianos clasificados como amazónicos (Pando, Beni, La Paz, Cochabamba, Santa Cruz)"
+                    },
+                    "municipios_cubiertos": {
+                      "type": "integer",
+                      "example": 9,
+                      "description": "Municipios únicos donde se ejecutan proyectos"
+                    },
+                    "comunidades_indigenas_beneficiadas": {
+                      "type": "integer",
+                      "example": 5,
+                      "description": "Comunidades indígenas directamente vinculadas a proyectos como localidades"
+                    },
+                    "organizaciones_nacionales": {
+                      "type": "integer",
+                      "example": 5,
+                      "description": "Organizaciones de origen nacional boliviano"
+                    },
+                    "organizaciones_internacionales": {
+                      "type": "integer",
+                      "example": 2,
+                      "description": "Organizaciones de cooperación internacional"
+                    },
+                    "total_ods_cubiertos": {
+                      "type": "integer",
+                      "example": 8,
+                      "description": "Cantidad de ODS (Objetivos de Desarrollo Sostenible) distintos alineados por las empresas registradas"
+                    },
+                    "anio_inicio_mas_antiguo": {
+                      "type": "integer",
+                      "example": 2000,
+                      "description": "Año más antiguo entre todos los registros de empresas, organizaciones y proyectos"
+                    },
+                    "anio_inicio_mas_reciente": {
+                      "type": "integer",
+                      "example": 2025,
+                      "description": "Año más reciente entre todos los registros"
+                    },
+                    "ultima_actualizacion": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2026-06-12T14:39:32.555Z",
+                      "description": "Timestamp del último refresco automático de las vistas materializadas"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "KPIs globales del sistema",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/api/dashboard/por-region": {
+      "get": {
+        "description": "Devuelve un array con los 9 departamentos bolivianos, cada uno con sus métricas agregadas: cuántas empresas operan allí, cuántas organizaciones, cuántos proyectos y el desglose por área (conservación vs desarrollo). El campo `amazonico` indica si el departamento forma parte de la Amazonía boliviana.\n\n_Caché: 60 segundos._",
+        "operationId": "DashboardController_getPorRegion",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Array de 9 departamentos con métricas agregadas.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": [
+                    {
+                      "id_departamento": 1,
+                      "departamento": "Beni",
+                      "amazonico": true,
+                      "total_empresas": 2,
+                      "total_organizaciones": 3,
+                      "total_proyectos": 4,
+                      "proyectos_conservacion": 3,
+                      "proyectos_desarrollo": 1
+                    },
+                    {
+                      "id_departamento": 6,
+                      "departamento": "Oruro",
+                      "amazonico": false,
+                      "total_empresas": 0,
+                      "total_organizaciones": 0,
+                      "total_proyectos": 0,
+                      "proyectos_conservacion": 0,
+                      "proyectos_desarrollo": 0
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Métricas por departamento",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/api/dashboard/timeline": {
+      "get": {
+        "description": "Devuelve una serie temporal desde el año de registro más antiguo hasta el año actual. Cada elemento indica cuántos nuevos registros (empresas, organizaciones, proyectos) se crearon ese año. Útil para gráficos de tendencia.\n\n_Caché: 300 segundos._",
+        "operationId": "DashboardController_getTimeline",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Array de años ordenado ascendente con conteos de nuevos registros.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": [
+                    {
+                      "anio": 2000,
+                      "nuevas_empresas": 1,
+                      "nuevas_organizaciones": 0,
+                      "nuevos_proyectos": 0
+                    },
+                    {
+                      "anio": 2015,
+                      "nuevas_empresas": 0,
+                      "nuevas_organizaciones": 2,
+                      "nuevos_proyectos": 3
+                    },
+                    {
+                      "anio": 2024,
+                      "nuevas_empresas": 2,
+                      "nuevas_organizaciones": 1,
+                      "nuevos_proyectos": 5
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Evolución anual de registros",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/api/dashboard/salud": {
+      "get": {
+        "description": "Endpoint de health-check del dashboard. Devuelve el estado general, la fecha del último refresco de las vistas materializadas y los totales básicos. Úsalo para monitorear que las vistas están activas.\n\n_Caché: 30 segundos._",
+        "operationId": "DashboardController_getSalud",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Estado del sistema con última actualización y totales básicos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "ok",
+                    "ultima_actualizacion": "2026-06-12T14:39:32.555Z",
+                    "totales": {
+                      "empresas": 4,
+                      "organizaciones": 7,
+                      "proyectos": 10
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Estado operacional del sistema",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/api/dashboard/proyectos": {
+      "get": {
+        "description": "Devuelve un listado paginado de proyectos con todos sus datos denormalizados. Cada proyecto incluye su ubicación geográfica (departamentos, municipios, comunidades indígenas), tipos de ayuda social, actores locales involucrados y los datos específicos del área:\n\n- **Conservación** (area=1): `especies_animales` y `practicas_agricolas` están poblados. `areas_desarrollo` es `null`.\n- **Desarrollo de comunidades indígenas** (area=2): `areas_desarrollo` está poblado. `especies_animales` y `practicas_agricolas` son `null`.\n\nTodos los filtros son opcionales y se combinan con AND. Ejemplo con filtros múltiples:\n`GET /dashboard/proyectos?area=1&departamento=2&anio_desde=2020&activo=true&sort=nombre:asc`\n\n_Caché: 60 segundos (la clave de caché incluye todos los filtros aplicados)._",
+        "operationId": "DashboardController_getProyectos",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número de la página (empieza en 1). Si no se envía, se toma por defecto el valor 1.",
+            "schema": {
+              "default": 1,
+              "example": 2,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Cantidad de resultados por página. Si no se envía, se toma por defecto el valor 10.",
+            "schema": {
+              "maximum": 100,
+              "default": 10,
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "area",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por área: 1 = Conservación, 2 = Desarrollo de comunidades indígenas",
+            "schema": {
+              "example": 1,
+              "type": "number",
+              "enum": [
+                1,
+                2
+              ]
+            }
+          },
+          {
+            "name": "departamento",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por departamento (id_departamento)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "municipio",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por municipio (id_municipio)",
+            "schema": {
+              "example": 49,
+              "type": "number"
+            }
+          },
+          {
+            "name": "comunidad",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por comunidad indígena (id_comunidad)",
+            "schema": {
+              "example": 22,
+              "type": "number"
+            }
+          },
+          {
+            "name": "tipo",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por tipo de proyecto (id_tipo)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "ayuda",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por tipo de ayuda social (id_ayuda)",
+            "schema": {
+              "example": 2,
+              "type": "number"
+            }
+          },
+          {
+            "name": "actor",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por actor local involucrado (id_actor)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "activo",
+            "required": false,
+            "in": "query",
+            "description": "true = solo proyectos activos (sin fecha de fin), false = solo proyectos finalizados",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "anio_desde",
+            "required": false,
+            "in": "query",
+            "description": "Año de inicio mínimo (inclusive)",
+            "schema": {
+              "example": 2020,
+              "type": "number"
+            }
+          },
+          {
+            "name": "anio_hasta",
+            "required": false,
+            "in": "query",
+            "description": "Año de inicio máximo (inclusive)",
+            "schema": {
+              "example": 2025,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Búsqueda por nombre de proyecto",
+            "schema": {
+              "example": "jaguar",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Ordenamiento: campo:dirección. Campos válidos: nombre, anio_inicio, id_proyecto",
+            "schema": {
+              "example": "anio_inicio:desc",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta paginada con proyectos, metadatos de paginación y filtros aplicados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "id_proyecto": 1,
+                        "nombre": "Conservación de jaguar en el Beni",
+                        "descripcion": "Proyecto de monitoreo y conservación de jaguar (Panthera onca) en la llanura beniana.",
+                        "anio_inicio": 2021,
+                        "anio_fin": null,
+                        "activo": true,
+                        "id_area": 1,
+                        "area": "Conservacion",
+                        "id_tipo": 6,
+                        "tipo_proyecto": "Conservación de especies",
+                        "total_empresas_participantes": 2,
+                        "total_organizaciones_participantes": 1,
+                        "departamentos": [
+                          {
+                            "id": 2,
+                            "nombre": "Beni",
+                            "amazonico": true
+                          }
+                        ],
+                        "municipios": [
+                          {
+                            "id": 49,
+                            "nombre": "Trinidad"
+                          }
+                        ],
+                        "comunidades_indigenas": [
+                          {
+                            "id": 22,
+                            "nombre": "Moxeño"
+                          }
+                        ],
+                        "tipos_ayuda": [
+                          {
+                            "id": 2,
+                            "nombre": "Financiero"
+                          }
+                        ],
+                        "actores_locales": [
+                          {
+                            "id": 1,
+                            "nombre": "Gobiernos municipales"
+                          }
+                        ],
+                        "especies_animales": [
+                          {
+                            "id": 1,
+                            "nombre": "Jaguar"
+                          }
+                        ],
+                        "practicas_agricolas": [
+                          {
+                            "id": 2,
+                            "nombre": "Castaña"
+                          }
+                        ],
+                        "areas_desarrollo": null
+                      }
+                    ],
+                    "page": 1,
+                    "limit": 10,
+                    "total": 10,
+                    "pages": 1,
+                    "filtros_aplicados": {
+                      "area": 1,
+                      "departamento": 2,
+                      "activo": true,
+                      "page": 1,
+                      "limit": 10
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Listado filtrable de proyectos amazónicos",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/api/dashboard/proyectos/{id}": {
+      "get": {
+        "description": "Devuelve todos los datos de un proyecto por su ID. La estructura del objeto varía según el área:\n\n- **Conservación** (id_area=1): `especies_animales` y `practicas_agricolas` contienen arrays con los elementos vinculados. `areas_desarrollo` es siempre `null`.\n- **Desarrollo** (id_area=2): `areas_desarrollo` contiene el array de áreas de desarrollo comunitario. `especies_animales` y `practicas_agricolas` son siempre `null`.\n\nPara construir la vista de detalle del frontend, verificar `id_area` antes de renderizar las secciones específicas de cada área.\n\n_Caché: 120 segundos._",
+        "operationId": "DashboardController_getProyectoById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Objeto proyecto completo. El campo id_area determina qué sección de datos específicos está poblada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id_proyecto": 1,
+                    "nombre": "Conservación de jaguar en el Beni",
+                    "descripcion": "Proyecto de monitoreo y conservación de jaguar (Panthera onca) en la llanura beniana.",
+                    "anio_inicio": 2021,
+                    "anio_fin": null,
+                    "activo": true,
+                    "id_area": 1,
+                    "area": "Conservacion",
+                    "id_tipo": 6,
+                    "tipo_proyecto": "Conservación de especies",
+                    "total_empresas_participantes": 2,
+                    "total_organizaciones_participantes": 1,
+                    "departamentos": [
+                      {
+                        "id": 2,
+                        "nombre": "Beni",
+                        "amazonico": true
+                      }
+                    ],
+                    "municipios": [
+                      {
+                        "id": 49,
+                        "nombre": "Trinidad"
+                      }
+                    ],
+                    "comunidades_indigenas": [
+                      {
+                        "id": 22,
+                        "nombre": "Moxeño"
+                      }
+                    ],
+                    "tipos_ayuda": [
+                      {
+                        "id": 2,
+                        "nombre": "Financiero"
+                      }
+                    ],
+                    "actores_locales": [
+                      {
+                        "id": 1,
+                        "nombre": "Gobiernos municipales"
+                      }
+                    ],
+                    "especies_animales": [
+                      {
+                        "id": 1,
+                        "nombre": "Jaguar"
+                      },
+                      {
+                        "id": 2,
+                        "nombre": "Bufeo"
+                      }
+                    ],
+                    "practicas_agricolas": [
+                      {
+                        "id": 2,
+                        "nombre": "Castaña"
+                      }
+                    ],
+                    "areas_desarrollo": null
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Respuesta en caso de no encontrar un recurso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Detalle completo de un proyecto amazónico",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/api/dashboard/empresas": {
+      "get": {
+        "description": "Devuelve un listado paginado de empresas con todos sus datos relacionados denormalizados: forma jurídica, departamentos donde operan, motivos de apoyo, tipos de apoyo, ODS alineados, organizaciones vinculadas y conteo de proyectos en los que participan.\n\nTodos los filtros son opcionales y se combinan con AND. Ejemplo:\n`GET /dashboard/empresas?departamento=2&ods=13&sort=nombre:asc`\n\nPara obtener los valores válidos de los filtros de ID, usar primero `GET /dashboard/filtros-disponibles`.\n\n_Caché: 60 segundos (la clave incluye todos los filtros aplicados)._",
+        "operationId": "DashboardController_getEmpresas",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número de la página (empieza en 1). Si no se envía, se toma por defecto el valor 1.",
+            "schema": {
+              "default": 1,
+              "example": 2,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Cantidad de resultados por página. Si no se envía, se toma por defecto el valor 10.",
+            "schema": {
+              "maximum": 100,
+              "default": 10,
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "departamento",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por departamento (id_departamento)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "forma_juridica",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por forma jurídica (id_forma)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "motivo",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por motivo de apoyo (id_motivo)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "apoyo",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por tipo de apoyo (id_apoyo)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "ods",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por ODS alineado (id_ods)",
+            "schema": {
+              "example": 13,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Búsqueda por nombre de empresa",
+            "schema": {
+              "example": "Amazona",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Ordenamiento: campo:dirección. Campos válidos: nombre, anio_inicio_apoyo",
+            "schema": {
+              "example": "nombre:asc",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta paginada con empresas, metadatos de paginación y filtros aplicados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "id_empresa": 1,
+                        "nombre": "Empresa Amazónica S.R.L.",
+                        "anio_inicio_apoyo": 2018,
+                        "forma_juridica": {
+                          "id": 1,
+                          "nombre": "S.R.L"
+                        },
+                        "departamentos": [
+                          {
+                            "id": 2,
+                            "nombre": "Beni",
+                            "amazonico": true
+                          }
+                        ],
+                        "motivos_apoyo": [
+                          {
+                            "id": 1,
+                            "nombre": "Responsabilidad Social"
+                          }
+                        ],
+                        "tipos_apoyo": [
+                          {
+                            "id": 2,
+                            "nombre": "Financiero"
+                          }
+                        ],
+                        "ods_alineados": [
+                          {
+                            "id": 13,
+                            "nombre": "Accion por el clima"
+                          },
+                          {
+                            "id": 15,
+                            "nombre": "Vida de ecosistemas terrestres"
+                          }
+                        ],
+                        "organizaciones_vinculadas": [
+                          {
+                            "id": 1,
+                            "nombre": "ONG Amazónica",
+                            "es_nacional": true
+                          }
+                        ],
+                        "total_proyectos_participantes": 3,
+                        "proyectos_activos_participantes": 3
+                      }
+                    ],
+                    "page": 1,
+                    "limit": 10,
+                    "total": 4,
+                    "pages": 1,
+                    "filtros_aplicados": {
+                      "departamento": 2,
+                      "ods": 13,
+                      "page": 1,
+                      "limit": 10
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Listado filtrable de empresas",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/api/dashboard/empresas/{id}": {
+      "get": {
+        "description": "Devuelve todos los datos de una empresa por su ID: forma jurídica, departamentos donde opera, motivos de apoyo, tipos de apoyo, ODS alineados, organizaciones con las que está vinculada y conteo de proyectos en los que participa.\n\n_Caché: 120 segundos._",
+        "operationId": "DashboardController_getEmpresaById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Objeto empresa completo con todos sus datos relacionados como arrays JSON.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id_empresa": 1,
+                    "nombre": "Empresa Amazónica S.R.L.",
+                    "anio_inicio_apoyo": 2018,
+                    "forma_juridica": {
+                      "id": 1,
+                      "nombre": "S.R.L"
+                    },
+                    "departamentos": [
+                      {
+                        "id": 2,
+                        "nombre": "Beni",
+                        "amazonico": true
+                      },
+                      {
+                        "id": 1,
+                        "nombre": "Pando",
+                        "amazonico": true
+                      }
+                    ],
+                    "motivos_apoyo": [
+                      {
+                        "id": 1,
+                        "nombre": "Responsabilidad Social"
+                      },
+                      {
+                        "id": 3,
+                        "nombre": "Imagen institucional"
+                      }
+                    ],
+                    "tipos_apoyo": [
+                      {
+                        "id": 2,
+                        "nombre": "Financiero"
+                      },
+                      {
+                        "id": 3,
+                        "nombre": "Logistico"
+                      }
+                    ],
+                    "ods_alineados": [
+                      {
+                        "id": 13,
+                        "nombre": "Accion por el clima"
+                      },
+                      {
+                        "id": 15,
+                        "nombre": "Vida de ecosistemas terrestres"
+                      }
+                    ],
+                    "organizaciones_vinculadas": [
+                      {
+                        "id": 1,
+                        "nombre": "Fundación Amazónica",
+                        "es_nacional": true
+                      }
+                    ],
+                    "total_proyectos_participantes": 3,
+                    "proyectos_activos_participantes": 3
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Respuesta en caso de no encontrar un recurso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Detalle completo de una empresa",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/api/dashboard/por-tipo": {
+      "get": {
+        "description": "Devuelve una fila por cada combinación (área, tipo de proyecto) que tenga datos reales. Incluye totales de proyectos activos, finalizados, empresas y organizaciones participantes y departamentos cubiertos. Útil para gráficos de distribución por categoría.\n\nFiltros opcionales: `area` (1=Conservación, 2=Desarrollo) y `departamento`.\n\n_Caché: 60 segundos._",
+        "operationId": "DashboardController_getPorTipo",
+        "parameters": [
+          {
+            "name": "departamento",
+            "required": false,
+            "in": "query",
+            "description": "id_departamento (obtener valores en /dashboard/filtros-disponibles)",
+            "schema": {
+              "example": 2,
+              "type": "number"
+            }
+          },
+          {
+            "name": "area",
+            "required": false,
+            "in": "query",
+            "description": "1 = Conservación  |  2 = Desarrollo de comunidades indígenas",
+            "schema": {
+              "enum": [
+                1,
+                2
+              ],
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array de combinaciones (área, tipo) con sus métricas.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": [
+                    {
+                      "id_area": 1,
+                      "area": "Conservacion",
+                      "id_tipo": 6,
+                      "tipo_proyecto": "Conservación de especies",
+                      "total_proyectos": 3,
+                      "proyectos_activos": 3,
+                      "proyectos_finalizados": 0,
+                      "empresas_participantes": 2,
+                      "organizaciones_participantes": 1,
+                      "departamentos_cubiertos": 2
+                    },
+                    {
+                      "id_area": 2,
+                      "area": "Desarrollo de comunidades indigenas",
+                      "id_tipo": 4,
+                      "tipo_proyecto": "Educación",
+                      "total_proyectos": 2,
+                      "proyectos_activos": 2,
+                      "proyectos_finalizados": 0,
+                      "empresas_participantes": 1,
+                      "organizaciones_participantes": 2,
+                      "departamentos_cubiertos": 1
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Métricas por tipo y área de proyecto",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/api/dashboard/filtros-disponibles": {
+      "get": {
+        "description": "Devuelve todos los catálogos necesarios para construir los selectores dinámicos del dashboard. Debe ser el **primer endpoint que llame el frontend** antes de construir cualquier filtro.\n\n**Correspondencia de campos con parámetros de filtro:**\n- `departamentos` → parámetro `departamento` en `/proyectos` y `/empresas`\n- `tipos_proyecto` → parámetro `tipo` en `/proyectos`\n- `areas_proyecto` → parámetro `area` en `/proyectos` y `/por-tipo`\n- `tipos_ayuda` → parámetro `ayuda` en `/proyectos`\n- `actores_municipales` → parámetro `actor` en `/proyectos`\n- `comunidades_indigenas` → parámetro `comunidad` en `/proyectos`\n- `formas_juridicas` → parámetro `forma_juridica` en `/empresas`\n- `motivos_apoyo` → parámetro `motivo` en `/empresas`\n- `tipos_apoyo` → parámetro `apoyo` en `/empresas`\n- `ods` → parámetro `ods` en `/empresas`\n- `rango_anios` → parámetros `anio_desde` y `anio_hasta` en `/proyectos`\n\n_Caché: 300 segundos._",
+        "operationId": "DashboardController_getFiltrosDisponibles",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Objeto con todas las dimensiones de filtro y el rango de años disponibles.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "departamentos": [
+                      {
+                        "id": 1,
+                        "nombre": "Pando",
+                        "amazonico": true
+                      },
+                      {
+                        "id": 2,
+                        "nombre": "Beni",
+                        "amazonico": true
+                      }
+                    ],
+                    "tipos_proyecto": [
+                      {
+                        "id": 1,
+                        "nombre": "Áreas protegidas"
+                      },
+                      {
+                        "id": 6,
+                        "nombre": "Conservación de especies"
+                      }
+                    ],
+                    "areas_proyecto": [
+                      {
+                        "id": 1,
+                        "nombre": "Conservacion"
+                      },
+                      {
+                        "id": 2,
+                        "nombre": "Desarrollo de comunidades indigenas"
+                      }
+                    ],
+                    "tipos_ayuda": [
+                      {
+                        "id": 2,
+                        "nombre": "Financiero"
+                      },
+                      {
+                        "id": 3,
+                        "nombre": "Capacitaciones"
+                      }
+                    ],
+                    "actores_municipales": [
+                      {
+                        "id": 1,
+                        "nombre": "Gobiernos municipales"
+                      },
+                      {
+                        "id": 5,
+                        "nombre": "Actores privados"
+                      }
+                    ],
+                    "comunidades_indigenas": [
+                      {
+                        "id": 22,
+                        "nombre": "Moxeño"
+                      },
+                      {
+                        "id": 27,
+                        "nombre": "Tsimane"
+                      }
+                    ],
+                    "formas_juridicas": [
+                      {
+                        "id": 1,
+                        "nombre": "S.R.L"
+                      },
+                      {
+                        "id": 2,
+                        "nombre": "S.A"
+                      }
+                    ],
+                    "motivos_apoyo": [
+                      {
+                        "id": 1,
+                        "nombre": "Responsabilidad Social"
+                      },
+                      {
+                        "id": 2,
+                        "nombre": "Interés económico-productivo"
+                      }
+                    ],
+                    "tipos_apoyo": [
+                      {
+                        "id": 2,
+                        "nombre": "Financiero"
+                      },
+                      {
+                        "id": 4,
+                        "nombre": "Talento Humano"
+                      }
+                    ],
+                    "ods": [
+                      {
+                        "id": 13,
+                        "nombre": "Accion por el clima"
+                      },
+                      {
+                        "id": 15,
+                        "nombre": "Vida de ecosistemas terrestres"
+                      }
+                    ],
+                    "tipos_organizacion": [
+                      {
+                        "id": 3,
+                        "nombre": "ONG/Fundación nacional"
+                      },
+                      {
+                        "id": 4,
+                        "nombre": "ONG/Fundación internacional"
+                      }
+                    ],
+                    "rango_anios": {
+                      "desde": 2000,
+                      "hasta": 2026
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado o no proporcionado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Valores válidos para todos los filtros del dashboard",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/api/health": {
+      "get": {
+        "description": "🔓 Público. Indica que el proceso está vivo y respondiendo. No consulta dependencias. Usar como `healthCheckPath` en Render/Railway.",
+        "operationId": "HealthController_liveness",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "El servicio está corriendo."
+          }
+        },
+        "summary": "Liveness probe",
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/api/health/ready": {
+      "get": {
+        "description": "🔓 Público. Verifica dependencias: base de datos (obligatoria) y microservicio GeoRef (opcional — su caída no marca el servicio como no listo, solo se reporta `degraded`). Devuelve `503` solo si la base de datos no responde.",
+        "operationId": "HealthController_readiness",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "BD operativa (georef puede estar degradado)."
+          },
+          "503": {
+            "description": "La base de datos no responde."
+          }
+        },
+        "summary": "Readiness probe",
+        "tags": [
+          "Health"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Kaa Iya — Backend API",
+    "description": "API REST de la plataforma **Kaa Iya** (\"Espíritu del Bosque\"), para gestionar y visibilizar iniciativas sostenibles en la Amazonía boliviana.\n\n**Base URL:** `/api`\n\n**Autenticación:** Bearer JWT. Obtén tu token en `POST /auth/login` e inclúyelo en todas las peticiones protegidas: `Authorization: Bearer <token>`",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Equipo Kaa Iya — UCB San Pablo",
+      "url": "https://www.ucb.edu.bo",
+      "email": "catedra.amazonia@ucb.edu.bo"
+    },
+    "license": {
+      "name": "UNLICENSED",
+      "url": ""
+    }
+  },
+  "tags": [
+    {
+      "name": "Health",
+      "description": "Probes de estado del servicio: `GET /health` (liveness) y `GET /health/ready` (readiness: BD + GeoRef)."
+    },
+    {
+      "name": "Auth — Público",
+      "description": "Endpoints accesibles sin autenticación.\n\nUsar para iniciar sesión (`POST /auth/login`) o solicitar acceso como investigador (`POST /auth/solicitar-acceso`).\n\nEl token JWT devuelto en `/auth/login` debe incluirse en todas las peticiones posteriores como:\n`Authorization: Bearer <token>`\n\n**Rate limiting:** los endpoints de autenticación tienen límite por IP para prevenir ataques de fuerza bruta."
+    },
+    {
+      "name": "Auth — Usuario Autenticado",
+      "description": "Endpoints disponibles para cualquier usuario con sesión activa, independientemente del rol.\n\n**Requieren header:** `Authorization: Bearer <token>`\n\nDevuelven `401` si el token está ausente, expirado o es inválido.\n\n**Roles que pueden acceder:** Superadmin, Admin, Investigador."
+    },
+    {
+      "name": "Auth — Admin",
+      "description": "Endpoints de gestión exclusivos para administradores (rol Admin o Superadmin).\n\nDevuelven `403` para cualquier rol que no sea Admin o Superadmin.\n\n⚠️ `DELETE /auth/usuarios/:id` requiere rol **Superadmin** exclusivamente."
+    },
+    {
+      "name": "Catálogos",
+      "description": "Datos maestros para construir los formularios (áreas, apoyos, ayudas, motivos, ODS, tipos, etc.). Los endpoints `/forms` devuelven solo entradas predefinidas (`esPropio=false`)."
+    },
+    {
+      "name": "Dashboard",
+      "description": "Endpoints de solo lectura con métricas agregadas y listados filtrados de proyectos amazónicos.\n\n**Flujo recomendado:** `GET /dashboard/filtros-disponibles` → `GET /dashboard/resumen` → `GET /dashboard/proyectos` (con filtros) → gráficos con `/por-region`, `/por-tipo`, `/timeline`.\n\n**Caché:** todos los endpoints tienen caché en memoria; los datos se refrescan automáticamente vía triggers en PostgreSQL."
+    }
+  ],
+  "servers": [
+    {
+      "url": "http://localhost:3333",
+      "description": "Local development"
+    },
+    {
+      "url": "https://kaaiya-backend.onrender.com",
+      "description": "Producción (Render/Railway — ajustar al dominio real)"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "access-token": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "description": "Ingresa el token JWT obtenido de POST /auth/login"
+      }
+    },
+    "schemas": {
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Correo electrónico del usuario",
+            "example": "admin@kaaiya.bo"
+          },
+          "password": {
+            "type": "string",
+            "description": "Contraseña del usuario",
+            "example": "MiPassword1!"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "TokenResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "Token JWT de acceso",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "tipo": {
+            "type": "string",
+            "description": "Tipo de token",
+            "example": "Bearer"
+          },
+          "expiresIn": {
+            "type": "string",
+            "description": "Tiempo de expiración del token",
+            "example": "24h"
+          }
+        },
+        "required": [
+          "accessToken",
+          "tipo",
+          "expiresIn"
+        ]
+      },
+      "ValidationExceptionDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "description": "Lista de errores a corregir",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "error": {
+            "type": "string",
+            "description": "Nombre del error"
+          },
+          "statusCode": {
+            "type": "number",
+            "description": "Codigo de error"
+          }
+        },
+        "required": [
+          "message",
+          "error",
+          "statusCode"
+        ]
+      },
+      "CommonResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Mensaje de respuesta"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "UsuarioResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "email": {
+            "type": "string",
+            "example": "admin@kaaiya.bo"
+          },
+          "nombre": {
+            "type": "string",
+            "example": "Juan Pérez"
+          },
+          "rol": {
+            "type": "number",
+            "enum": [
+              1,
+              2,
+              3
+            ],
+            "example": 2
+          },
+          "activo": {
+            "type": "boolean",
+            "example": true
+          },
+          "fechaExpiracion": {
+            "type": "string",
+            "example": "2027-06-30T23:59:59.000Z",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-06-11T10:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2026-06-11T10:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "nombre",
+          "rol",
+          "activo",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdatePerfilPropioDto": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "description": "Nombre completo del usuario. Único campo editable desde el perfil propio.",
+            "example": "María García",
+            "minLength": 2,
+            "maxLength": 150
+          }
+        }
+      },
+      "ChangePasswordDto": {
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string",
+            "description": "Contraseña actual del usuario",
+            "example": "MiPasswordActual1!"
+          },
+          "newPassword": {
+            "type": "string",
+            "description": "Nueva contraseña (mínimo 8 caracteres, debe incluir mayúscula, número y símbolo)",
+            "example": "NuevoPassword2!"
+          }
+        },
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ]
+      },
+      "RegisterUsuarioDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Correo electrónico del nuevo usuario",
+            "example": "nuevo.admin@kaaiya.bo"
+          },
+          "nombre": {
+            "type": "string",
+            "description": "Nombre completo del usuario",
+            "example": "Juan Pérez"
+          },
+          "password": {
+            "type": "string",
+            "description": "Contraseña inicial del usuario",
+            "example": "Password123!"
+          },
+          "rol": {
+            "type": "number",
+            "description": "Rol asignado al usuario. Admin solo puede crear Admin (2). Superadmin puede crear cualquier rol.",
+            "enum": [
+              1,
+              2,
+              3
+            ],
+            "example": 2
+          }
+        },
+        "required": [
+          "email",
+          "nombre",
+          "password",
+          "rol"
+        ]
+      },
+      "PaginationResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Array de elementos de la página actual",
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "page": {
+            "type": "number",
+            "description": "Número de la página actual",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Cantidad de elementos por página",
+            "example": 10
+          },
+          "pages": {
+            "type": "number",
+            "description": "Cantidad total de páginas disponibles",
+            "example": 5
+          },
+          "total": {
+            "type": "number",
+            "description": "Cantidad total de registros encontrados",
+            "example": 42
+          },
+          "has_next": {
+            "type": "boolean",
+            "description": "Indica si existe una página siguiente",
+            "example": true
+          },
+          "has_prev": {
+            "type": "boolean",
+            "description": "Indica si existe una página anterior",
+            "example": false
+          }
+        },
+        "required": [
+          "data",
+          "page",
+          "limit",
+          "pages",
+          "total",
+          "has_next",
+          "has_prev"
+        ]
+      },
+      "UpdateUsuarioDto": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "description": "Nombre completo del usuario",
+            "example": "Juan Pérez"
+          },
+          "activo": {
+            "type": "boolean",
+            "description": "Estado activo del usuario",
+            "example": true
+          },
+          "rol": {
+            "type": "number",
+            "description": "Rol del usuario. Solo Superadmin puede asignar el rol Superadmin.",
+            "enum": [
+              1,
+              2,
+              3
+            ],
+            "example": 2
+          }
+        }
+      },
+      "CrearSolicitudDto": {
+        "type": "object",
+        "properties": {
+          "nombreSolicitante": {
+            "type": "string",
+            "description": "Nombre completo del solicitante",
+            "example": "María García"
+          },
+          "emailSolicitante": {
+            "type": "string",
+            "description": "Correo electrónico del solicitante",
+            "example": "maria.garcia@universidad.bo"
+          },
+          "institucion": {
+            "type": "string",
+            "description": "Institución a la que pertenece el solicitante",
+            "example": "Universidad Mayor de San Andrés"
+          },
+          "proposito": {
+            "type": "string",
+            "description": "Propósito de la investigación (mínimo 20 caracteres)",
+            "example": "Investigación sobre biodiversidad amazónica para tesis doctoral en Biología."
+          }
+        },
+        "required": [
+          "nombreSolicitante",
+          "emailSolicitante",
+          "institucion",
+          "proposito"
+        ]
+      },
+      "AprobarSolicitudDto": {
+        "type": "object",
+        "properties": {
+          "fechaExpiracionAcceso": {
+            "type": "string",
+            "description": "Fecha y hora de expiración del acceso del investigador (ISO 8601)",
+            "example": "2027-06-30T23:59:59Z"
+          },
+          "passwordTemporal": {
+            "type": "string",
+            "description": "Contraseña temporal asignada al investigador (mínimo 8 caracteres)",
+            "example": "TempPass2024!"
+          }
+        },
+        "required": [
+          "fechaExpiracionAcceso",
+          "passwordTemporal"
+        ]
+      },
+      "RechazarSolicitudDto": {
+        "type": "object",
+        "properties": {
+          "notaRechazo": {
+            "type": "string",
+            "description": "Nota explicando el motivo del rechazo",
+            "example": "El propósito no está alineado con los objetivos de la plataforma."
+          }
+        }
+      },
+      "TipoOrganizacionFomsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Id del tipo de organizaciones"
+          },
+          "nombre": {
+            "type": "string",
+            "description": "Nombre de tipo de organizacion"
+          }
+        },
+        "required": [
+          "id",
+          "nombre"
+        ]
+      },
+      "FindAllTiposOrganizacionesFormsDto": {
+        "type": "object",
+        "properties": {
+          "tiposOrganizaciones": {
+            "description": "Llista de tipos de organizaciones",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TipoOrganizacionFomsDto"
+            }
+          }
+        },
+        "required": [
+          "tiposOrganizaciones"
+        ]
+      },
+      "AreaDesarrolloDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Id del area de desarrollo"
+          },
+          "nombre": {
+            "type": "string",
+            "description": "Nombre de area de desarrollo"
+          }
+        },
+        "required": [
+          "id",
+          "nombre"
+        ]
+      },
+      "FindAllAreaDesarrolloDto": {
+        "type": "object",
+        "properties": {
+          "areasDesarrollo": {
+            "description": "lista de areas de desarrollo",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AreaDesarrolloDto"
+            }
+          }
+        },
+        "required": [
+          "areasDesarrollo"
+        ]
+      },
+      "PracticaAgricolaFormsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Id de la practica agricola"
+          },
+          "nombre": {
+            "type": "string",
+            "description": "nombre de la practica agricola"
+          }
+        },
+        "required": [
+          "id",
+          "nombre"
+        ]
+      },
+      "FindAllPracticasAgricolasFormsDto": {
+        "type": "object",
+        "properties": {
+          "practicasAgricolas": {
+            "description": "Lista de practicas agricolas",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PracticaAgricolaFormsDto"
+            }
+          }
+        },
+        "required": [
+          "practicasAgricolas"
+        ]
+      },
+      "EspecieAnimalFormsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Id de la especie animal"
+          },
+          "nombre": {
+            "type": "string",
+            "description": "NOmbre de la especie animal"
+          }
+        },
+        "required": [
+          "id",
+          "nombre"
+        ]
+      },
+      "FindAllEspeciesAnimalesFormsDto": {
+        "type": "object",
+        "properties": {
+          "especiesAnimales": {
+            "description": "lista de especies agricolas",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EspecieAnimalFormsDto"
+            }
+          }
+        },
+        "required": [
+          "especiesAnimales"
+        ]
+      },
+      "AyudaFormsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Id de la ayuda"
+          },
+          "nombre": {
+            "type": "string",
+            "description": "Nombre de la ayuda"
+          }
+        },
+        "required": [
+          "id",
+          "nombre"
+        ]
+      },
+      "FindAllAyudasFormsDto": {
+        "type": "object",
+        "properties": {
+          "ayudas": {
+            "description": "Lista de ayudas",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AyudaFormsDto"
+            }
+          }
+        },
+        "required": [
+          "ayudas"
+        ]
+      },
+      "ActorMunicipalFormsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Id del actor"
+          },
+          "nombre": {
+            "type": "string",
+            "description": "Nombre del actor"
+          }
+        },
+        "required": [
+          "id",
+          "nombre"
+        ]
+      },
+      "FindAllActoresMunicipalesFormsDto": {
+        "type": "object",
+        "properties": {
+          "actoresMunicipales": {
+            "description": "Lista de actores",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActorMunicipalFormsDto"
+            }
+          }
+        },
+        "required": [
+          "actoresMunicipales"
+        ]
+      },
+      "TipoProyectoFormsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Id del tipo de proyecto"
+          },
+          "nombre": {
+            "type": "string",
+            "description": "Nombre del tipo de proyecto"
+          }
+        },
+        "required": [
+          "id",
+          "nombre"
+        ]
+      },
+      "FindAllTiposProyectosFormsDto": {
+        "type": "object",
+        "properties": {
+          "tiposProyectos": {
+            "description": "Lista de tipos de proyectos",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TipoProyectoFormsDto"
+            }
+          }
+        },
+        "required": [
+          "tiposProyectos"
+        ]
+      },
+      "AreaDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Id del area de proyecto"
+          },
+          "nombre": {
+            "type": "string",
+            "description": "Nombre del area"
+          }
+        },
+        "required": [
+          "id",
+          "nombre"
+        ]
+      },
+      "FindAllAreasDto": {
+        "type": "object",
+        "properties": {
+          "areas": {
+            "description": "Lista de areas",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AreaDto"
+            }
+          }
+        },
+        "required": [
+          "areas"
+        ]
+      },
+      "MotivoFormsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Id del motivo"
+          },
+          "nombre": {
+            "type": "string",
+            "description": "Nombre del motivo"
+          }
+        },
+        "required": [
+          "id",
+          "nombre"
+        ]
+      },
+      "findAllMotivosFormsDto": {
+        "type": "object",
+        "properties": {
+          "motivos": {
+            "description": "Lista de motivos",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MotivoFormsDto"
+            }
+          }
+        },
+        "required": [
+          "motivos"
+        ]
+      },
+      "ApoyoFormsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Id del apoyo"
+          },
+          "nombre": {
+            "type": "string",
+            "description": "Nombre del apoyo"
+          }
+        },
+        "required": [
+          "id",
+          "nombre"
+        ]
+      },
+      "FindAllApoyoFormsDto": {
+        "type": "object",
+        "properties": {
+          "apoyos": {
+            "description": "Lista de apoyos",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApoyoFormsDto"
+            }
+          }
+        },
+        "required": [
+          "apoyos"
+        ]
+      },
+      "OdsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Id del ods"
+          },
+          "nombre": {
+            "type": "string",
+            "description": "Nombre del ods"
+          }
+        },
+        "required": [
+          "id",
+          "nombre"
+        ]
+      },
+      "FindAllOdsDto": {
+        "type": "object",
+        "properties": {
+          "ods": {
+            "description": "Lista de ods",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OdsDto"
+            }
+          }
+        },
+        "required": [
+          "ods"
+        ]
+      },
+      "FormaJuridicaFormsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Id de la forma juridica"
+          },
+          "nombre": {
+            "type": "string",
+            "description": "Nombre de la forma juridica"
+          }
+        },
+        "required": [
+          "id",
+          "nombre"
+        ]
+      },
+      "FindAllFormasJuridicasFormsDto": {
+        "type": "object",
+        "properties": {
+          "formasJuridicas": {
+            "description": "Lista de formas juridicas",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FormaJuridicaFormsDto"
+            }
+          }
+        },
+        "required": [
+          "formasJuridicas"
+        ]
+      },
+      "RegisterFormaJuridicaDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "ID de la forma jurídica seleccionada (si se elige una existente)",
+            "nullable": true
+          },
+          "otro": {
+            "type": "string",
+            "description": "Otra forma jurídica si no se selecciona una existente",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "otro"
+        ]
+      },
+      "RegisterApoyosDto": {
+        "type": "object",
+        "properties": {
+          "seleccionados": {
+            "description": "IDs de los apoyos seleccionados por la empresa",
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "otros": {
+            "description": "Otros apoyos escritos por la empresa",
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "seleccionados",
+          "otros"
+        ]
+      },
+      "RegisterMotivosApoyosDto": {
+        "type": "object",
+        "properties": {
+          "seleccionados": {
+            "description": "Ids de los motivos seleccionados por la empresa",
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "otros": {
+            "description": "Otros motivos escritos por la empresa",
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "seleccionados",
+          "otros"
+        ]
+      },
+      "RegisterTipoDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "ID del tipo seleccionado (si se elige uno existente)",
+            "nullable": true
+          },
+          "otros": {
+            "type": "string",
+            "description": "Otro tipo de proyecto (si no se selecciona un ID existente)",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "otros"
+        ]
+      },
+      "RegisterMunicipioTrabajoDto": {
+        "type": "object",
+        "properties": {
+          "idMunicipio": {
+            "type": "number",
+            "description": "ID del municipio donde se ejecuta el proyecto",
+            "nullable": false
+          },
+          "idComunidadIndigena": {
+            "type": "number",
+            "description": "ID de la comunidad indígena dentro del municipio (opcional)",
+            "nullable": true
+          }
+        },
+        "required": [
+          "idMunicipio",
+          "idComunidadIndigena"
+        ]
+      },
+      "RegisterAyudasDto": {
+        "type": "object",
+        "properties": {
+          "seleccionados": {
+            "description": "IDs de los tipos de ayuda seleccionados",
+            "nullable": false,
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "otros": {
+            "description": "Otros tipos de ayuda proporcionados por la empresa",
+            "nullable": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "seleccionados",
+          "otros"
+        ]
+      },
+      "RegisterActoresDto": {
+        "type": "object",
+        "properties": {
+          "seleccionados": {
+            "description": "IDs de los actores locales seleccionados",
+            "nullable": false,
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "otros": {
+            "description": "Otros actores locales proporcionados",
+            "nullable": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "seleccionados",
+          "otros"
+        ]
+      },
+      "RegisterConservacionEspeciesDto": {
+        "type": "object",
+        "properties": {
+          "seleccionados": {
+            "description": "IDs de especies bandera seleccionadas",
+            "nullable": false,
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "otros": {
+            "description": "Otros nombres de especies bandera",
+            "nullable": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "seleccionados",
+          "otros"
+        ]
+      },
+      "RegisterConservacionPracticasDto": {
+        "type": "object",
+        "properties": {
+          "seleccionados": {
+            "description": "IDs de prácticas agrícolas seleccionadas",
+            "nullable": false,
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "otros": {
+            "description": "Otros nombres de prácticas agrícolas",
+            "nullable": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "seleccionados",
+          "otros"
+        ]
+      },
+      "RegisterConservacionDto": {
+        "type": "object",
+        "properties": {
+          "especies": {
+            "description": "Especies bandera seleccionadas en el proyecto de conservación",
+            "nullable": false,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RegisterConservacionEspeciesDto"
+              }
+            ]
+          },
+          "practicasAgricolas": {
+            "description": "Prácticas agrícolas seleccionadas en el proyecto de conservación",
+            "nullable": false,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RegisterConservacionPracticasDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "especies",
+          "practicasAgricolas"
+        ]
+      },
+      "RegisterDesarrolloDto": {
+        "type": "object",
+        "properties": {
+          "seleccionados": {
+            "description": "IDs de las áreas de desarrollo seleccionadas en comunidades indígenas",
+            "nullable": false,
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "otros": {
+            "description": "Otros nombres de áreas de desarrollo en comunidades indígenas",
+            "nullable": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "seleccionados",
+          "otros"
+        ]
+      },
+      "RegisterProyectosDto": {
+        "type": "object",
+        "properties": {
+          "fechaInicio": {
+            "type": "string",
+            "description": "Fecha de inicio del proyecto (formato dd-mm-yyyy)",
+            "example": "27-10-2025",
+            "nullable": false
+          },
+          "fechaFin": {
+            "type": "string",
+            "description": "Fecha de finalización del proyecto (formato dd-mm-yyyy, opcional)",
+            "example": "30-12-2025",
+            "nullable": true
+          },
+          "nombre": {
+            "type": "string",
+            "description": "Nombre del proyecto"
+          },
+          "descripcion": {
+            "type": "string",
+            "description": "Descripción del proyecto",
+            "nullable": true
+          },
+          "anioInicio": {
+            "type": "number",
+            "description": "Año de inicio del proyecto"
+          },
+          "anioFin": {
+            "type": "number",
+            "description": "Año de fin del proyecto",
+            "nullable": true
+          },
+          "tipo": {
+            "description": "Tipo del proyecto",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RegisterTipoDto"
+              }
+            ]
+          },
+          "departamento": {
+            "type": "number",
+            "description": "Departamento en el que se ejecuta el proyecto"
+          },
+          "municipiosTrabajo": {
+            "description": "Municipios donde se ejecuta el proyecto",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RegisterMunicipioTrabajoDto"
+            }
+          },
+          "ayudas": {
+            "description": "Tipos de ayuda asociados al proyecto",
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RegisterAyudasDto"
+              }
+            ]
+          },
+          "actores": {
+            "description": "Actores locales asociados al proyecto",
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RegisterActoresDto"
+              }
+            ]
+          },
+          "area": {
+            "type": "number",
+            "description": "Área del proyecto",
+            "enum": [
+              3
+            ]
+          },
+          "conservacion": {
+            "description": "Datos de conservación (solo si area=conservacion)",
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RegisterConservacionDto"
+              }
+            ]
+          },
+          "desarrollo": {
+            "description": "Datos de desarrollo (solo si area=desarrollo)",
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RegisterDesarrolloDto"
+              }
+            ]
+          },
+          "lat": {
+            "type": "number",
+            "description": "Latitud WGS84 (rango Bolivia: -23.0 a -9.0)",
+            "example": -17.7833
+          },
+          "lng": {
+            "type": "number",
+            "description": "Longitud WGS84 (rango Bolivia: -70.0 a -57.0)",
+            "example": -63.1821
+          }
+        },
+        "required": [
+          "fechaInicio",
+          "fechaFin",
+          "nombre",
+          "descripcion",
+          "anioInicio",
+          "anioFin",
+          "tipo",
+          "departamento",
+          "municipiosTrabajo",
+          "ayudas",
+          "actores",
+          "area",
+          "conservacion",
+          "desarrollo"
+        ]
+      },
+      "LinkProyectoDto": {
+        "type": "object",
+        "properties": {
+          "idProyecto": {
+            "type": "number",
+            "description": "ID del proyecto existente al que se desea vincular",
+            "nullable": false
+          },
+          "fechaInicio": {
+            "type": "string",
+            "description": "Fecha de inicio de participación en el proyecto (formato dd-MM-yyyy)",
+            "example": "01-01-2024",
+            "nullable": false
+          },
+          "fechaFin": {
+            "type": "string",
+            "description": "Fecha de fin de participación en el proyecto (formato dd-MM-yyyy, opcional)",
+            "example": "31-12-2024",
+            "nullable": true
+          }
+        },
+        "required": [
+          "idProyecto",
+          "fechaInicio",
+          "fechaFin"
+        ]
+      },
+      "RegisterFormularioEmpresaDto": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "description": "Nombre de la empresa",
+            "nullable": false
+          },
+          "formaJuridica": {
+            "description": "Forma juridica",
+            "nullable": false,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RegisterFormaJuridicaDto"
+              }
+            ]
+          },
+          "departamentos": {
+            "description": "Ids de departamentos",
+            "nullable": false,
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "anioInicioApoyo": {
+            "type": "number",
+            "description": "Anio en que se inicio de apoyo a la amazonia",
+            "nullable": false
+          },
+          "apoyos": {
+            "description": "Apoyos de la empresa",
+            "nullable": false,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RegisterApoyosDto"
+              }
+            ]
+          },
+          "organizaciones": {
+            "description": "Organizaciones con la que tiene alianza",
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "motivosApoyo": {
+            "description": "Motivos de una empresa para apoyar a una empresa",
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RegisterMotivosApoyosDto"
+              }
+            ]
+          },
+          "ods": {
+            "description": "Ids del los ods de la empresa",
+            "nullable": false,
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "proyectos": {
+            "description": "Proyectos asociados a la empresa",
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RegisterProyectosDto"
+            }
+          },
+          "proyectosExistentes": {
+            "description": "Proyectos existentes a los que se vincula la empresa (sin crear nuevos)",
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LinkProyectoDto"
+            }
+          }
+        },
+        "required": [
+          "nombre",
+          "formaJuridica",
+          "departamentos",
+          "anioInicioApoyo",
+          "apoyos",
+          "organizaciones",
+          "motivosApoyo",
+          "ods",
+          "proyectos",
+          "proyectosExistentes"
+        ]
+      },
+      "RegisterFormularioOrganizacionDto": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "description": "Nombre de la organización",
+            "nullable": false
+          },
+          "idDepartamento": {
+            "type": "number",
+            "description": "ID del departamento que es sede central",
+            "nullable": false
+          },
+          "esNacional": {
+            "type": "boolean",
+            "description": "Indica si es nacional (true) o internacional (false)",
+            "nullable": false
+          },
+          "tipo": {
+            "description": "Tipo de organización",
+            "nullable": false,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RegisterTipoDto"
+              }
+            ]
+          },
+          "anioInicioTrabajo": {
+            "type": "number",
+            "description": "Año en que se inició el trabajo de la organización",
+            "nullable": false
+          },
+          "proyectos": {
+            "description": "Proyectos asociados a la organización",
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RegisterProyectosDto"
+            }
+          },
+          "proyectosExistentes": {
+            "description": "Proyectos existentes a los que se vincula la organización (sin crear nuevos)",
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LinkProyectoDto"
+            }
+          }
+        },
+        "required": [
+          "nombre",
+          "idDepartamento",
+          "esNacional",
+          "tipo",
+          "anioInicioTrabajo",
+          "proyectos",
+          "proyectosExistentes"
+        ]
+      }
+    }
+  }
+}

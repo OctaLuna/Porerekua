@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Porerekua</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://aistudiocdn.com/react@^19.1.1",
+        "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+        "react/": "https://aistudiocdn.com/react@^19.1.1/",
+        "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.3",
+        "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.22",
+        "@tanstack/react-query": "https://aistudiocdn.com/@tanstack/react-query@^5.90.2"
+      }
+    }
+    </script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              serif: ['Lora', 'serif'],
+            },
+            colors: {
+              /* Core palette (tetradic + neutral) */
+              /* Verde Hoja: #7A9A3E (rgb(122,154,62)) - Primario/Confianza */
+              'verde-brote': '#7A9A3E',
+              'verde-hoja': '#7A9A3E',
+              
+              /* Azul Cobalto: #007BFF (rgb(0,123,255)) - Primario/Estabilidad */
+              'azul-cobalto': '#007BFF',
+
+              /* Amarillo Sol: #F0D43A (rgb(240,212,58)) - Acento/Energía */
+              'amarillo-sol': '#F0D43A',
+
+              /* Naranja Vibrante: #F39C12 (rgb(243,156,18)) - Acento/Acción (CTA) */
+              'terracota': '#F39C12',
+              'naranja-vibrante': '#F39C12',
+
+              /* Blanco Hueso: #F4F4F4 (rgb(244,244,244)) - Neutro/Fondo */
+              'blanco-puro': '#F4F4F4',
+              'blanco-hueso': '#F4F4F4',
+              'fibra-natural': '#F4F4F4',
+              'beige-arena': '#F4F4F4',
+
+              /* Supporting neutrals */
+              'carbon': '#312F2A',
+              'verde-hoja-seca': '#585C45',
+              'gris-piedra': '#78716C',
+
+              /* Helpful aliases and legacy names (map existing classnames in the codebase) */
+              'noche-selva': '#312F2A',
+              'carbon-vegetal': '#585C45',
+              'verde-esmeralda': '#7A9A3E',
+              'marron-tierra-oscura': '#312F2A',
+              'flor-azai': '#F39C12',
+              'verde-medio': '#7A9A3E',
+              'verde-oscuro': '#648033',
+              'crema': '#F4F4F4',
+              'verde-claro': '#F4F4F4',
+              'noche-amazonica': '#312F2A',
+              'gris-carbon': '#585C45',
+              /* Small accents */
+              'accent-rojo': '#E03A3A',
+              /* azul-cobalto already exists as primary blue */
+            },
+            boxShadow: {
+              'subtle': '0 4px 12px rgba(0, 0, 0, 0.05)',
+              'medium': '0 8px 24px rgba(0, 0, 0, 0.1)',
+              // verde-glow uses Verde Hoja RGB (122,154,62)
+              'verde-glow': '0 0 20px rgba(122, 154, 62, 0.6)',
+              // orange glow for CTA (Naranja Vibrante RGB 243,156,18)
+              'azai-glow': '0 0 20px rgba(243, 156, 18, 0.6)',
+              // azul glow for interactive accents (Azul Cobalto RGB 0,123,255)
+              'azul-glow': '0 0 20px rgba(0, 123, 255, 0.45)',
+              // rojo glow for small danger/attention accents (Rojo RGB 224,58,58)
+              'rojo-glow': '0 0 18px rgba(224, 58, 58, 0.45)',
+            }
+          }
+        }
+      }
+    </script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-beige-arena dark:bg-noche-selva">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+</body>
+</html>

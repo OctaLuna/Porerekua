@@ -1,0 +1,1 @@
+export * from './forma-juridica-forms.template'

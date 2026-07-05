@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -m 5 -o /dev/null -w \"%{http_code}\\\\n\" -X POST http://localhost:3333/api/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"superadmin@kaaiya.test\",\"password\":\"SuperPass1!\"}')",
+      "Bash(echo \"build exit: $?\")",
+      "Bash(python -c \"import sys,json; print\\(json.dumps\\(json.load\\(sys.stdin\\),ensure_ascii=False,indent=1\\)[:1200]\\)\")",
+      "PowerShell(Set-Location \"c:\\\\Users\\\\leoib\\\\OneDrive\\\\Documentos\\\\Apps\\\\AmazoníaAkayaa\\\\Web\\\\Frontend\\\\amazonia-viva-frontend\"; npx tsc --noEmit; \"tsc exit: $LASTEXITCODE\")",
+      "PowerShell(Set-Location \"c:\\\\Users\\\\leoib\\\\OneDrive\\\\Documentos\\\\Apps\\\\AmazoníaAkayaa\\\\Web\\\\Frontend\\\\amazonia-viva-frontend\"; npm run build; \"build exit: $LASTEXITCODE\")"
+    ]
+  }
+}

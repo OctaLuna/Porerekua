@@ -1,0 +1,1 @@
+export * from './ayuda-forms.template'

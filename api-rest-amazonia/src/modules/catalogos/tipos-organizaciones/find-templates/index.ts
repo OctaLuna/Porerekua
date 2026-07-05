@@ -1,0 +1,1 @@
+export * from './tipo-organizacion-forms.template'

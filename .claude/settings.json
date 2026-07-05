@@ -13,7 +13,14 @@
       "Bash(rm -rf georef-service/.git)",
       "Bash(git -C \"d:/Octa/Documents/Proyects/Amazonia\" add -A --dry-run)",
       "Bash(git status *)",
-      "Bash(grep -icE \"\\(^|/\\)\\\\.env\\($|\\\\.\\)|node_modules/|/venv/|supabase-full\\\\.sql|\\\\.tokens\\\\.json|audit/\")"
+      "Bash(grep -icE \"\\(^|/\\)\\\\.env\\($|\\\\.\\)|node_modules/|/venv/|supabase-full\\\\.sql|\\\\.tokens\\\\.json|audit/\")",
+      "Bash(grep -iE \"\\(^|/\\)\\\\.env\\($|\\\\.\\)|node_modules/|/venv/|supabase-full\\\\.sql|\\\\.tokens\\\\.json|audit/\")",
+      "Bash(grep -E \"\\(^|/\\)\\\\.env$|\\(^|/\\)\\\\.env\\\\.test$|\\(^|/\\)\\\\.env\\\\.local$\")",
+      "Bash(git -c core.quotepath=false diff --cached --name-only)",
+      "Bash(grep -iE \"supabase|snapshot|\\\\.sql$\")",
+      "Bash(grep -iE \"\\\\.tokens\\\\.json|\\(^|/\\)\\\\.env\\($|\\\\.\\)|node_modules/|/venv/|supabase-full\\\\.sql|\\(^|/\\)audit/\")",
+      "Bash(grep -iE \"\\\\.pem$|\\\\.key$|id_rsa|\\\\.pfx$|\\\\.p12$|\\\\.keystore$|\\\\.npmrc$|secrets?\\\\.\\(json|ya?ml\\)$|credentials\")",
+      "Bash(git -c core.autocrlf=false commit -q -m 'chore: consolidar monorepo \\(frontend + backend + georef en un solo repo\\) *)"
     ]
   }
 }

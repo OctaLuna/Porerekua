@@ -25,9 +25,6 @@ api-rest-amazonia/database/snapshots/supabase-full.sql
 *.env.staging
 
 # ── Logs ─────────────────────────────────────────────────────────────────────
-*.log
-logs/
-npm-debug.log*
 
 # ── OS ────────────────────────────────────────────────────────────────────────
 .DS_Store

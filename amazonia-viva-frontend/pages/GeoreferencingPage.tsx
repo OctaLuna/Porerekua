@@ -135,33 +135,53 @@ const GeoreferencingPage: React.FC = () => {
 
   // Inicializar mapa
   const [API_KEY] = useState(import.meta.env.VITE_MAPTILER_KEY ?? '');
-  const OSM_STYLE: maplibregl.StyleSpecification = {
+  // Evita la carrera datos-vs-mapa: los marcadores se añaden cuando el mapa está listo.
+  const [mapLoaded, setMapLoaded] = useState(false);
+  // Basemap temático gratuito (CARTO Voyager) — look claro acorde a la paleta, sin API key.
+  const CARTO_STYLE: maplibregl.StyleSpecification = {
     version: 8,
     sources: {
-      osm: {
+      carto: {
         type: 'raster',
-        tiles: ['https://a.tile.openstreetmap.org/{z}/{x}/{y}.png', 'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png'],
+        tiles: [
+          'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+          'https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+          'https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+          'https://d.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+        ],
         tileSize: 256,
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        attribution:
+          '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a>',
       },
     },
     layers: [
       // Fondo temático mientras cargan (o si fallan) los tiles, para no mostrar blanco.
-      { id: 'bg', type: 'background', paint: { 'background-color': '#dfe4d3' } },
-      { id: 'osm-tiles', type: 'raster', source: 'osm', minzoom: 0, maxzoom: 19 },
+      { id: 'bg', type: 'background', paint: { 'background-color': '#eef1e8' } },
+      { id: 'carto-tiles', type: 'raster', source: 'carto', minzoom: 0, maxzoom: 20 },
     ],
   };
-  const mapStyle = API_KEY ? `https://api.maptiler.com/maps/dataviz/style.json?key=${API_KEY}` : OSM_STYLE;
+  const mapStyle = API_KEY ? `https://api.maptiler.com/maps/dataviz/style.json?key=${API_KEY}` : CARTO_STYLE;
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
-    map.current = new maplibregl.Map({ container: mapContainer.current, style: mapStyle, center: [-65, -10], zoom: 4 });
-    map.current.addControl(new maplibregl.NavigationControl(), 'top-right');
+    const m = new maplibregl.Map({ container: mapContainer.current, style: mapStyle, center: [-65, -10], zoom: 4 });
+    m.addControl(new maplibregl.NavigationControl(), 'top-right');
+    // Fix de render (mapa en blanco): reasegurar el tamaño una vez cargado y tras el layout SPA.
+    m.on('load', () => { m.resize(); setMapLoaded(true); });
+    // 'idle' es un disparador fiable (tras el primer render) para marcar el mapa listo
+    // y evitar la carrera datos-vs-mapa en el build de producción.
+    m.once('idle', () => setMapLoaded(true));
+    const raf = requestAnimationFrame(() => m.resize());
+    const ro = new ResizeObserver(() => m.resize());
+    ro.observe(mapContainer.current);
+    map.current = m;
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); };
   }, []);
 
-  // Recrear markers cuando cambian los proyectos filtrados
+  // Recrear markers cuando cambian los proyectos filtrados (y cuando el mapa está listo).
   useEffect(() => {
     if (!map.current || !filteredProjects) return;
+    if (!mapLoaded && !map.current.isStyleLoaded()) return;
 
     // Limpiar markers existentes
     markersRef.current.forEach((marker) => marker.remove());
@@ -181,13 +201,16 @@ const GeoreferencingPage: React.FC = () => {
         </div>`
       );
 
-      const marker = new maplibregl.Marker({ color: '#4A9B5F' })
+      // Pin custom con pulso (paleta verde-brote); respeta reduced-motion vía CSS.
+      const el = document.createElement('div');
+      el.className = 'geo-pin';
+      const marker = new maplibregl.Marker({ element: el, anchor: 'center' })
         .setLngLat([lng, lat])
         .setPopup(popup)
         .addTo(map.current!);
 
       // Click en marker también selecciona el card
-      marker.getElement().addEventListener('click', () => {
+      el.addEventListener('click', () => {
         setSelectedId(project.id);
         const cardEl = cardRefs.current.get(project.id);
         cardEl?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
@@ -195,7 +218,7 @@ const GeoreferencingPage: React.FC = () => {
 
       markersRef.current.set(project.id, marker);
     }
-  }, [filteredProjects]);
+  }, [filteredProjects, mapLoaded]);
 
   const renderSkeletons = () => (
     <>
@@ -219,14 +242,20 @@ const GeoreferencingPage: React.FC = () => {
       <style>{`
         .project-scroll::-webkit-scrollbar { display: none; }
         .project-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-        .maplibregl-popup .maplibregl-popup-content { padding: 0; border-radius: 8px; }
-        .maplibregl-popup-close-button { right: 4px; top: 4px; }
+        .maplibregl-popup .maplibregl-popup-content { padding: 0; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+        .maplibregl-popup-close-button { right: 6px; top: 4px; font-size: 18px; color: #78716C; }
+        /* Pin animado (pulso) en tono verde-brote de la paleta */
+        .geo-pin { width: 16px; height: 16px; border-radius: 9999px; background: #7A9A3E; border: 2px solid #F4F4F4; box-shadow: 0 2px 6px rgba(0,0,0,0.35); cursor: pointer; position: relative; }
+        .geo-pin::after { content: ''; position: absolute; inset: -6px; border-radius: 9999px; border: 2px solid rgba(122,154,62,0.55); animation: geo-pulse 2s ease-out infinite; }
+        .geo-pin:hover { background: #648033; }
+        @keyframes geo-pulse { 0% { transform: scale(0.55); opacity: 0.85; } 100% { transform: scale(1.9); opacity: 0; } }
+        @media (prefers-reduced-motion: reduce) { .geo-pin::after { animation: none; opacity: 0; } }
       `}</style>
       <div className="relative w-full h-screen overflow-hidden">
         {/* Map (con fondo degradado como fallback cuando no hay tiles de MapTiler) */}
         <div
           ref={mapContainer}
-          className="absolute inset-0 z-0 bg-gradient-to-br from-verde-hoja-seca/20 via-beige-arena to-azul-cobalto/10 dark:from-noche-selva dark:via-noche-selva dark:to-verde-hoja-seca/30"
+          className="absolute inset-0 z-0 h-full w-full bg-gradient-to-br from-verde-hoja-seca/20 via-beige-arena to-azul-cobalto/10 dark:from-noche-selva dark:via-noche-selva dark:to-verde-hoja-seca/30"
         />
 
         {/* Bottom panel */}

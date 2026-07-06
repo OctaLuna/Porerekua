@@ -20,7 +20,18 @@
       "Bash(grep -iE \"supabase|snapshot|\\\\.sql$\")",
       "Bash(grep -iE \"\\\\.tokens\\\\.json|\\(^|/\\)\\\\.env\\($|\\\\.\\)|node_modules/|/venv/|supabase-full\\\\.sql|\\(^|/\\)audit/\")",
       "Bash(grep -iE \"\\\\.pem$|\\\\.key$|id_rsa|\\\\.pfx$|\\\\.p12$|\\\\.keystore$|\\\\.npmrc$|secrets?\\\\.\\(json|ya?ml\\)$|credentials\")",
-      "Bash(git -c core.autocrlf=false commit -q -m 'chore: consolidar monorepo \\(frontend + backend + georef en un solo repo\\) *)"
+      "Bash(git -c core.autocrlf=false commit -q -m 'chore: consolidar monorepo \\(frontend + backend + georef en un solo repo\\) *)",
+      "Bash(Select-String -Pattern \"log\")",
+      "Bash(Select-String -NotMatch \"node_modules|venv|__pycache__\")",
+      "Bash(curl -s -o /dev/null -w \"web / = %{http_code}\\\\n\" http://localhost/)",
+      "Bash(curl -s -o /dev/null -w \"api /api/health = %{http_code}\\\\n\" http://localhost/api/health)",
+      "Bash(curl -s -o /dev/null -w \"proyectos/map = %{http_code}\\\\n\" http://localhost/api/proyectos/map)",
+      "Bash(curl -s -o /dev/null -w \"frontend 5173 = %{http_code}\\\\n\" http://localhost:5173)",
+      "Bash(curl -s -o /dev/null -w \"backend 3333 = %{http_code}\\\\n\" http://localhost:3333/api/proyectos/map)",
+      "Bash(curl -s http://localhost/)",
+      "Bash(curl -s http://localhost/api/proyectos/map)",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{const bad=\\(d.match\\(/�/g\\)||[]\\).length; console.log\\('replacement chars \\(U+FFFD\\) en prod DB:', bad\\); if\\(bad\\){const j=JSON.parse\\(d\\); j.filter\\(p=>/�/.test\\(p.nombre\\)\\).forEach\\(p=>console.log\\('  •',p.nombre\\)\\);}}\\)\")",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{console.log\\('U+FFFD:', \\(d.match\\(/�/g\\)||[]\\).length, '| proyectos:', JSON.parse\\(d\\).length\\);}\\)\")"
     ]
   }
 }

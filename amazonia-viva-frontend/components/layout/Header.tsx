@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { NAV_LINKS } from '../../constants';
 import { useTheme } from '../../hooks/useTheme';
@@ -6,6 +6,7 @@ import { useUI } from '../../hooks/useUI';
 import { useAuth } from '../../hooks/useAuth';
 import { RoleEnum } from '../../types/api';
 import Logo from './Logo';
+import FlowLine from '../animations/FlowLine';
 
 // Placeholder icons to avoid dependency issues
 const SunIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>;
@@ -64,18 +65,44 @@ const AuthControls = () => {
   );
 };
 
+// Ítem de nav en pill; el activo lleva el subrayado del motivo "flujo".
+const navItemBase = 'relative rounded-full px-4 py-1.5 text-sm font-medium transition-colors';
+const navItemActive = 'text-verde-brote';
+const navItemInactive = 'text-gris-piedra hover:text-carbon dark:text-beige-arena/70 dark:hover:text-beige-arena';
+
+const NavItem: React.FC<{ to: string; label: string; onClick?: () => void; block?: boolean }> = ({ to, label, onClick, block }) => (
+  <NavLink to={to} onClick={onClick} className={({ isActive }) => `${block ? 'block text-center ' : ''}${navItemBase} ${isActive ? navItemActive : navItemInactive}`}>
+    {({ isActive }) => (
+      <>
+        {label}
+        {isActive && <FlowLine className="absolute -bottom-0.5 left-3 right-3 h-2 text-verde-brote" active />}
+      </>
+    )}
+  </NavLink>
+);
+
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { isAuthenticated, user } = useAuth();
   const isAdmin = isAuthenticated && !!user && (user.rol === RoleEnum.Superadmin || user.rol === RoleEnum.Admin);
 
-  const navLinkClasses = "px-3 py-2 text-sm font-medium transition-colors border-b-2";
-  const activeLinkClasses = "text-verde-brote border-verde-brote";
-  // Gray in light mode, white in dark mode
-  const inactiveLinkClasses = "text-gray-500 hover:text-gray-700 hover:border-gray-400 dark:text-white dark:hover:text-white border-transparent";
+  // Barra frosted que se solidifica al hacer scroll (transparente/tenue → chrome).
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
-    <header className="fixed top-12 inset-x-0 z-50 bg-stone-200/90 dark:bg-noche-selva/90 backdrop-blur-lg shadow-md">
+    <header
+      className={`fixed top-12 inset-x-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? 'bg-nav-chrome/95 dark:bg-noche-selva/90 backdrop-blur-lg shadow-md'
+          : 'bg-nav-chrome/55 dark:bg-noche-selva/45 backdrop-blur-md shadow-none'
+      }`}
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
@@ -93,27 +120,12 @@ const Header: React.FC = () => {
               </span>
             </Link>
           </div>
-          <div className="hidden md:flex items-center space-x-4">
-            <nav className="flex space-x-1">
+          <div className="hidden md:flex items-center space-x-3">
+            <nav className="flex items-center gap-1 rounded-full border border-carbon/10 dark:border-white/10 bg-blanco-puro/40 dark:bg-noche-selva/40 px-1.5 py-1 backdrop-blur-sm">
               {NAV_LINKS.map((link) => (
-                <NavLink
-                  key={link.name}
-                  to={link.href.replace('#', '')}
-                  className={({ isActive }) =>
-                    `${navLinkClasses} ${isActive ? activeLinkClasses : inactiveLinkClasses}`
-                  }
-                >
-                  {link.name}
-                </NavLink>
+                <NavItem key={link.name} to={link.href.replace('#', '')} label={link.name} />
               ))}
-              {isAdmin && (
-                <NavLink
-                  to="/admin"
-                  className={({ isActive }) => `${navLinkClasses} ${isActive ? activeLinkClasses : inactiveLinkClasses}`}
-                >
-                  Admin
-                </NavLink>
-              )}
+              {isAdmin && <NavItem to="/admin" label="Admin" />}
             </nav>
             <ThemeToggleButton />
             <AuthControls />
@@ -136,29 +148,12 @@ const Header: React.FC = () => {
         {isMenuOpen && (
           <div className="md:hidden" id="mobile-menu">
               <div className="pb-4">
-                <div className="mt-2 bg-stone-200/95 dark:bg-noche-selva/95 backdrop-blur-lg rounded-xl shadow-lg">
-                    <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <div className="mt-2 bg-nav-chrome/95 dark:bg-noche-selva/95 backdrop-blur-lg rounded-2xl shadow-lg border border-carbon/10 dark:border-white/10">
+                    <div className="px-3 pt-3 pb-3 space-y-1">
                         {NAV_LINKS.map((link) => (
-                            <NavLink
-                            key={link.name}
-                            to={link.href.replace('#', '')}
-                            onClick={() => setIsMenuOpen(false)}
-                            className={({ isActive }) =>
-                                `block text-base text-center rounded-md ${navLinkClasses} ${isActive ? activeLinkClasses : inactiveLinkClasses}`
-                            }
-                            >
-                            {link.name}
-                            </NavLink>
+                            <NavItem key={link.name} to={link.href.replace('#', '')} label={link.name} onClick={() => setIsMenuOpen(false)} block />
                         ))}
-                        {isAdmin && (
-                          <NavLink
-                            to="/admin"
-                            onClick={() => setIsMenuOpen(false)}
-                            className={({ isActive }) => `block text-base text-center rounded-md ${navLinkClasses} ${isActive ? activeLinkClasses : inactiveLinkClasses}`}
-                          >
-                            Admin
-                          </NavLink>
-                        )}
+                        {isAdmin && <NavItem to="/admin" label="Admin" onClick={() => setIsMenuOpen(false)} block />}
                     </div>
                 </div>
               </div>

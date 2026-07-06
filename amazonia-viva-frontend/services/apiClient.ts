@@ -49,7 +49,10 @@ interface RequestOptions {
 }
 
 const buildUrl = (path: string, query?: Query): string => {
-  const url = new URL(`${BASE_URL}${path}`);
+  // Base para `new URL` cuando VITE_API_URL es relativo (p. ej. "/api" en producción).
+  // Con una URL absoluta (dev) la base se ignora; con una relativa evita "Invalid URL".
+  const origin = typeof window !== 'undefined' ? window.location.origin : undefined;
+  const url = new URL(`${BASE_URL}${path}`, origin);
   if (query) {
     for (const [key, value] of Object.entries(query)) {
       if (value !== undefined && value !== null && value !== '') {

@@ -2,6 +2,64 @@ import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import HomeChapters from '../components/animations/HomeChapters';
 import { gsap, SplitText, useGSAP } from '../components/animations/gsap-setup';
+import Reveal from '../components/animations/Reveal';
+import FlowLine from '../components/animations/FlowLine';
+import StatCounter from '../components/animations/StatCounter';
+import BentoCard from '../components/ui/BentoCard';
+import Marquee from '../components/ui/Marquee';
+import { useDashboardPublicoResumen } from '../hooks/useDashboard';
+
+// Sección de estadísticas reales en bento grid + marquee de palabras clave.
+const HomeStats: React.FC = () => {
+  const { data: resumen } = useDashboardPublicoResumen();
+  const stats = [
+    { value: resumen?.total_proyectos ?? 0, label: 'Proyectos en la red' },
+    { value: resumen?.total_organizaciones ?? 0, label: 'Organizaciones' },
+    { value: resumen?.total_empresas ?? 0, label: 'Empresas aliadas' },
+    { value: resumen?.departamentos_con_actividad ?? 0, label: 'Departamentos' },
+  ];
+  const keywords = ['Bosque', 'Comunidad', 'Tecnología', 'Sostenibilidad', 'Amazonía', 'Conservación', 'Kaa Iya'];
+
+  return (
+    <section className="snap-section relative w-full overflow-hidden bg-noche-selva py-24 text-beige-arena">
+      <div className="absolute inset-0 bg-cover bg-center opacity-10" style={{ backgroundImage: 'url(/images/background/bg2.jpg)' }} aria-hidden="true" />
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
+        <Reveal className="mx-auto mb-12 max-w-2xl text-center" y={24}>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amarillo-sol">La red en números</p>
+          <h2 className="relative mt-2 inline-block font-serif text-4xl font-extrabold md:text-5xl">
+            Un bosque de <span className="text-verde-brote">iniciativas</span>
+            <FlowLine className="absolute -bottom-3 left-1/4 right-1/4 h-3 text-verde-brote" scrub />
+          </h2>
+          <p className="mt-4 text-beige-arena/70">
+            Datos vivos de la plataforma: proyectos, aliados y territorios que articulan la conservación de la Amazonía boliviana.
+          </p>
+        </Reveal>
+
+        <div className="grid auto-rows-[minmax(150px,1fr)] grid-cols-2 gap-4 lg:grid-cols-4">
+          <BentoCard image="/images/background/bg3.jpg" eyebrow="Territorio" className="group col-span-2 row-span-2 min-h-[316px]">
+            <div className="mt-auto">
+              <h3 className="font-serif text-2xl font-bold">Corredores que conectan vida</h3>
+              <p className="mt-1 text-sm text-beige-arena/85">Del Chiquitano al Pantanal: paisajes protegidos por comunidades y ciencia.</p>
+            </div>
+          </BentoCard>
+
+          {stats.map((s) => (
+            <BentoCard key={s.label} interactive className="justify-between">
+              <StatCounter value={s.value} className="font-serif text-4xl font-extrabold text-verde-brote md:text-5xl" />
+              <p className="mt-2 text-sm font-medium text-gris-piedra dark:text-beige-arena/70">{s.label}</p>
+            </BentoCard>
+          ))}
+        </div>
+      </div>
+
+      <Marquee
+        className="mt-16 border-y border-white/10 py-4"
+        itemClassName="font-serif text-2xl font-bold uppercase tracking-wide text-beige-arena/80"
+        items={keywords}
+      />
+    </section>
+  );
+};
 
 const ArrowDownIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -121,6 +179,9 @@ const HomePage: React.FC = () => {
             </motion.div>
           </motion.div>
         </section>
+
+        {/* Estadísticas reales en bento grid + marquee */}
+        <HomeStats />
 
         {/* Capítulos estilo Floema (Conservación → Únete) */}
         <HomeChapters />

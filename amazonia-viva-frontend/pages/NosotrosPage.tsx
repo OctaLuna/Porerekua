@@ -1,14 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import TeamGrid from '../components/animations/TeamGrid';
+import Reveal from '../components/animations/Reveal';
+import FlowLine from '../components/animations/FlowLine';
+import { gsap, ScrollTrigger, useGSAP } from '../components/animations/gsap-setup';
+import { prefersReducedMotion } from '../components/animations/motion';
 
-// --- Team Data ---
+// --- Datos del equipo (fotos de muestra; reemplazar por retratos reales) ---
 const TEAM_CATEGORIES = [
   {
     id: 'direccion',
     label: 'Dirección & Estrategia',
     members: [
-      // NOTA: `photo` usa imágenes de muestra; reemplazar por retratos reales del equipo.
       { initials: 'LR', name: 'Lucía Ramírez', role: 'Dirección creativa y visión estratégica', photo: '/images/animation/2.jpg', bio: 'Lidera la dirección creativa y la visión estratégica del proyecto, articulando el trabajo entre comunidades, academia y aliados institucionales en la Amazonía boliviana.' },
       { initials: 'JP', name: 'Jorge Peña', role: 'Estratega de impacto y relaciones institucionales', photo: '/images/animation/3.jpg', bio: 'Diseña la estrategia de impacto y gestiona las relaciones institucionales, tejiendo alianzas con empresas y fundaciones comprometidas con la sostenibilidad amazónica.' },
       { initials: 'MQ', name: 'Mara Quispe', role: 'Coordinación comunitaria — Amazonas peruano', photo: '/images/animation/4.jpg', bio: 'Coordina el vínculo con las comunidades del Amazonas, asegurando que sus saberes y prioridades guíen las iniciativas de conservación y desarrollo.' },
@@ -34,212 +37,183 @@ const TEAM_CATEGORIES = [
   },
 ];
 
+// Tres pilares del proyecto (textos reales del proyecto reencuadrados).
+const PILLARS = [
+  { key: 'bosque', num: '01', eyebrow: 'Bosque', title: 'Conservar la selva viva', text: 'Promover acciones orientadas a la conservación de la biodiversidad y la protección de los ecosistemas amazónicos.', img: '/images/background/bg2.jpg' },
+  { key: 'comunidad', num: '02', eyebrow: 'Comunidad', title: 'Con y para las comunidades', text: 'Empoderar a las comunidades locales e indígenas en procesos que fortalezcan su desarrollo y reconozcan sus saberes y prácticas.', img: '/images/background/bg3.jpg' },
+  { key: 'tecnologia', num: '03', eyebrow: 'Tecnología', title: 'Datos que sostienen decisiones', text: 'Garantizar el acceso a información sobre estas iniciativas mediante datos verificados y estructurados, que aporten a la investigación y a políticas públicas basadas en evidencia.', img: '/images/background/bg11.jpg' },
+];
+
 const ArrowDownIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="12" y1="5" x2="12" y2="19"></line>
-    <polyline points="19 12 12 19 5 12"></polyline>
+    <line x1="12" y1="5" x2="12" y2="19" />
+    <polyline points="19 12 12 19 5 12" />
   </svg>
 );
 
-// --- About Info Item Component ---
-interface AboutItemProps {
-  title: string;
-  content: string;
-}
+// --- Sección de tres pilares: sticky + cross-fade scrubbed por scroll ---
+const PillarsSection: React.FC = () => {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [pinned] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 768 && !prefersReducedMotion());
 
-const AboutItem: React.FC<AboutItemProps> = ({ title, content }) => (
-  <motion.div
-    className="mb-4 lg:mb-6"
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.4 }}
-  >
-    <h3 className="text-base lg:text-xl font-bold font-serif text-verde-brote mb-2 lg:mb-3 uppercase tracking-widest">
-      {title}
-    </h3>
-    <p className="text-sm lg:text-base text-gris-piedra dark:text-beige-arena/80 leading-relaxed">
-      {content}
-    </p>
-  </motion.div>
-);
+  useGSAP(
+    () => {
+      if (!pinned || !wrapRef.current) return;
+      const panels = gsap.utils.toArray<HTMLElement>('.pillar-panel', wrapRef.current);
+      gsap.set(panels, { autoAlpha: 0 });
+      gsap.set(panels[0], { autoAlpha: 1 });
+      const st = ScrollTrigger.create({
+        trigger: wrapRef.current,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.5,
+        onUpdate: (self) => {
+          const p = self.progress * (panels.length - 1);
+          panels.forEach((panel, i) => gsap.set(panel, { autoAlpha: 1 - Math.min(Math.abs(p - i), 1) }));
+        },
+      });
+      return () => st.kill();
+    },
+    { scope: wrapRef, dependencies: [pinned] },
+  );
 
-// --- Page ---
+  return (
+    <section ref={wrapRef} className={pinned ? 'relative h-[300vh] bg-noche-selva' : 'bg-noche-selva'}>
+      <div className={pinned ? 'sticky top-0 h-screen overflow-hidden' : ''}>
+        {PILLARS.map((p, i) => (
+          <article
+            key={p.key}
+            className={`pillar-panel flex ${pinned ? 'absolute inset-0' : 'relative min-h-screen'} items-center justify-center overflow-hidden text-beige-arena`}
+          >
+            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${p.img})` }} aria-hidden="true" />
+            <div className="absolute inset-0 bg-gradient-to-t from-noche-selva via-noche-selva/70 to-noche-selva/40" aria-hidden="true" />
+            <div className="relative z-10 mx-auto max-w-3xl px-6 text-center">
+              <span className="font-serif text-6xl font-extrabold text-white/15">{p.num}</span>
+              <p className="mt-2 text-xs font-semibold uppercase tracking-[0.25em] text-amarillo-sol">{p.eyebrow}</p>
+              <h3 className="relative mt-3 inline-block font-serif text-4xl font-extrabold md:text-6xl">
+                {p.title}
+                <FlowLine className="absolute -bottom-4 left-1/4 right-1/4 h-3 text-verde-brote" active />
+              </h3>
+              <p className="mx-auto mt-6 max-w-xl text-lg text-beige-arena/85">{p.text}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+// --- Página ---
 const NosotrosPage: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState(0);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const firstSectionRef = useRef<HTMLElement | null>(null);
 
+  // Navegación por teclado entre secciones (scroll de ventana; Lenis lo suaviza).
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const container = scrollContainerRef.current;
-      if (!container) return;
-
-      const sections = Array.from(container.querySelectorAll('section')) as HTMLElement[];
-      const currentIndex = Math.round(container.scrollTop / window.innerHeight);
-
-      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
-        e.preventDefault();
-        sections[Math.min(currentIndex + 1, sections.length - 1)]?.scrollIntoView({ behavior: 'smooth' });
-      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-        e.preventDefault();
-        sections[Math.max(currentIndex - 1, 0)]?.scrollIntoView({ behavior: 'smooth' });
-      } else if (e.key === 'Home') {
-        e.preventDefault();
-        sections[0]?.scrollIntoView({ behavior: 'smooth' });
-      } else if (e.key === 'End') {
-        e.preventDefault();
-        sections[sections.length - 1]?.scrollIntoView({ behavior: 'smooth' });
-      }
+      if (!['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End'].includes(e.key)) return;
+      const sections = Array.from(document.querySelectorAll('main section')) as HTMLElement[];
+      if (!sections.length) return;
+      const y = window.scrollY;
+      let idx = 0;
+      sections.forEach((s, i) => { if (s.offsetTop <= y + window.innerHeight * 0.5) idx = i; });
+      e.preventDefault();
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') sections[Math.min(idx + 1, sections.length - 1)]?.scrollIntoView({ behavior: 'smooth' });
+      else if (e.key === 'ArrowUp' || e.key === 'PageUp') sections[Math.max(idx - 1, 0)]?.scrollIntoView({ behavior: 'smooth' });
+      else if (e.key === 'Home') sections[0]?.scrollIntoView({ behavior: 'smooth' });
+      else if (e.key === 'End') sections[sections.length - 1]?.scrollIntoView({ behavior: 'smooth' });
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   return (
-    <>
-      <style>{`
-        .snap-container {
-          scroll-snap-type: y mandatory;
-          scroll-behavior: smooth;
-          overflow-y: scroll;
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-          height: 100vh;
-          position: relative;
-        }
-        .snap-container::-webkit-scrollbar {
-          display: none;
-        }
-        .snap-section {
-          scroll-snap-align: start;
-          scroll-snap-stop: always;
-          position: relative;
-          height: 100vh;
-        }
-      `}</style>
-
-       <div ref={scrollContainerRef} className="snap-container">
-         <section ref={firstSectionRef} className="snap-section relative w-full flex flex-col justify-center items-center text-center text-beige-arena pt-32 pb-10 px-4 sm:px-6 lg:px-8 overflow-y-auto">
-           <div className="absolute inset-0 z-0 bg-cover bg-center" style={{ backgroundImage: 'url(/images/background/bg11.jpg)' }} aria-hidden="true"></div>
-           <div className="absolute inset-0 z-0 bg-noche-selva/35" aria-hidden="true"></div>
-           <div className="relative z-10 w-full max-w-5xl">
-              <div className="bg-blanco-puro/95 dark:bg-noche-selva/75 py-5 px-10 sm:py-8 sm:px-14 rounded-lg shadow-medium border border-carbon/10 dark:border-white/10 max-h-[calc(100vh-14rem)] overflow-y-auto">
-                <h1 className="text-2xl sm:text-3xl font-bold font-serif text-carbon dark:text-beige-arena mb-8">
-                  Una alianza entre bosque, comunidad y tecnología
-                </h1>
-                <div className="text-left">
-                  <AboutItem
-                    title="El nombre"
-                    content={`Porerekua, voz guaraní que significa "ser solidario, compartir lo que se tiene", alude a la construcción colectiva de la sostenibilidad amazónica mediante el intercambio de conocimientos, experiencias y capacidades entre los distintos actores comprometidos con el territorio.`}
-                  />
-                  <AboutItem
-                    title="¿Quiénes somos?"
-                    content={`Porerekua, "ser solidario, compartir lo que se tiene", surge en el marco de la Cátedra Nazaria Ignacia "Querida Amazonía" de la Universidad Católica Boliviana "San Pablo" como un proyecto que busca visibilizar y articular iniciativas sostenibles de empresas y fundaciones comprometidas con la conservación de la Amazonía boliviana y el desarrollo de sus comunidades, como expresión de un compromiso con la sostenibilidad.`}
-                  />
-                </div>
-              </div>
-           </div>
-
-          <motion.div
-            className="absolute bottom-10 z-20 text-beige-arena"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 1, ease: 'easeOut' }}
-          >
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-              className="cursor-pointer"
-              onClick={() => {
-                const next = firstSectionRef.current?.nextElementSibling as HTMLElement | null;
-                next?.scrollIntoView({ behavior: 'smooth' });
-              }}
-            >
-              <ArrowDownIcon />
-            </motion.div>
-          </motion.div>
-        </section>
-
-        <section
-          className="snap-section relative w-full flex flex-col justify-center items-center text-center text-beige-arena pt-32 pb-10 px-4 sm:px-6 lg:px-8 overflow-y-auto"
-          style={{
-            backgroundImage: 'url(/images/background/bg4.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
+    <div>
+      {/* 1. Tesis a pantalla completa */}
+      <section className="relative flex min-h-screen w-full items-center justify-center overflow-hidden text-center text-beige-arena">
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(/images/background/bg11.jpg)' }} aria-hidden="true" />
+        <div className="absolute inset-0 bg-noche-selva/55" aria-hidden="true" />
+        <div className="relative z-10 max-w-4xl px-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-amarillo-sol">Quiénes somos</p>
+          <h1 className="relative mt-4 inline-block font-serif text-4xl font-extrabold leading-tight sm:text-5xl md:text-7xl" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>
+            Una alianza entre <span className="text-verde-brote">bosque</span>, comunidad y tecnología
+            <FlowLine className="absolute -bottom-4 left-0 right-0 h-4 text-verde-brote" scrub />
+          </h1>
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-beige-arena/85">
+            Una plataforma que visibiliza y articula iniciativas sostenibles para la conservación de la Amazonía boliviana.
+          </p>
+        </div>
+        <motion.div
+          className="absolute bottom-10 z-20"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
         >
-          <div className="absolute inset-0 bg-carbon/40"></div>
-          <div className="relative z-10 w-full max-w-6xl max-h-[calc(100vh-12rem)] overflow-y-auto">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-serif mb-3 sm:mb-4 text-beige-arena">Nuestro Propósito</h2>
-            <p className="text-sm sm:text-base lg:text-lg text-beige-arena/90 max-w-3xl mx-auto mb-6 sm:mb-10">
-              Visibilizar y articular iniciativas sostenibles promovidas por empresas y fundaciones locales en la Amazonía boliviana,
-              como aporte al fortalecimiento de acciones de conservación y al bienestar de las comunidades que la habitan.
-            </p>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-              <div className="bg-blanco-puro/95 dark:bg-noche-selva/60 p-5 lg:p-7 rounded-lg shadow-medium text-left backdrop-blur-md border border-carbon/10 dark:border-white/10">
-                <h3 className="text-lg lg:text-xl font-bold text-verde-brote mb-2">Conectar</h3>
-                <p className="text-sm lg:text-base text-carbon dark:text-beige-arena/80">Conectar empresas, fundaciones, la academia y sociedad civil en torno a iniciativas sostenibles en la Amazonía, promoviendo una plataforma de colaboración multiactor.</p>
-              </div>
-              <div className="bg-blanco-puro/95 dark:bg-noche-selva/60 p-5 lg:p-7 rounded-lg shadow-medium text-left backdrop-blur-md border border-carbon/10 dark:border-white/10">
-                <h3 className="text-lg lg:text-xl font-bold text-verde-brote mb-2">Promover</h3>
-                <p className="text-sm lg:text-base text-carbon dark:text-beige-arena/80">Promover acciones orientadas a la conservación de la biodiversidad y la protección de los ecosistemas amazónicos.</p>
-              </div>
-              <div className="bg-blanco-puro/95 dark:bg-noche-selva/60 p-5 lg:p-7 rounded-lg shadow-medium text-left backdrop-blur-md border border-carbon/10 dark:border-white/10">
-                <h3 className="text-lg lg:text-xl font-bold text-verde-brote mb-2">Empoderar</h3>
-                <p className="text-sm lg:text-base text-carbon dark:text-beige-arena/80">Empoderar a las comunidades locales e indígenas en procesos que fortalezcan su desarrollo y reconozcan sus saberes y prácticas.</p>
-              </div>
-              <div className="bg-blanco-puro/95 dark:bg-noche-selva/60 p-5 lg:p-7 rounded-lg shadow-medium text-left backdrop-blur-md border border-carbon/10 dark:border-white/10">
-                <h3 className="text-lg lg:text-xl font-bold text-verde-brote mb-2">Garantizar</h3>
-                <p className="text-sm lg:text-base text-carbon dark:text-beige-arena/80">Garantizar el acceso a información sobre estas iniciativas a través de datos verificados y estructurados, que aporten a la investigación y a la formulación de políticas públicas basadas en evidencia.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="snap-section relative w-full flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-y-auto pt-32 pb-10">
-          <div className="absolute inset-0 z-0 bg-cover bg-center" style={{ backgroundImage: 'url(/images/background/bg3.jpg)' }} aria-hidden="true"></div>
-          <div className="absolute inset-0 z-0 bg-noche-selva/45" aria-hidden="true"></div>
-
-           <motion.div
-             className="relative z-10 w-full max-w-5xl rounded-2xl backdrop-blur-md bg-beige-arena/80 dark:bg-noche-selva/55 border border-white/40 dark:border-beige-arena/10 px-5 py-6 sm:px-8 sm:py-8 md:px-10 md:py-10 shadow-medium max-h-[calc(100vh-11rem)] overflow-y-auto"
-             initial={{ opacity: 0, y: 40 }}
-             animate={{ opacity: 1, y: 0 }}
-             transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}
-           >
-            <h2 className="text-xl sm:text-2xl font-bold font-serif text-carbon dark:text-beige-arena text-center mb-5 md:mb-7">Personas detrás del proyecto</h2>
-
-            <div className="flex justify-center flex-wrap gap-2 mb-5 md:mb-8">
-              {TEAM_CATEGORIES.map((cat, i) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setActiveCategory(i)}
-                  className={`px-4 py-1.5 md:px-5 md:py-2 text-xs md:text-sm font-medium rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verde-brote/40 ${
-                    activeCategory === i
-                      ? 'bg-white dark:bg-blanco-puro/10 text-verde-brote border border-verde-brote/30 shadow-sm'
-                      : 'bg-transparent text-gris-piedra dark:text-beige-arena/50 border border-transparent hover:text-carbon dark:hover:text-beige-arena'
-                  }`}
-                >
-                  {cat.label}
-                </button>
-              ))}
-            </div>
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeCategory}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.35, ease: 'easeOut' }}
-              >
-                <TeamGrid members={TEAM_CATEGORIES[activeCategory].members} />
-              </motion.div>
-            </AnimatePresence>
+          <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}>
+            <ArrowDownIcon />
           </motion.div>
-        </section>
-      </div>
-    </>
+        </motion.div>
+      </section>
+
+      {/* 2. Etimología guaraní — tipografía grande + espacio negativo */}
+      <section className="relative bg-beige-arena py-24 dark:bg-noche-selva md:py-36">
+        <div className="container mx-auto max-w-4xl px-6">
+          <Reveal y={24}>
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-terracota">El nombre</p>
+            <h2 className="relative mt-3 inline-block font-serif text-6xl font-extrabold text-carbon dark:text-beige-arena md:text-8xl">
+              Porerekua
+              <FlowLine className="absolute -bottom-3 left-0 h-4 w-2/3 text-terracota" scrub />
+            </h2>
+            <p className="mt-8 max-w-2xl font-serif text-2xl leading-relaxed text-carbon/90 dark:text-beige-arena/90 md:text-3xl">
+              Voz guaraní que significa <span className="text-verde-brote">«ser solidario, compartir lo que se tiene»</span>.
+            </p>
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-gris-piedra dark:text-beige-arena/70">
+              Alude a la construcción colectiva de la sostenibilidad amazónica mediante el intercambio de conocimientos,
+              experiencias y capacidades entre los actores comprometidos con el territorio. Surge en el marco de la Cátedra
+              Nazaria Ignacia «Querida Amazonía» de la Universidad Católica Boliviana «San Pablo».
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* 3. Tres pilares fijados */}
+      <PillarsSection />
+
+      {/* 4. Equipo */}
+      <section className="relative flex w-full items-center justify-center overflow-hidden px-4 py-24 sm:px-6 lg:px-8">
+        <div className="absolute inset-0 z-0 bg-cover bg-center" style={{ backgroundImage: 'url(/images/background/bg3.jpg)' }} aria-hidden="true" />
+        <div className="absolute inset-0 z-0 bg-noche-selva/55" aria-hidden="true" />
+        <Reveal className="relative z-10 w-full max-w-5xl rounded-2xl border border-white/40 bg-beige-arena/85 px-5 py-8 shadow-medium backdrop-blur-md dark:border-beige-arena/10 dark:bg-noche-selva/60 sm:px-8 md:px-10" y={30}>
+          <p className="text-center text-xs font-semibold uppercase tracking-[0.25em] text-terracota">El equipo</p>
+          <h2 className="mt-2 mb-6 text-center font-serif text-2xl font-bold text-carbon dark:text-beige-arena sm:text-3xl">Personas detrás del proyecto</h2>
+
+          <div className="mb-6 flex flex-wrap justify-center gap-2">
+            {TEAM_CATEGORIES.map((cat, i) => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(i)}
+                className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verde-brote/40 md:px-5 md:py-2 md:text-sm ${
+                  activeCategory === i
+                    ? 'border border-verde-brote/30 bg-white text-verde-brote shadow-sm dark:bg-blanco-puro/10'
+                    : 'border border-transparent bg-transparent text-gris-piedra hover:text-carbon dark:text-beige-arena/50 dark:hover:text-beige-arena'
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeCategory}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+            >
+              <TeamGrid members={TEAM_CATEGORIES[activeCategory].members} />
+            </motion.div>
+          </AnimatePresence>
+        </Reveal>
+      </section>
+    </div>
   );
 };
 

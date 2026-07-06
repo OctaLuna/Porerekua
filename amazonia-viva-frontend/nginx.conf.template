@@ -1,5 +1,7 @@
 # Nginx del contenedor `web`: sirve el SPA compilado y hace proxy al backend.
-# Único punto de entrada del stack (http://localhost). georef y postgres quedan internos.
+# API_UPSTREAM (host:puerto del backend) se resuelve vía envsubst al arrancar el contenedor
+# (ver Dockerfile: /etc/nginx/templates/). Default "api:3333" = nombre del servicio en compose;
+# si el backend corre en otro host/deploy, pasar API_UPSTREAM por entorno al contenedor web.
 server {
     listen 80;
     server_name _;
@@ -12,7 +14,7 @@ server {
 
     # API del backend NestJS (conserva el prefijo /api; el backend sirve bajo /api).
     location /api/ {
-        proxy_pass http://api:3333;
+        proxy_pass http://${API_UPSTREAM};
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -23,7 +25,7 @@ server {
 
     # Archivos subidos (imágenes) servidos por el backend.
     location /uploads/ {
-        proxy_pass http://api:3333;
+        proxy_pass http://${API_UPSTREAM};
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $scheme;
     }

@@ -1,0 +1,509 @@
+:root {
+  /* 
+    MODO CLARO (por defecto) - Porerekua Design System
+  */
+  --color-blanco-puro: #FFFFFF;
+  --color-beige-arena: #f5f0e6;
+  --color-carbon: #312F2A;
+  --color-gris-piedra: #78716C;
+  --color-verde-brote: #22c55e;
+  --color-terracota: #e67e5a;
+  --color-azul-cobalto: #0066cc;
+  --color-naranja-vibrante: #F39C12;
+
+  /* Roles del tema */
+  --theme-text-primary: var(--color-carbon);
+  --theme-text-secondary: var(--color-gris-piedra);
+  --theme-primary: var(--color-azul-cobalto);
+  --theme-secondary: #0052a3;
+  --theme-background: var(--color-beige-arena);
+  --theme-background-panel: var(--color-blanco-puro);
+  --theme-border: rgba(49, 47, 42, 0.1); /* carbon/10 */
+
+  /* Sombras */
+  --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+html.dark {
+  /* 
+    MODO OSCURO (Porerekua) - Colores Exactos
+  */
+  /* Colores Base */
+  --color-noche-selva: #1a1f2e;
+  --color-beige-arena: #c9c4b8;
+  --color-carbon: #312F2A;
+  --color-gris-piedra: #78716C;
+  --color-verde-brote: #22c55e;
+  --color-terracota: #e67e5a;
+  --color-naranja-vibrante: #F39C12;
+
+  /* Roles del tema en modo oscuro */
+  --theme-text-primary: #ffffff; /* blanco puro */
+  --theme-text-secondary: rgba(120, 113, 108, 0.9); /* gris-piedra sutil */
+  --theme-primary: #22c55e; /* verde-brote */
+  --theme-secondary: #86efac; /* verde-brote más claro */
+  --theme-background: #1a1f2e; /* noche-selva */
+  --theme-background-panel: rgba(26, 31, 46, 0.6); /* noche-selva/60 */
+  --theme-border: rgba(255, 255, 255, 0.1); /* white/10 */
+
+  /* Variantes de Fondo (Noche Selva) */
+  --bg-noche-selva-40: rgba(26, 31, 46, 0.4);
+  --bg-noche-selva-55: rgba(26, 31, 46, 0.55);
+  --bg-noche-selva-60: rgba(26, 31, 46, 0.6);
+  --bg-noche-selva-70: rgba(26, 31, 46, 0.7);
+  --bg-noche-selva-75: rgba(26, 31, 46, 0.75);
+
+  /* Variantes de Texto (Beige Arena) */
+  --text-beige-arena-40: rgba(201, 196, 184, 0.4);
+  --text-beige-arena-80: rgba(201, 196, 184, 0.8);
+  --text-beige-arena-90: rgba(201, 196, 184, 0.9);
+
+  /* Variantes de Bordes */
+  --border-white-10: rgba(255, 255, 255, 0.1);
+  --border-beige-10: rgba(201, 196, 184, 0.1);
+
+  /* Sombras en modo oscuro */
+  --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-medium: 0 4px 6px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3), 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* 
+  ── COMPONENTES CON SOPORTE AUTOMÁTICO CLARO/OSCURO ─────────────────────────
+  Estos componentes aplican los fondos y bordes correctos automáticamente
+*/
+
+.panel-card {
+  /* Card Básica: bg-blanco-puro/95 en claro, noche-selva/60 en oscuro */
+  background-color: rgba(255, 255, 255, 0.95);
+  border-color: rgba(49, 47, 42, 0.1);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+html.dark .panel-card {
+  background-color: rgba(26, 31, 46, 0.6);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.panel-section {
+  /* Panel Sección: bg-beige-arena/80 en claro, noche-selva/55 en oscuro */
+  background-color: rgba(245, 240, 230, 0.8);
+  border-color: rgba(255, 255, 255, 0.4);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+html.dark .panel-section {
+  background-color: rgba(26, 31, 46, 0.55);
+  border-color: rgba(201, 196, 184, 0.1);
+}
+
+.panel-explorar {
+  /* Panel Explorar Proyectos: bg-beige-arena/95 en claro, noche-selva/70 en oscuro */
+  background-color: rgba(245, 240, 230, 0.95);
+  border-color: rgba(255, 255, 255, 0.4);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+html.dark .panel-explorar {
+  background-color: rgba(26, 31, 46, 0.7);
+  border-color: rgba(201, 196, 184, 0.1);
+}
+
+.panel-quienes {
+  /* Panel Quiénes Somos: bg-blanco-puro/95 en claro, noche-selva/75 en oscuro */
+  background-color: rgba(255, 255, 255, 0.95);
+  border-color: rgba(49, 47, 42, 0.1);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+html.dark .panel-quienes {
+  background-color: rgba(26, 31, 46, 0.75);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/*
+  ── SISTEMA DE COLORES DINÁMICOS ────────────────────────────────────────────
+  Utiliza variables CSS que se actualizan automáticamente en modo oscuro
+*/
+
+:root {
+  /* Fondos de Paneles (Modo Claro) */
+  --panel-card-bg: rgba(255, 255, 255, 0.95);
+  --panel-card-border: rgba(49, 47, 42, 0.1);
+  
+  --panel-section-bg: rgba(245, 240, 230, 0.8);
+  --panel-section-border: rgba(255, 255, 255, 0.4);
+  
+  --panel-explorar-bg: rgba(245, 240, 230, 0.95);
+  --panel-explorar-border: rgba(255, 255, 255, 0.4);
+  
+  --panel-quienes-bg: rgba(255, 255, 255, 0.95);
+  --panel-quienes-border: rgba(49, 47, 42, 0.1);
+}
+
+html.dark {
+  /* Fondos de Paneles (Modo Oscuro) */
+  --panel-card-bg: rgba(26, 31, 46, 0.6);
+  --panel-card-border: rgba(255, 255, 255, 0.1);
+  
+  --panel-section-bg: rgba(26, 31, 46, 0.55);
+  --panel-section-border: rgba(201, 196, 184, 0.1);
+  
+  --panel-explorar-bg: rgba(26, 31, 46, 0.7);
+  --panel-explorar-border: rgba(201, 196, 184, 0.1);
+  
+  --panel-quienes-bg: rgba(26, 31, 46, 0.75);
+  --panel-quienes-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Utilidades de Fondo (Noche Selva) */
+.bg-noche-selva-40 { background-color: rgba(26, 31, 46, 0.4); }
+.bg-noche-selva-55 { background-color: rgba(26, 31, 46, 0.55); }
+.bg-noche-selva-60 { background-color: rgba(26, 31, 46, 0.6); }
+.bg-noche-selva-70 { background-color: rgba(26, 31, 46, 0.7); }
+.bg-noche-selva-75 { background-color: rgba(26, 31, 46, 0.75); }
+
+/* Utilidades de Texto */
+.text-beige-arena-40 { color: rgba(201, 196, 184, 0.4); }
+.text-beige-arena-80 { color: rgba(201, 196, 184, 0.8); }
+.text-beige-arena-90 { color: rgba(201, 196, 184, 0.9); }
+
+/* Utilidades de Bordes */
+.border-white-10 { border-color: rgba(255, 255, 255, 0.1); }
+.border-beige-10 { border-color: rgba(201, 196, 184, 0.1); }
+:root {
+  /* Colores base */
+  --color-carbon-old: #312F2A;
+  --color-gris-piedra-old: #78716C;
+  --color-blanco-hueso: #F4F4F4;
+  /* RGB triplet for use in rgba() constructions */
+  --color-blanco-hueso-rgb: 244, 244, 244;
+  --color-verde-hoja: #7A9A3E;
+  --color-amarillo-sol: #C9920A;
+  /* Amarillo Sol (muted): reduce saturation/lightness to be less aggressive on UI
+    Original HSL ~ h:51, s:86%, l:58% -> muted: h:51, s:60%, l:62% -> hex #D8C764 */
+  --color-amarillo-sol-muted: #D8C764;
+  --color-azul-cobalto-old: #007BFF;
+  --color-naranja-vibrante: #F39C12;
+
+  /* Transiciones */
+  --transition-fast: all 0.2s ease-out;
+  --transition-medium: all 0.4s ease-out;
+  /* Sistema de espaciado basado en proporción áurea */
+  --space: 0.75rem; /* base */
+  --space-golden: calc(var(--space) * 1.618); /* ~1.214rem */
+  --space-xxl: calc(var(--space-golden) * 1.618); /* ~1.962rem */
+}
+
+/*
+  ── CLASES DE UTILIDAD (Estilo Tailwind) ───────────────────────────────────
+*/
+
+/* Fondos */
+.bg-main {
+  background-color: var(--theme-background);
+}
+.bg-panel {
+  background-color: var(--theme-background-panel);
+}
+
+/* Textos */
+.text-primary {
+  color: var(--theme-text-primary);
+}
+.text-secondary {
+  color: var(--theme-text-secondary);
+}
+
+/* Bordes */
+.border-default {
+  border-color: var(--theme-border);
+}
+
+/* Sombras (independientes del tema) */
+.shadow-subtle {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.shadow-medium {
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+}
+.shadow-lg {
+  box-shadow: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+}
+
+/* desenfoque de fondo */
+.backdrop-blur-md {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/*
+  ── ESCALA PROPORCIONAL ─────────────────────────────────────────────────────
+  Anclamos el tamaño de 1rem al ancho del viewport.
+  Tailwind usa rem en todo (padding, fuentes, gaps, max-width…),
+  por lo que TODA la UI escala exactamente con la misma proporción.
+
+  Referencia de diseño: 1440 px ancho → 16 px base (comportamiento Tailwind normal)
+    16 / 1440 = 0.01111  →  font-size: 1.111vw
+
+  Mínimo 12 px (tablets/móviles), máximo 20 px (monitores 2K/4K).
+  ─────────────────────────────────────────────────────────────────────────── */
+html {
+  font-size: clamp(12px, 1.111vw, 20px);
+}
+
+/*
+  ── CONTENEDOR SIEMPRE PROPORCIONAL ──────────────────────────────────────
+  Tailwind .container usa max-width en píxeles fijos por breakpoint
+  (sm:640px, md:768px, lg:1024px, xl:1280px).
+  Esos valores NO escalan con nuestro rem proporcional al vw.
+  Esta regla fuerza el contenedor a ser siempre 88% del viewport.
+  ──────────────────────────────────────────────────────────── */
+.container {
+  width: 88% !important;
+  max-width: none !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Forzar que el canvas de partículas no intercepte eventos del mouse */
+#tsparticles canvas,
+[id^='particles-'] canvas {
+  pointer-events: none !important;
+}
+
+/* Estilos globales del body */
+body {
+  background-color: var(--theme-background);
+  color: var(--theme-text-primary);
+  font-family: 'Inter', sans-serif; /* Usando Inter como fuente principal */
+  transition: background-color var(--transition-medium), color var(--transition-medium);
+}
+
+/* Estilos para scroll-snapping (si se mantiene) */
+.snap-y {
+  scroll-snap-type: y mandatory;
+}
+.snap-start {
+  scroll-snap-align: start;
+}
+
+/* Utilidad para ocultar la barra de scroll */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Estilos básicos para formularios */
+.form-input {
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-gris-piedra);
+  color: var(--theme-text-primary);
+  border-radius: 0.375rem;
+  padding: calc(var(--space) / 1.5) calc(var(--space));
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.form-input:focus {
+  outline: none;
+  border-color: var(--theme-secondary); /* Borde azul al enfocar */
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Sombra azul al enfocar */
+}
+
+/* Etiquetas/preguntas más llamativas y legibles */
+.form-label {
+  display: block;
+  font-weight: 700;
+  font-size: 1rem; /* ligeramente más grande que text-sm */
+  color: var(--theme-text-primary);
+  margin-bottom: calc(var(--space) / 2);
+  line-height: 1.25;
+}
+
+html.dark .form-label {
+  color: var(--color-gris-piedra);
+}
+
+.form-sublabel {
+  display: block;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--theme-text-secondary);
+  margin-bottom: calc(var(--space) / 3);
+}
+
+html.dark .form-sublabel {
+  color: var(--color-gris-piedra);
+}
+
+/* Accento sutil para llamar la atención en bloques de preguntas */
+.question-accent {
+  border-left: 4px solid var(--theme-primary);
+  padding-left: var(--space);
+  padding-top: calc(var(--space) / 3);
+  padding-bottom: calc(var(--space) / 3);
+  background-color: rgba(122, 154, 62, 0.03);
+  border-radius: 0.125rem;
+  margin-bottom: var(--space-golden);
+}
+
+/* Estilo específico para labels de checkboxes (más legible) */
+.checkbox-label {
+  font-weight: 600;
+  color: var(--theme-text-primary);
+  font-size: 0.95rem;
+}
+
+html.dark .checkbox-label {
+  color: var(--color-gris-piedra);
+}
+
+/* Wrapper para cada campo del formulario: separa claramente preguntas/respuestas y del siguiente ítem
+   Usamos la proporción áurea para la distancia vertical. */
+.form-field {
+  margin-bottom: var(--space-golden);
+}
+
+/* Estilos básicos para botones */
+.btn {
+  padding: 0.625rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  border: 1px solid transparent;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  /* Primary: LINEAR/outlined style using Naranja Vibrante (used for 'Registra tu Organización') */
+  background-color: transparent;
+  border-color: var(--color-naranja-vibrante);
+  color: var(--color-naranja-vibrante);
+}
+.btn-primary:hover {
+  background-color: rgba(243,156,18,0.06);
+}
+
+.btn-secondary {
+  /* Secondary: LINEAR/outlined style using Azul Cobalto (make both buttons linear) */
+  background-color: transparent;
+  border-color: var(--color-azul-cobalto);
+  color: var(--color-azul-cobalto);
+}
+.btn-secondary:hover {
+  background-color: rgba(0, 123, 255, 0.06);
+}
+
+.btn-destructive {
+  /* Destructive: RED color adaptable */
+  background-color: transparent;
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+html.dark .btn-destructive {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.btn-destructive:hover {
+  background-color: rgba(220, 38, 38, 0.06);
+}
+
+html.dark .btn-destructive:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* Texto con sombra sutil para mejorar contraste sobre fondos claros (no delineado) */
+.text-subtle-contrast {
+  /* pequeña sombra nítida para separar el texto del fondo */
+  text-shadow: 0 1px 0 rgba(0,0,0,0.12),
+               0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* ── CLASES TEMÁTICAS ADAPTABLES (CLARO/OSCURO) ── */
+
+/* Títulos principales - Se adaptan al modo oscuro */
+.text-heading-primary {
+  color: var(--theme-text-primary);
+}
+
+html.dark .text-heading-primary {
+  color: #1a1f2e;
+}
+
+/* Subtítulos y textos secundarios - Para modo oscuro usa gris más claro */
+.text-heading-secondary {
+  color: var(--theme-text-secondary);
+}
+
+/* Texto muted (subtítulo con más opacidad) - Adaptable a modo oscuro */
+.text-muted {
+  color: var(--theme-text-secondary);
+}
+
+/* Mapeo de carbon a variable temática */
+.text-carbon-adaptive {
+  color: var(--theme-text-primary);
+}
+
+html.dark .text-carbon-adaptive {
+  color: var(--theme-text-primary);
+}
+
+/* Mapeo de brand-earth-brown a variable temática */
+.text-earth-brown-adaptive {
+  color: var(--theme-text-primary);
+}
+
+html.dark .text-earth-brown-adaptive {
+  color: var(--color-azul-cobalto);
+}
+
+/* Mapeo de brand-leaf-vibrant a verde adaptable */
+.text-leaf-vibrant-adaptive {
+  color: var(--color-verde-brote);
+}
+
+html.dark .text-leaf-vibrant-adaptive {
+  color: var(--color-verde-brote);
+}
+
+/* Versión con opacidad para carbon/70 */
+.text-carbon-muted {
+  color: var(--theme-text-secondary);
+}
+
+html.dark .text-carbon-muted {
+  color: var(--theme-text-secondary);
+}
+
+/* Responsividad: escala fluida para contenidos clave */
+@media (max-width: 640px) {
+  /* Asegura que los panels no sobrepasen el viewport en móvil */
+  .container {
+    width: 100% !important;
+  }
+  /* Snap sections ocupan al menos 100dvh en móvil */
+  .snap-start {
+    min-height: 100dvh;
+  }
+}
+
+/* Usar dvh (dynamic viewport height) donde esté disponible para móvil */
+@supports (height: 100dvh) {
+  .h-screen {
+    height: 100dvh;
+  }
+  .min-h-screen {
+    min-height: 100dvh;
+  }
+}
+
+/* ── FIN del archivo ── */

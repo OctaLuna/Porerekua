@@ -1,0 +1,1559 @@
+{
+  "nombre": "Empresa Amazónica de Conservación y Desarrollo Sostenible S.A.",
+  "cargo": "Director Ejecutivo de Sostenibilidad y Relaciones Comunitarias",
+  "formaJuridica": {
+    "id": "1",
+    "otro": "Sociedad Anónima Mixta con participación estatal y privada"
+  },
+  "departamentos": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+  ],
+  "haApoyado": "Si",
+  "anioInicioApoyo": 1990,
+  "apoyos": {
+    "seleccionados": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6"
+    ],
+    "otros": [
+      "Transferencia de tecnología verde",
+      "Investigación aplicada",
+      "Desarrollo de patentes ecológicas",
+      "Consultoría especializada"
+    ]
+  },
+  "motivosApoyo": {
+    "seleccionados": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6"
+    ],
+    "otros": [
+      "Compromiso con futuras generaciones",
+      "Liderazgo en sostenibilidad",
+      "Innovación ambiental"
+    ]
+  },
+  "ods": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17"
+  ],
+  "workArea": "Desarrollo de Comunidades Indígenas",
+  "communityDevTypes": [
+    "Salud comunitaria",
+    "Educación",
+    "Infraestructura",
+    "Economía local",
+    "Cultura y tradición"
+  ],
+  "proyectos": [
+    {
+      "nombre": "Proyecto Amazónico Integral 1: sit exercitation nisi quis ullamco aliqua adipisci",
+      "descripcion": "ut amet et enim sed ut incididunt ad sed et ad ut ad ut Lorem nisi Ut nostrud commodo eiusmod laboris consectetur tempor ea ullamco ullamco do tempor consequat laboris ad tempor veniam do minim ipsum ipsum dolor ut Lorem aliquip nostrud nostrud consequat magna consectetur aliquip sit Lorem et incididunt enim ex et aliquip do amet elit commodo enim quis Lorem ea ex exercitation nostrud aliqua consequat amet ex ad consectetur Lorem ullamco sit veniam Ut ea minim Lorem ullamco veniam magna tempor n",
+      "fechaInicio": "1995-03-15",
+      "fechaFin": "2025-12-31",
+      "anioInicio": 1995,
+      "anioFin": 2026,
+      "tipo": {
+        "id": "1"
+      },
+      "ubicaciones": [
+        {
+          "departamento": "1",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "101",
+              "idComunidadIndigena": "1001"
+            },
+            {
+              "idMunicipio": "102",
+              "idComunidadIndigena": "1004"
+            },
+            {
+              "idMunicipio": "103",
+              "idComunidadIndigena": "1006"
+            },
+            {
+              "idMunicipio": "104",
+              "idComunidadIndigena": "1007"
+            }
+          ]
+        },
+        {
+          "departamento": "2",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "201",
+              "idComunidadIndigena": "2001"
+            },
+            {
+              "idMunicipio": "202",
+              "idComunidadIndigena": "2003"
+            },
+            {
+              "idMunicipio": "203",
+              "idComunidadIndigena": "2004"
+            }
+          ]
+        },
+        {
+          "departamento": "3",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "301",
+              "idComunidadIndigena": "3001"
+            },
+            {
+              "idMunicipio": "302",
+              "idComunidadIndigena": "3003"
+            },
+            {
+              "idMunicipio": "303",
+              "idComunidadIndigena": "3005"
+            }
+          ]
+        },
+        {
+          "departamento": "4",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "401",
+              "idComunidadIndigena": "4001"
+            },
+            {
+              "idMunicipio": "402",
+              "idComunidadIndigena": "4002"
+            }
+          ]
+        },
+        {
+          "departamento": "5",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "501",
+              "idComunidadIndigena": "5001"
+            },
+            {
+              "idMunicipio": "502",
+              "idComunidadIndigena": "5002"
+            },
+            {
+              "idMunicipio": "503",
+              "idComunidadIndigena": "5004"
+            }
+          ]
+        },
+        {
+          "departamento": "6",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "601",
+              "idComunidadIndigena": "6001"
+            },
+            {
+              "idMunicipio": "602",
+              "idComunidadIndigena": "6002"
+            }
+          ]
+        },
+        {
+          "departamento": "7",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "701",
+              "idComunidadIndigena": "7001"
+            },
+            {
+              "idMunicipio": "702",
+              "idComunidadIndigena": "7002"
+            }
+          ]
+        },
+        {
+          "departamento": "8",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "801",
+              "idComunidadIndigena": "8001"
+            },
+            {
+              "idMunicipio": "802",
+              "idComunidadIndigena": "8002"
+            }
+          ]
+        },
+        {
+          "departamento": "9",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "901",
+              "idComunidadIndigena": "9001"
+            },
+            {
+              "idMunicipio": "902",
+              "idComunidadIndigena": "9002"
+            }
+          ]
+        }
+      ],
+      "ayudas": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Mentoría empresarial",
+          "Acceso a mercados",
+          "Certificación sostenible"
+        ]
+      },
+      "actores": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Redes de comercio justo",
+          "Organizaciones de mujeres",
+          "Colectivos juveniles"
+        ]
+      },
+      "area": "1",
+      "conservacion": {
+        "especies": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+          ],
+          "otros": [
+            "Oso andino",
+            "Loro militar",
+            "Nutria gigante"
+          ]
+        },
+        "practicasAgricolas": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "otros": [
+            "Manejo de semillas nativas",
+            "Técnicas ancestrales",
+            "Biofertilizantes"
+          ]
+        }
+      },
+      "desarrollo": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Soberanía alimentaria",
+          "Turismo comunitario",
+          "Artesanías tradicionales"
+        ]
+      },
+      "organizacionesRelacionadas": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    {
+      "nombre": "Proyecto Amazónico Integral 2: consectetur ullamco ullamco ipsum labore exercitat",
+      "descripcion": "tempor commodo et dolore ullamco aliquip nisi Ut dolor consequat exercitation consectetur elit et ut ad exercitation do elit tempor do et nostrud ex adipiscing exercitation do ullamco laboris ea aliquip ad consectetur exercitation aliquip laboris labore laboris et dolor dolore dolor laboris labore sed aliquip exercitation quis elit consectetur sit laboris ex consectetur ipsum et aliquip Lorem minim magna aliqua Lorem dolor eiusmod incididunt aliqua minim adipiscing Ut Ut dolor ex commodo ullamco",
+      "fechaInicio": "1995-03-15",
+      "anioInicio": 1996,
+      "tipo": {
+        "id": "2"
+      },
+      "ubicaciones": [
+        {
+          "departamento": "3",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "301",
+              "idComunidadIndigena": "3001"
+            },
+            {
+              "idMunicipio": "302",
+              "idComunidadIndigena": "3004"
+            }
+          ]
+        },
+        {
+          "departamento": "4",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "401",
+              "idComunidadIndigena": "4001"
+            },
+            {
+              "idMunicipio": "402",
+              "idComunidadIndigena": "4003"
+            }
+          ]
+        },
+        {
+          "departamento": "5",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "501",
+              "idComunidadIndigena": "5001"
+            },
+            {
+              "idMunicipio": "502",
+              "idComunidadIndigena": "5003"
+            }
+          ]
+        }
+      ],
+      "ayudas": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Mentoría empresarial",
+          "Acceso a mercados",
+          "Certificación sostenible"
+        ]
+      },
+      "actores": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Redes de comercio justo",
+          "Organizaciones de mujeres",
+          "Colectivos juveniles"
+        ]
+      },
+      "area": "2",
+      "conservacion": {
+        "especies": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+          ],
+          "otros": [
+            "Oso andino",
+            "Loro militar",
+            "Nutria gigante"
+          ]
+        },
+        "practicasAgricolas": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "otros": [
+            "Manejo de semillas nativas",
+            "Técnicas ancestrales",
+            "Biofertilizantes"
+          ]
+        }
+      },
+      "desarrollo": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Soberanía alimentaria",
+          "Turismo comunitario",
+          "Artesanías tradicionales"
+        ]
+      },
+      "organizacionesRelacionadas": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    {
+      "nombre": "Proyecto Amazónico Integral 3: quis dolore minim nostrud ex magna ad nisi tempor ",
+      "descripcion": "commodo incididunt exercitation minim dolor labore laboris do ipsum ullamco sit ex elit ea minim adipiscing ut laboris ut ut labore Lorem sit laboris dolore ipsum exercitation commodo aliqua sit ullamco dolor sit consequat ex ex sit veniam quis labore laboris elit et eiusmod veniam Ut consequat ex Lorem magna elit aliquip magna adipiscing adipiscing commodo do ex nisi adipiscing Ut ipsum dolore adipiscing ex ut veniam magna consectetur et sit adipiscing ut dolor et labore commodo veniam ullamco ",
+      "fechaInicio": "1995-03-15",
+      "anioInicio": 1997,
+      "tipo": {
+        "id": "3"
+      },
+      "ubicaciones": [
+        {
+          "departamento": "5",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "501",
+              "idComunidadIndigena": "5001"
+            },
+            {
+              "idMunicipio": "502",
+              "idComunidadIndigena": "5003"
+            }
+          ]
+        },
+        {
+          "departamento": "6",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "601",
+              "idComunidadIndigena": "6001"
+            },
+            {
+              "idMunicipio": "602",
+              "idComunidadIndigena": "6003"
+            }
+          ]
+        },
+        {
+          "departamento": "7",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "701",
+              "idComunidadIndigena": "7001"
+            },
+            {
+              "idMunicipio": "702",
+              "idComunidadIndigena": "7002"
+            }
+          ]
+        }
+      ],
+      "ayudas": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Mentoría empresarial",
+          "Acceso a mercados",
+          "Certificación sostenible"
+        ]
+      },
+      "actores": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Redes de comercio justo",
+          "Organizaciones de mujeres",
+          "Colectivos juveniles"
+        ]
+      },
+      "area": "1",
+      "conservacion": {
+        "especies": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+          ],
+          "otros": [
+            "Oso andino",
+            "Loro militar",
+            "Nutria gigante"
+          ]
+        },
+        "practicasAgricolas": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "otros": [
+            "Manejo de semillas nativas",
+            "Técnicas ancestrales",
+            "Biofertilizantes"
+          ]
+        }
+      },
+      "desarrollo": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Soberanía alimentaria",
+          "Turismo comunitario",
+          "Artesanías tradicionales"
+        ]
+      },
+      "organizacionesRelacionadas": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    {
+      "nombre": "Proyecto Amazónico Integral 4: aliqua amet Ut ut aliqua nisi aliquip veniam do el",
+      "descripcion": "eiusmod enim ipsum laboris Lorem magna elit magna ut Ut Lorem consequat consequat ullamco ipsum laboris nisi tempor ex Ut nostrud nisi veniam dolore aliquip ex elit et elit amet nostrud sed dolor amet dolore et aliqua ad commodo Ut minim quis consequat nostrud ullamco veniam enim ut adipiscing ullamco ut eiusmod exercitation sed tempor labore quis ut Lorem incididunt ex ipsum enim ea ex enim ipsum dolore aliquip consequat exercitation ut amet sed aliqua dolor laboris sit aliquip consequat ipsum ",
+      "fechaInicio": "1995-03-15",
+      "fechaFin": "2025-12-31",
+      "anioInicio": 1998,
+      "anioFin": 2026,
+      "tipo": {
+        "id": "4"
+      },
+      "ubicaciones": [
+        {
+          "departamento": "7",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "701",
+              "idComunidadIndigena": "7001"
+            },
+            {
+              "idMunicipio": "702",
+              "idComunidadIndigena": "7002"
+            }
+          ]
+        },
+        {
+          "departamento": "8",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "801",
+              "idComunidadIndigena": "8001"
+            },
+            {
+              "idMunicipio": "802",
+              "idComunidadIndigena": "8002"
+            }
+          ]
+        },
+        {
+          "departamento": "9",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "901",
+              "idComunidadIndigena": "9001"
+            },
+            {
+              "idMunicipio": "902",
+              "idComunidadIndigena": "9002"
+            }
+          ]
+        }
+      ],
+      "ayudas": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Mentoría empresarial",
+          "Acceso a mercados",
+          "Certificación sostenible"
+        ]
+      },
+      "actores": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Redes de comercio justo",
+          "Organizaciones de mujeres",
+          "Colectivos juveniles"
+        ]
+      },
+      "area": "2",
+      "conservacion": {
+        "especies": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+          ],
+          "otros": [
+            "Oso andino",
+            "Loro militar",
+            "Nutria gigante"
+          ]
+        },
+        "practicasAgricolas": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "otros": [
+            "Manejo de semillas nativas",
+            "Técnicas ancestrales",
+            "Biofertilizantes"
+          ]
+        }
+      },
+      "desarrollo": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Soberanía alimentaria",
+          "Turismo comunitario",
+          "Artesanías tradicionales"
+        ]
+      },
+      "organizacionesRelacionadas": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    {
+      "nombre": "Proyecto Amazónico Integral 5: sed ex elit veniam labore dolore elit ullamco et e",
+      "descripcion": "adipiscing incididunt sit ad ut sed quis sed adipiscing ullamco labore magna sed elit consequat eiusmod Lorem laboris consequat incididunt incididunt commodo ullamco minim incididunt nostrud amet eiusmod nisi ea minim ut nostrud amet tempor magna ea amet enim nisi ut amet ex do adipiscing adipiscing enim aliqua elit ea Ut tempor aliqua magna adipiscing dolore incididunt aliquip minim ex tempor nostrud Lorem ut ad consectetur enim exercitation consectetur dolore dolor dolor eiusmod ex amet ex et ",
+      "fechaInicio": "1995-03-15",
+      "anioInicio": 1999,
+      "tipo": {
+        "id": "5",
+        "otros": "Proyecto innovador de biotecnología amazónica"
+      },
+      "ubicaciones": [
+        {
+          "departamento": "9",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "901",
+              "idComunidadIndigena": "9001"
+            },
+            {
+              "idMunicipio": "902",
+              "idComunidadIndigena": "9002"
+            }
+          ]
+        },
+        {
+          "departamento": "1",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "101",
+              "idComunidadIndigena": "1001"
+            },
+            {
+              "idMunicipio": "102",
+              "idComunidadIndigena": "1005"
+            }
+          ]
+        },
+        {
+          "departamento": "2",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "201",
+              "idComunidadIndigena": "2001"
+            },
+            {
+              "idMunicipio": "202",
+              "idComunidadIndigena": "2003"
+            }
+          ]
+        }
+      ],
+      "ayudas": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Mentoría empresarial",
+          "Acceso a mercados",
+          "Certificación sostenible"
+        ]
+      },
+      "actores": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Redes de comercio justo",
+          "Organizaciones de mujeres",
+          "Colectivos juveniles"
+        ]
+      },
+      "area": "1",
+      "conservacion": {
+        "especies": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+          ],
+          "otros": [
+            "Oso andino",
+            "Loro militar",
+            "Nutria gigante"
+          ]
+        },
+        "practicasAgricolas": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "otros": [
+            "Manejo de semillas nativas",
+            "Técnicas ancestrales",
+            "Biofertilizantes"
+          ]
+        }
+      },
+      "desarrollo": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Soberanía alimentaria",
+          "Turismo comunitario",
+          "Artesanías tradicionales"
+        ]
+      },
+      "organizacionesRelacionadas": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    {
+      "nombre": "Proyecto Amazónico Integral 6: ut sed Ut aliquip ea sed aliqua consectetur sit ex",
+      "descripcion": "ad commodo ex ad sit nisi sed dolore et consectetur sit adipiscing labore aliqua ea eiusmod ut ut Ut ad commodo ex ex do elit ullamco ut tempor quis tempor minim incididunt Ut tempor exercitation tempor ipsum ea commodo elit enim et veniam eiusmod labore et elit adipiscing ex consequat et sed aliqua dolor ut aliqua nostrud veniam aliqua tempor sit Lorem tempor Ut consequat elit dolore ullamco laboris aliquip dolor labore minim ut ex nisi minim aliqua consequat consectetur enim ea incididunt et e",
+      "fechaInicio": "1995-03-15",
+      "anioInicio": 2000,
+      "tipo": {
+        "id": "1"
+      },
+      "ubicaciones": [
+        {
+          "departamento": "2",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "201",
+              "idComunidadIndigena": "2001"
+            },
+            {
+              "idMunicipio": "202",
+              "idComunidadIndigena": "2003"
+            }
+          ]
+        },
+        {
+          "departamento": "3",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "301",
+              "idComunidadIndigena": "3001"
+            },
+            {
+              "idMunicipio": "302",
+              "idComunidadIndigena": "3004"
+            }
+          ]
+        },
+        {
+          "departamento": "4",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "401",
+              "idComunidadIndigena": "4001"
+            },
+            {
+              "idMunicipio": "402",
+              "idComunidadIndigena": "4003"
+            }
+          ]
+        }
+      ],
+      "ayudas": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Mentoría empresarial",
+          "Acceso a mercados",
+          "Certificación sostenible"
+        ]
+      },
+      "actores": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Redes de comercio justo",
+          "Organizaciones de mujeres",
+          "Colectivos juveniles"
+        ]
+      },
+      "area": "2",
+      "conservacion": {
+        "especies": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+          ],
+          "otros": [
+            "Oso andino",
+            "Loro militar",
+            "Nutria gigante"
+          ]
+        },
+        "practicasAgricolas": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "otros": [
+            "Manejo de semillas nativas",
+            "Técnicas ancestrales",
+            "Biofertilizantes"
+          ]
+        }
+      },
+      "desarrollo": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Soberanía alimentaria",
+          "Turismo comunitario",
+          "Artesanías tradicionales"
+        ]
+      },
+      "organizacionesRelacionadas": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    {
+      "nombre": "Proyecto Amazónico Integral 7: Lorem magna aliquip et nisi enim enim dolor conseq",
+      "descripcion": "tempor elit eiusmod tempor laboris magna quis incididunt nisi ad ullamco ut veniam eiusmod elit sit minim consectetur nostrud ea et consectetur nisi enim aliquip ut ipsum consequat magna do adipiscing veniam consequat enim incididunt labore aliqua enim labore ea aliqua aliqua sit nisi nostrud nostrud labore ex enim consectetur ea Ut ad ut do nostrud et elit veniam amet et elit consequat commodo incididunt ipsum eiusmod enim Lorem ullamco sed et adipiscing sed enim magna consectetur et sed exerci",
+      "fechaInicio": "1995-03-15",
+      "fechaFin": "2025-12-31",
+      "anioInicio": 2001,
+      "anioFin": 2026,
+      "tipo": {
+        "id": "2"
+      },
+      "ubicaciones": [
+        {
+          "departamento": "4",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "401",
+              "idComunidadIndigena": "4001"
+            },
+            {
+              "idMunicipio": "402",
+              "idComunidadIndigena": "4003"
+            }
+          ]
+        },
+        {
+          "departamento": "5",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "501",
+              "idComunidadIndigena": "5001"
+            },
+            {
+              "idMunicipio": "502",
+              "idComunidadIndigena": "5003"
+            }
+          ]
+        },
+        {
+          "departamento": "6",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "601",
+              "idComunidadIndigena": "6001"
+            },
+            {
+              "idMunicipio": "602",
+              "idComunidadIndigena": "6003"
+            }
+          ]
+        }
+      ],
+      "ayudas": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Mentoría empresarial",
+          "Acceso a mercados",
+          "Certificación sostenible"
+        ]
+      },
+      "actores": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Redes de comercio justo",
+          "Organizaciones de mujeres",
+          "Colectivos juveniles"
+        ]
+      },
+      "area": "1",
+      "conservacion": {
+        "especies": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+          ],
+          "otros": [
+            "Oso andino",
+            "Loro militar",
+            "Nutria gigante"
+          ]
+        },
+        "practicasAgricolas": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "otros": [
+            "Manejo de semillas nativas",
+            "Técnicas ancestrales",
+            "Biofertilizantes"
+          ]
+        }
+      },
+      "desarrollo": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Soberanía alimentaria",
+          "Turismo comunitario",
+          "Artesanías tradicionales"
+        ]
+      },
+      "organizacionesRelacionadas": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    {
+      "nombre": "Proyecto Amazónico Integral 8: minim et ea nisi elit ea consectetur ea elit Ut ex",
+      "descripcion": "sit ut ut ex consequat dolore ut adipiscing ut elit quis et tempor ipsum adipiscing elit sed Ut amet aliquip consectetur tempor aliqua veniam consequat consequat ipsum Ut ea Ut magna Ut elit ut tempor elit aliqua veniam ut laboris ut ullamco exercitation Lorem adipiscing ut ex et ut exercitation ut veniam minim Ut do ullamco do Lorem exercitation aliqua adipiscing ut sed enim do magna do Lorem consectetur aliquip aliquip veniam eiusmod dolore labore Lorem elit tempor minim enim commodo sed dolor",
+      "fechaInicio": "1995-03-15",
+      "anioInicio": 2002,
+      "tipo": {
+        "id": "3"
+      },
+      "ubicaciones": [
+        {
+          "departamento": "6",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "601",
+              "idComunidadIndigena": "6001"
+            },
+            {
+              "idMunicipio": "602",
+              "idComunidadIndigena": "6003"
+            }
+          ]
+        },
+        {
+          "departamento": "7",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "701",
+              "idComunidadIndigena": "7001"
+            },
+            {
+              "idMunicipio": "702",
+              "idComunidadIndigena": "7002"
+            }
+          ]
+        },
+        {
+          "departamento": "8",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "801",
+              "idComunidadIndigena": "8001"
+            },
+            {
+              "idMunicipio": "802",
+              "idComunidadIndigena": "8002"
+            }
+          ]
+        }
+      ],
+      "ayudas": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Mentoría empresarial",
+          "Acceso a mercados",
+          "Certificación sostenible"
+        ]
+      },
+      "actores": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Redes de comercio justo",
+          "Organizaciones de mujeres",
+          "Colectivos juveniles"
+        ]
+      },
+      "area": "2",
+      "conservacion": {
+        "especies": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+          ],
+          "otros": [
+            "Oso andino",
+            "Loro militar",
+            "Nutria gigante"
+          ]
+        },
+        "practicasAgricolas": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "otros": [
+            "Manejo de semillas nativas",
+            "Técnicas ancestrales",
+            "Biofertilizantes"
+          ]
+        }
+      },
+      "desarrollo": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Soberanía alimentaria",
+          "Turismo comunitario",
+          "Artesanías tradicionales"
+        ]
+      },
+      "organizacionesRelacionadas": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    {
+      "nombre": "Proyecto Amazónico Integral 9: consectetur Lorem et magna do et exercitation aliq",
+      "descripcion": "incididunt aliquip quis Ut consectetur ea magna sed ut Lorem ut enim aliquip laboris laboris ex sed laboris Ut dolore quis adipiscing dolore do veniam aliqua sit aliqua magna eiusmod aliquip consectetur amet tempor eiusmod commodo amet ad enim ut incididunt ea enim incididunt adipiscing elit enim eiusmod minim nostrud veniam ut enim Lorem amet laboris veniam incididunt laboris sed sed exercitation ex sit dolor ad nostrud ex sit veniam veniam amet eiusmod aliquip ut eiusmod ipsum sit sit enim ex ",
+      "fechaInicio": "1995-03-15",
+      "anioInicio": 2003,
+      "tipo": {
+        "id": "4"
+      },
+      "ubicaciones": [
+        {
+          "departamento": "8",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "801",
+              "idComunidadIndigena": "8001"
+            },
+            {
+              "idMunicipio": "802",
+              "idComunidadIndigena": "8002"
+            }
+          ]
+        },
+        {
+          "departamento": "9",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "901",
+              "idComunidadIndigena": "9001"
+            },
+            {
+              "idMunicipio": "902",
+              "idComunidadIndigena": "9002"
+            }
+          ]
+        },
+        {
+          "departamento": "1",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "101",
+              "idComunidadIndigena": "1001"
+            },
+            {
+              "idMunicipio": "102",
+              "idComunidadIndigena": "1005"
+            }
+          ]
+        }
+      ],
+      "ayudas": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Mentoría empresarial",
+          "Acceso a mercados",
+          "Certificación sostenible"
+        ]
+      },
+      "actores": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Redes de comercio justo",
+          "Organizaciones de mujeres",
+          "Colectivos juveniles"
+        ]
+      },
+      "area": "1",
+      "conservacion": {
+        "especies": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+          ],
+          "otros": [
+            "Oso andino",
+            "Loro militar",
+            "Nutria gigante"
+          ]
+        },
+        "practicasAgricolas": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "otros": [
+            "Manejo de semillas nativas",
+            "Técnicas ancestrales",
+            "Biofertilizantes"
+          ]
+        }
+      },
+      "desarrollo": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Soberanía alimentaria",
+          "Turismo comunitario",
+          "Artesanías tradicionales"
+        ]
+      },
+      "organizacionesRelacionadas": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    {
+      "nombre": "Proyecto Amazónico Integral 10: do magna exercitation et ut sed et do Lorem ad exe",
+      "descripcion": "quis ipsum sit enim tempor Ut veniam ad magna sit commodo commodo tempor tempor ut ex sed veniam minim elit minim minim commodo et elit veniam amet consequat sed exercitation Lorem et commodo eiusmod incididunt tempor ut Lorem elit Ut aliquip ex nostrud veniam Lorem ullamco ad dolor ex consectetur consectetur amet ex quis adipiscing et magna dolore incididunt ut dolor veniam sit tempor amet ex consectetur consequat incididunt ad incididunt nostrud enim dolor Lorem elit amet nisi incididunt ipsum",
+      "fechaInicio": "1995-03-15",
+      "fechaFin": "2025-12-31",
+      "anioInicio": 2004,
+      "anioFin": 2026,
+      "tipo": {
+        "id": "5",
+        "otros": "Proyecto innovador de biotecnología amazónica"
+      },
+      "ubicaciones": [
+        {
+          "departamento": "1",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "101",
+              "idComunidadIndigena": "1001"
+            },
+            {
+              "idMunicipio": "102",
+              "idComunidadIndigena": "1005"
+            }
+          ]
+        },
+        {
+          "departamento": "2",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "201",
+              "idComunidadIndigena": "2001"
+            },
+            {
+              "idMunicipio": "202",
+              "idComunidadIndigena": "2003"
+            }
+          ]
+        },
+        {
+          "departamento": "3",
+          "municipiosTrabajo": [
+            {
+              "idMunicipio": "301",
+              "idComunidadIndigena": "3001"
+            },
+            {
+              "idMunicipio": "302",
+              "idComunidadIndigena": "3004"
+            }
+          ]
+        }
+      ],
+      "ayudas": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Mentoría empresarial",
+          "Acceso a mercados",
+          "Certificación sostenible"
+        ]
+      },
+      "actores": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Redes de comercio justo",
+          "Organizaciones de mujeres",
+          "Colectivos juveniles"
+        ]
+      },
+      "area": "2",
+      "conservacion": {
+        "especies": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+          ],
+          "otros": [
+            "Oso andino",
+            "Loro militar",
+            "Nutria gigante"
+          ]
+        },
+        "practicasAgricolas": {
+          "seleccionados": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "otros": [
+            "Manejo de semillas nativas",
+            "Técnicas ancestrales",
+            "Biofertilizantes"
+          ]
+        }
+      },
+      "desarrollo": {
+        "seleccionados": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "otros": [
+          "Soberanía alimentaria",
+          "Turismo comunitario",
+          "Artesanías tradicionales"
+        ]
+      },
+      "organizacionesRelacionadas": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    }
+  ]
+}

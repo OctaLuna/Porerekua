@@ -4,9 +4,9 @@
  * respetando los límites de la UI
  */
 
-import type { RegistrationFormData, ProjectFormData } from '../types';
-import type { DepartamentoDto, NamedResource } from '../types/api';
-import { mapEmpresaFormToDto } from '../utils/empresaFormMapper.js';
+import type { RegistrationFormData, ProjectFormData } from '../src/types';
+import type { DepartamentoDto, NamedResource } from '../src/types/api';
+import { mapEmpresaFormToDto } from '../src/utils/empresaFormMapper.js';
 
 // ============================================================================
 // DATOS MOCK - Catálogos completos (simulando respuesta de API)
@@ -113,14 +113,6 @@ const mockDepartamentos: DepartamentoDto[] = [
   ]},
 ];
 
-const mockLegalForms: NamedResource[] = [
-  { id: 1, nombre: 'Sociedad Anónima (S.A.)' },
-  { id: 2, nombre: 'Sociedad de Responsabilidad Limitada (S.R.L.)' },
-  { id: 3, nombre: 'Empresa Unipersonal' },
-  { id: 4, nombre: 'Sociedad Colectiva' },
-  { id: 5, nombre: 'Sociedad en Comandita' },
-];
-
 const mockSupports: NamedResource[] = [
   { id: 1, nombre: 'Financiero' },
   { id: 2, nombre: 'Técnico' },
@@ -157,20 +149,6 @@ const mockOds: NamedResource[] = [
   { id: 15, nombre: 'ODS 15: Vida de ecosistemas terrestres' },
   { id: 16, nombre: 'ODS 16: Paz, justicia e instituciones sólidas' },
   { id: 17, nombre: 'ODS 17: Alianzas para lograr los objetivos' },
-];
-
-const mockProjectTypes: NamedResource[] = [
-  { id: 1, nombre: 'Conservación' },
-  { id: 2, nombre: 'Desarrollo sostenible' },
-  { id: 3, nombre: 'Investigación' },
-  { id: 4, nombre: 'Ecoturismo' },
-  { id: 5, nombre: 'Agroforestería' },
-];
-
-const mockProjectAreas: NamedResource[] = [
-  { id: 1, nombre: 'Conservación de Ecosistemas' },
-  { id: 2, nombre: 'Desarrollo de Comunidades Indígenas' },
-  { id: 3, nombre: 'Investigación y Monitoreo' },
 ];
 
 const mockHelpTypes: NamedResource[] = [
@@ -232,11 +210,6 @@ function generateLongText(maxLength: number): string {
     result += (result.length > 0 ? ' ' : '') + word;
   }
   return result.substring(0, maxLength);
-}
-
-function getAllMunicipiosFromDepartamento(depId: number): { id: number; nombre: string; comunidadesIndigenas: { id: number; nombre: string }[] }[] {
-  const dep = mockDepartamentos.find(d => d.id === depId);
-  return dep?.municipios || [];
 }
 
 // ============================================================================

@@ -11,11 +11,20 @@ node_modules
 dist
 dist-ssr
 *.local
+*.tsbuildinfo
+
+# Generated output from local simulation runs
+simulation/output/
+
+# Unreferenced design-source assets pulled out of public/ pending review
+# (never served to production; kept locally only)
+unused-assets-backup/
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
+.claude/
 .DS_Store
 *.suo
 *.ntvs*

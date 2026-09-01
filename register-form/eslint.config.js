@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['dist', 'node_modules', 'simulation/**'],
+    ignores: ['dist', 'node_modules', 'simulation/**', 'unused-assets-backup/**'],
   },
   {
     extends: [

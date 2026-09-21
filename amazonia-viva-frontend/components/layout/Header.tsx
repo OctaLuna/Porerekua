@@ -21,7 +21,7 @@ const ThemeToggleButton = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-full text-carbon dark:text-beige-arena hover:bg-verde-brote/20 transition-colors"
+      className="p-2 rounded-full text-carbon dark:text-beige-arena hover:text-terracota hover:bg-terracota/20 transition-colors"
       aria-label="Toggle theme"
     >
       {theme === 'light' ? <MoonIcon /> : <SunIcon />}
@@ -44,7 +44,7 @@ const AuthControls = () => {
         </span>
         <button
           onClick={logout}
-          className="p-2 rounded-full text-carbon dark:text-beige-arena hover:bg-verde-brote/20 transition-colors"
+          className="p-2 rounded-full text-carbon dark:text-beige-arena hover:text-terracota hover:bg-terracota/20 transition-colors"
           aria-label="Cerrar sesión"
           title="Cerrar sesión"
         >
@@ -57,7 +57,7 @@ const AuthControls = () => {
   return (
     <button
       onClick={openLoginPanel}
-      className="p-2 rounded-full text-carbon dark:text-beige-arena hover:bg-verde-brote/20 transition-colors"
+      className="p-2 rounded-full text-carbon dark:text-beige-arena hover:text-terracota hover:bg-terracota/20 transition-colors"
       aria-label="Login"
     >
       <LoginIcon />
@@ -66,28 +66,41 @@ const AuthControls = () => {
 };
 
 // Ítem de nav en pill; el activo lleva el subrayado del motivo "flujo".
-const navItemBase = 'relative rounded-full px-4 py-1.5 text-sm font-medium transition-colors';
+// El hover tiñe el texto de naranja y traza un subrayado de izquierda a derecha.
+const navItemBase = 'group relative rounded-full px-4 py-1.5 text-sm font-medium transition-colors';
 const navItemActive = 'text-verde-brote';
-const navItemInactive = 'text-gris-piedra hover:text-carbon dark:text-beige-arena/70 dark:hover:text-beige-arena';
+const navItemInactive = 'text-carbon hover:text-terracota dark:text-beige-arena/70 dark:hover:text-terracota';
 
-const NavItem: React.FC<{ to: string; label: string; onClick?: () => void; block?: boolean }> = ({ to, label, onClick, block }) => (
-  <NavLink to={to} onClick={onClick} className={({ isActive }) => `${block ? 'block text-center ' : ''}${navItemBase} ${isActive ? navItemActive : navItemInactive}`}>
-    {({ isActive }) => (
-      <>
-        {label}
-        {isActive && <FlowLine className="absolute -bottom-0.5 left-3 right-3 h-2 text-verde-brote" active />}
-      </>
-    )}
-  </NavLink>
-);
+const NavItem: React.FC<{ to: string; label: string; onClick?: () => void; block?: boolean }> = ({ to, label, onClick, block }) => {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <NavLink
+      to={to}
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className={({ isActive }) => `${block ? 'block text-center ' : ''}${navItemBase} ${isActive ? navItemActive : navItemInactive}`}
+    >
+      {({ isActive }) => (
+        <>
+          {label}
+          {isActive ? (
+            <FlowLine className="absolute -bottom-0.5 left-3 right-3 h-2 text-verde-brote" active />
+          ) : (
+            <FlowLine className="absolute -bottom-0.5 left-3 right-3 h-2 text-terracota" active={hovered} />
+          )}
+        </>
+      )}
+    </NavLink>
+  );
+};
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { isAuthenticated, user } = useAuth();
   const isAdmin = isAuthenticated && !!user && (user.rol === RoleEnum.Superadmin || user.rol === RoleEnum.Admin);
-
-  // Barra frosted que se solidifica al hacer scroll (transparente/tenue → chrome).
+  // Fondo sólido; solo la sombra se activa al hacer scroll.
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
@@ -97,10 +110,8 @@ const Header: React.FC = () => {
 
   return (
     <header
-      className={`fixed top-12 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-nav-chrome/95 dark:bg-noche-selva/90 backdrop-blur-lg shadow-md'
-          : 'bg-nav-chrome/55 dark:bg-noche-selva/45 backdrop-blur-md shadow-none'
+      className={`fixed top-12 inset-x-0 z-50 bg-blanco-puro dark:bg-noche-selva transition-shadow duration-300 ${
+        scrolled ? 'shadow-md' : 'shadow-none'
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -121,7 +132,7 @@ const Header: React.FC = () => {
             </Link>
           </div>
           <div className="hidden md:flex items-center space-x-3">
-            <nav className="flex items-center gap-1 rounded-full border border-carbon/10 dark:border-white/10 bg-blanco-puro/40 dark:bg-noche-selva/40 px-1.5 py-1 backdrop-blur-sm">
+            <nav className="flex items-center gap-1">
               {NAV_LINKS.map((link) => (
                 <NavItem key={link.name} to={link.href.replace('#', '')} label={link.name} />
               ))}
@@ -148,7 +159,7 @@ const Header: React.FC = () => {
         {isMenuOpen && (
           <div className="md:hidden" id="mobile-menu">
               <div className="pb-4">
-                <div className="mt-2 bg-nav-chrome/95 dark:bg-noche-selva/95 backdrop-blur-lg rounded-2xl shadow-lg border border-carbon/10 dark:border-white/10">
+                <div className="mt-2 bg-blanco-puro/95 dark:bg-noche-selva/95 backdrop-blur-lg rounded-2xl shadow-lg border border-carbon/10 dark:border-white/10">
                     <div className="px-3 pt-3 pb-3 space-y-1">
                         {NAV_LINKS.map((link) => (
                             <NavItem key={link.name} to={link.href.replace('#', '')} label={link.name} onClick={() => setIsMenuOpen(false)} block />

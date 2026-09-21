@@ -162,15 +162,74 @@ const GeoreferencingPage: React.FC = () => {
   };
   const mapStyle = API_KEY ? `https://api.maptiler.com/maps/dataviz/style.json?key=${API_KEY}` : CARTO_STYLE;
 
+  // Bounding box aproximado de Bolivia (con margen), usado solo para el
+  // encuadre inicial de cámara — no afecta coordenadas de proyectos/markers.
+  const BOLIVIA_SW: [number, number] = [-70.1, -23.3];
+  const BOLIVIA_NE: [number, number] = [-56.9, -9.4];
+  const BOLIVIA_MASK_COLOR = '#2E1B10'; // café oscuro saturado (cafe-oscuro) de la paleta
+
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
-    const m = new maplibregl.Map({ container: mapContainer.current, style: mapStyle, center: [-65, -10], zoom: 4 });
-    m.addControl(new maplibregl.NavigationControl(), 'top-right');
+    const m = new maplibregl.Map({
+      container: mapContainer.current,
+      style: mapStyle,
+      bounds: [BOLIVIA_SW, BOLIVIA_NE],
+      fitBoundsOptions: { padding: 24 },
+      attributionControl: false,
+    });
+    // Máscara: pinta de café oscuro todo el mundo excepto el contorno real
+    // de Bolivia (polígono de frontera, no un rectángulo), para que solo el
+    // territorio boliviano muestre los tiles del basemap. No toca fuentes,
+    // markers ni popups existentes — es una capa puramente visual encima.
+    // No se ata al cleanup de este efecto: en dev, StrictMode monta/desmonta
+    // el efecto una vez de forma simulada mientras el fetch está en curso, y
+    // el mapa (m) sigue siendo el mismo entre ambas pasadas — cancelar aquí
+    // dejaba la máscara sin agregar nunca. Si el mapa llegara a destruirse de
+    // verdad, addSource/addLayer simplemente lanzan y el catch lo ignora.
+    const addBoliviaMask = async () => {
+      if (m.getSource('bolivia-mask')) return;
+      try {
+        const res = await fetch('/data/bolivia-border.geojson');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const border: GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon> = await res.json();
+        if (m.getSource('bolivia-mask')) return;
+
+        const world: [number, number][] = [
+          [-180, -85], [180, -85], [180, 85], [-180, 85], [-180, -85],
+        ];
+        // El anillo exterior de Bolivia se usa tal cual como "agujero" del
+        // polígono máscara (mundo - Bolivia); funciona con la regla de
+        // relleno non-zero de MapLibre independientemente de la orientación.
+        const holes: [number, number][][] =
+          border.geometry.type === 'Polygon'
+            ? [border.geometry.coordinates[0] as [number, number][]]
+            : border.geometry.coordinates.map((poly) => poly[0] as [number, number][]);
+
+        m.addSource('bolivia-mask', {
+          type: 'geojson',
+          data: {
+            type: 'Feature',
+            properties: {},
+            geometry: { type: 'Polygon', coordinates: [world, ...holes] },
+          },
+        });
+        m.addLayer({
+          id: 'bolivia-mask-fill',
+          type: 'fill',
+          source: 'bolivia-mask',
+          paint: { 'fill-color': BOLIVIA_MASK_COLOR, 'fill-opacity': 1 },
+        });
+      } catch {
+        // Si falla la carga del contorno (o el mapa ya no existe), se deja
+        // el basemap sin máscara — no se rompe el mapa ni sus coordenadas.
+      }
+    };
+
     // Fix de render (mapa en blanco): reasegurar el tamaño una vez cargado y tras el layout SPA.
-    m.on('load', () => { m.resize(); setMapLoaded(true); });
+    m.on('load', () => { m.resize(); addBoliviaMask(); setMapLoaded(true); });
     // 'idle' es un disparador fiable (tras el primer render) para marcar el mapa listo
     // y evitar la carrera datos-vs-mapa en el build de producción.
-    m.once('idle', () => setMapLoaded(true));
+    m.once('idle', () => { addBoliviaMask(); setMapLoaded(true); });
     const raf = requestAnimationFrame(() => m.resize());
     const ro = new ResizeObserver(() => m.resize());
     ro.observe(mapContainer.current);
@@ -252,10 +311,10 @@ const GeoreferencingPage: React.FC = () => {
         @media (prefers-reduced-motion: reduce) { .geo-pin::after { animation: none; opacity: 0; } }
       `}</style>
       <div className="relative w-full h-screen overflow-hidden">
-        {/* Map (con fondo degradado como fallback cuando no hay tiles de MapTiler) */}
+        {/* Map (con fondo café oscuro como fallback cuando no hay tiles de MapTiler) */}
         <div
           ref={mapContainer}
-          className="absolute inset-0 z-0 h-full w-full bg-gradient-to-br from-verde-hoja-seca/20 via-beige-arena to-azul-cobalto/10 dark:from-noche-selva dark:via-noche-selva dark:to-verde-hoja-seca/30"
+          className="absolute inset-0 z-0 h-full w-full bg-cafe-oscuro"
         />
 
         {/* Bottom panel */}

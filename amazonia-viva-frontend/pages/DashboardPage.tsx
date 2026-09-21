@@ -652,11 +652,11 @@ const DashboardPage: React.FC = () => {
 
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-40 pb-12 min-h-screen space-y-8">
         <div className="bg-beige-arena/80 dark:bg-noche-selva/55 backdrop-blur-md rounded-2xl border border-white/40 dark:border-beige-arena/10 p-6 sm:p-8">
-          <h1 className="text-4xl md:text-5xl font-extrabold font-serif text-beige-arena">
+          <h1 className="text-4xl md:text-5xl font-extrabold font-serif text-carbon dark:text-beige-arena">
             Dashboard de Impacto
           </h1>
           {!isAuthenticated && (
-            <p className="text-beige-arena/70 mt-1 text-sm">
+            <p className="text-carbon/70 dark:text-beige-arena/70 mt-1 text-sm">
               Vista pública — inicia sesión para ver el análisis completo
             </p>
           )}

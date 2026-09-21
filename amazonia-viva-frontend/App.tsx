@@ -1,9 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { HashRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import { useLenis } from './hooks/useLenis';
-import { gsap, ScrollTrigger } from './components/animations/gsap-setup';
-import { prefersReducedMotion } from './components/animations/motion';
 
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
@@ -43,21 +40,6 @@ const isFullBleed = (pathname: string) =>
 const AppContent: React.FC = () => {
   const location = useLocation();
   const { activePanel, isDetailPanelOpen } = useUI();
-  const mainRef = useRef<HTMLElement>(null);
-
-  useLenis();
-
-  // Reset scroll and re-measure ScrollTrigger pins on SPA route changes.
-  // Fade-in de entrada en cada cambio de ruta (solo opacity → no afecta el layout
-  // ni la medición de los pins). Respeta prefers-reduced-motion.
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    const id = requestAnimationFrame(() => ScrollTrigger.refresh());
-    if (!prefersReducedMotion() && mainRef.current) {
-      gsap.fromTo(mainRef.current, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power1.out' });
-    }
-    return () => cancelAnimationFrame(id);
-  }, [location.pathname]);
 
   const fullBleed = isFullBleed(location.pathname);
   const mainClasses = fullBleed
@@ -67,7 +49,7 @@ const AppContent: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen bg-beige-arena dark:bg-noche-selva text-carbon dark:text-beige-arena/90 transition-colors duration-300">
       <Header />
-      <main ref={mainRef} className={mainClasses}>
+      <main className={mainClasses}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/georeferencia" element={<GeoreferencingPage />} />

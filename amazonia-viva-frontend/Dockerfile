@@ -20,6 +20,9 @@ RUN npm run build
 
 # ---------- Serve stage: Nginx sirve el estático + proxy /api ----------
 FROM nginx:alpine AS serve
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Template (no .conf fijo): nginx-alpine corre envsubst sobre esto al arrancar,
+# sustituyendo ${API_UPSTREAM} por la variable de entorno del contenedor (ver nginx.conf.template).
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
+ENV API_UPSTREAM=api:3333
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80

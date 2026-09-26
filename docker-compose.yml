@@ -14,11 +14,10 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-amazonia}
     volumes:
       - pgdata:/var/lib/postgresql/data
-      # Réplica completa de Supabase (esquema public + datos) como init de la BD local.
-      # Regenerar el dump si Supabase cambia (pg_dump 17, ver DOCKER.md):
-      #   docker run --rm postgres:17-alpine pg_dump "<supabase-url>?sslmode=require" \
-      #     --schema=public --no-owner --no-privileges > api-rest-amazonia/database/snapshots/supabase-full.sql
-      - ./api-rest-amazonia/database/snapshots/supabase-full.sql:/docker-entrypoint-initdb.d/01_supabase-full.sql:ro
+      # Init declarativo (schema + migraciones + seed de geografía), independiente de Supabase.
+      # database/init.sql queda directo en /docker-entrypoint-initdb.d (Postgres lo detecta y
+      # corre solo); usa \ir, que resuelve relativo a su propia ubicación, no al CWD del proceso.
+      - ./api-rest-amazonia/database:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-amazonia} -d ${POSTGRES_DB:-amazonia}"]
       interval: 5s
@@ -29,12 +28,12 @@ services:
     build: ./georef-service
     restart: unless-stopped
     environment:
-      ENVIRONMENT: production
-      PORT: "8001"
+      ENVIRONMENT: ${GEOREF_ENVIRONMENT:-production}
+      PORT: ${GEOREF_PORT:-8001}
       GEOJSON_PATH: data/bolivia.geojson
-      ALLOWED_ORIGINS: '["http://localhost"]'
+      ALLOWED_ORIGINS: '${GEOREF_ALLOWED_ORIGINS:-["http://localhost"]}'
     healthcheck:
-      test: ["CMD-SHELL", "python -c \"import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8001/geo/health').status==200 else 1)\""]
+      test: ["CMD-SHELL", "python -c \"import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:${GEOREF_PORT:-8001}/geo/health').status==200 else 1)\""]
       interval: 10s
       timeout: 5s
       retries: 6
@@ -44,23 +43,26 @@ services:
     build: ./api-rest-amazonia
     restart: unless-stopped
     environment:
-      NODE_ENV: production
-      PORT: "3333"
-      DOMAIN_FRONTEND: http://localhost
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${API_PORT:-3333}
+      DOMAIN_FRONTEND: ${DOMAIN_FRONTEND:-http://localhost}
       DB_TYPE: postgres
-      DB_HOST: postgres
-      DB_PORT: "5432"
-      DB_USER: ${POSTGRES_USER:-amazonia}
-      DB_PASSWORD: ${POSTGRES_PASSWORD:-amazonia}
-      DB_NAME: ${POSTGRES_DB:-amazonia}
-      DB_LOGS: "false"
-      ACTIVE_JWT: "true"
+      # DB_HOST/DB_PORT por defecto apuntan al postgres de este compose; sobreescribir en .env
+      # para conectar a una BD externa (Supabase, RDS, otro VPS, etc.) sin tocar código.
+      DB_HOST: ${DB_HOST:-postgres}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_USER: ${DB_USER:-${POSTGRES_USER:-amazonia}}
+      DB_PASSWORD: ${DB_PASSWORD:-${POSTGRES_PASSWORD:-amazonia}}
+      DB_NAME: ${DB_NAME:-${POSTGRES_DB:-amazonia}}
+      DB_LOGS: ${DB_LOGS:-false}
+      ACTIVE_JWT: ${ACTIVE_JWT:-true}
       JWT_SECRET: ${JWT_SECRET:-kaa-iya-docker-secret-change-me}
-      JWT_TIME_EXPIRE: 24h
-      GEOREF_URL: http://georef:8001
-      GEOREF_TIMEOUT_MS: "5000"
+      JWT_TIME_EXPIRE: ${JWT_TIME_EXPIRE:-24h}
+      # GEOREF_URL por defecto apunta al georef de este compose; sobreescribir si corre aparte.
+      GEOREF_URL: ${GEOREF_URL:-http://georef:${GEOREF_PORT:-8001}}
+      GEOREF_TIMEOUT_MS: ${GEOREF_TIMEOUT_MS:-5000}
       UPLOADS_PATH: ./uploads
-      UPLOADS_BASE_URL: http://localhost/uploads
+      UPLOADS_BASE_URL: ${UPLOADS_BASE_URL:-http://localhost/uploads}
       SEED_SUPERADMIN_EMAIL: ${SEED_SUPERADMIN_EMAIL:-superadmin@kaaiya.test}
       SEED_SUPERADMIN_PASSWORD: ${SEED_SUPERADMIN_PASSWORD:-SuperPass1!}
     # Crea el superadmin (idempotente, con timeout de guarda) y arranca la API.
@@ -73,7 +75,7 @@ services:
       georef:
         condition: service_started
     healthcheck:
-      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:3333/api/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""]
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:${API_PORT:-3333}/api/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""]
       interval: 10s
       timeout: 5s
       retries: 12
@@ -83,8 +85,14 @@ services:
     build:
       context: ./amazonia-viva-frontend
       args:
-        VITE_API_URL: /api
+        # /api = relativo (mismo origen, vía el proxy de nginx de este contenedor). Si el
+        # frontend se sirve por separado de la API, poner acá la URL absoluta del backend.
+        VITE_API_URL: ${VITE_API_URL:-/api}
         VITE_MAPTILER_KEY: ${VITE_MAPTILER_KEY:-}
+    environment:
+      # Host:puerto del backend al que nginx hace proxy en /api y /uploads (ver
+      # nginx.conf.template). Default = servicio `api` de este mismo compose.
+      API_UPSTREAM: ${API_UPSTREAM:-api:${API_PORT:-3333}}
     restart: unless-stopped
     ports:
       - "${WEB_PORT:-80}:80"

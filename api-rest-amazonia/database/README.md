@@ -61,6 +61,7 @@ Aplica solo las que falten, en orden cronológico. Son idempotentes:
 psql "$DATABASE_URL" -f migrations/20260612-1100_add_auth_tables.sql
 psql "$DATABASE_URL" -f migrations/20260612-1200_add_images.sql
 psql "$DATABASE_URL" -f migrations/20260613-1400_add_georef_columns.sql
+psql "$DATABASE_URL" -f migrations/20260929-1200_add_formularios_multimedia.sql
 ```
 
 Alternativamente, los scripts TypeScript equivalentes (cargan `.env` y detectan Supabase):

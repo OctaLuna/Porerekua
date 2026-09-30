@@ -209,6 +209,10 @@ Checklist:
   (`database/migrations/`), nunca automáticamente al arrancar.
 - **Rollback:** en Render/Railway, revertir al deploy anterior desde el panel; para BD,
   restaurar el backup correspondiente.
+- **Multimedia de formularios:** seguir el runbook
+  [docs/formularios-multimedia-production.md](docs/formularios-multimedia-production.md).
+  Su migración es aditiva; ante un rollback de aplicación no se deben eliminar
+  las tablas ni los datos sin una aprobación explícita.
 
 ## 8. Troubleshooting
 

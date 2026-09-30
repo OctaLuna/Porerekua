@@ -6,16 +6,29 @@ import { ProyectosEmpresasModule } from 'src/modules/gestion-proyectos/proyectos
 import { OrganizacionesModule } from 'src/modules/gestion-organizacional/organizaciones/organizaciones.module';
 import { ProyectosOrganizacionesModule } from 'src/modules/gestion-proyectos/proyectos-organizaciones/proyectos-organizaciones.module';
 import { ProyectosModule } from 'src/modules/gestion-proyectos/proyectos/proyectos.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { FormularioMultimedia } from './entities/formulario-multimedia.entity';
+import { FormularioMultimediaFragmento } from './entities/formulario-multimedia-fragmento.entity';
+import { FormularioMultimediaService } from './services/formulario-multimedia.service';
+import { FormularioMultipartService } from './services/formulario-multipart.service';
 
 @Module({
-	imports: [
-		EmpresasModule,
-		ProyectosEmpresasModule,
-		OrganizacionesModule,
-		ProyectosOrganizacionesModule,
-		ProyectosModule,
-	],
-	controllers: [FormulariosController],
-	providers: [FormulariosService],
+  imports: [
+    TypeOrmModule.forFeature([
+      FormularioMultimedia,
+      FormularioMultimediaFragmento,
+    ]),
+    EmpresasModule,
+    ProyectosEmpresasModule,
+    OrganizacionesModule,
+    ProyectosOrganizacionesModule,
+    ProyectosModule,
+  ],
+  controllers: [FormulariosController],
+  providers: [
+    FormulariosService,
+    FormularioMultimediaService,
+    FormularioMultipartService,
+  ],
 })
-export class FormulariosModule { }
+export class FormulariosModule {}

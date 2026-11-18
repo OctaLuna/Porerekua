@@ -4,6 +4,10 @@
 from __future__ import annotations
 
 import argparse
+try:
+    import fcntl
+except ImportError:  # Packaging also runs on Windows; only the server applies patches.
+    fcntl = None
 import io
 import json
 import os
@@ -15,10 +19,11 @@ import tarfile
 import tempfile
 
 
-FRONTEND_PREFIX = "amazonia-viva-frontend/"
 SERVER_STACK = Path("/home/adminkaaiya/projects/porerekua")
 SERVER_WEB = SERVER_STACK / "porerekua-web"
-DEPLOY_MARKER = Path("/home/adminkaaiya/.porerekua-main-deployed-sha")
+ROOT_DEPLOY_MARKER = Path("/home/adminkaaiya/.porerekua-main-deployed-sha")
+AMAZONIA_DEPLOY_MARKER = Path("/home/adminkaaiya/.amazonia-viva-frontend-main-deployed-sha")
+DEPLOY_LOCK = Path("/home/adminkaaiya/.porerekua-web-deploy.lock")
 IMAGE_NAME = "porerekua-web:latest"
 ROLLBACK_IMAGE = "porerekua-web:ci-rollback"
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
@@ -36,9 +41,9 @@ def run(args: list[str], *, cwd: Path | None = None, input: bytes | None = None)
     return result.stdout
 
 
-def git_file(revision: str, path: str, cwd: Path) -> bytes | None:
+def git_file(revision: str, path: str, cwd: Path, prefix: str) -> bytes | None:
     result = subprocess.run(
-        ["git", "show", f"{revision}:{FRONTEND_PREFIX}{path}"],
+        ["git", "show", f"{revision}:{prefix}{path}"],
         cwd=cwd,
         stdout=subprocess.PIPE,
         stderr=subprocess.DEVNULL,
@@ -55,12 +60,24 @@ def safe_relative_path(value: str) -> str:
     return path.as_posix()
 
 
+def is_deployable_path(value: str) -> bool:
+    path = PurePosixPath(value)
+    app_roots = {"assets", "components", "contexts", "features", "hooks", "pages", "providers", "public", "services", "styles", "types", "utils"}
+    app_files = {
+        "App.tsx", "constants.ts", "index.css", "index.html", "index.tsx", "package.json", "package-lock.json",
+        "metadata.json", "postcss.config.js", "postcss.config.cjs", "tailwind.config.js", "tailwind.config.ts", "tsconfig.json", "vite-env.d.ts", "vite.config.ts",
+    }
+    return path.parts[0] in app_roots or len(path.parts) == 1 and (path.name in app_files or path.name.startswith("tailwind.config."))
+
+
 def package_patch(args: argparse.Namespace) -> None:
     if not SHA_RE.fullmatch(args.base) or not SHA_RE.fullmatch(args.head):
         raise ValueError("base/head must be full Git commit SHAs")
     repo = Path(args.repo_root).resolve()
+    prefix = args.source_prefix
+    pathspec = [prefix.rstrip("/")] if prefix else ["."]
     changed = run(
-        ["git", "diff", "--name-only", "--no-renames", "--diff-filter=ACMTD", "-z", args.base, args.head, "--", "amazonia-viva-frontend"],
+        ["git", "diff", "--name-only", "--no-renames", "--diff-filter=ACMTD", "-z", args.base, args.head, "--", *pathspec],
         cwd=repo,
     ).split(b"\0")
     paths: list[str] = []
@@ -68,9 +85,12 @@ def package_patch(args: argparse.Namespace) -> None:
         if not raw_path:
             continue
         source_path = raw_path.decode("utf-8")
-        if not source_path.startswith(FRONTEND_PREFIX):
+        if prefix and not source_path.startswith(prefix):
             continue
-        relative = safe_relative_path(source_path[len(FRONTEND_PREFIX):])
+        relative = source_path[len(prefix):] if prefix else source_path
+        if not is_deployable_path(relative):
+            continue
+        relative = safe_relative_path(relative)
         paths.append(relative)
 
     output = Path(args.output)
@@ -79,8 +99,8 @@ def package_patch(args: argparse.Namespace) -> None:
         root = Path(temporary)
         entries = []
         for relative in sorted(set(paths)):
-            before = git_file(args.base, relative, repo)
-            after = git_file(args.head, relative, repo)
+            before = git_file(args.base, relative, repo, prefix)
+            after = git_file(args.head, relative, repo, prefix)
             entry = {"path": relative, "base_exists": before is not None, "head_exists": after is not None}
             entries.append(entry)
             if before is not None:
@@ -92,7 +112,7 @@ def package_patch(args: argparse.Namespace) -> None:
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(after)
         (root / "manifest.json").write_text(
-            json.dumps({"base": args.base, "head": args.head, "files": entries}, ensure_ascii=False),
+            json.dumps({"base": args.base, "head": args.head, "source": args.source_id, "files": entries}, ensure_ascii=False),
             encoding="utf-8",
         )
         with tarfile.open(output, "w:gz") as archive:
@@ -120,17 +140,30 @@ def safe_extract(stream: bytes, destination: Path) -> None:
             target.write_bytes(source.read())
 
 
-def current_status() -> None:
-    if not DEPLOY_MARKER.is_file():
+def marker_for(source_command: str) -> Path:
+    return AMAZONIA_DEPLOY_MARKER if source_command == "amazonia" else ROOT_DEPLOY_MARKER
+
+
+def current_status(marker: Path) -> None:
+    if not marker.is_file():
         raise RuntimeError("deployment marker is missing")
-    sha = DEPLOY_MARKER.read_text(encoding="ascii").strip()
+    sha = marker.read_text(encoding="ascii").strip()
     if not SHA_RE.fullmatch(sha):
         raise RuntimeError("deployment marker is invalid")
     print(sha)
 
 
-def apply_patch() -> None:
-    if not DEPLOY_MARKER.is_file():
+def apply_patch(source_command: str) -> None:
+    if fcntl is None:
+        raise RuntimeError("deployment locking is only supported on the Linux server")
+    marker = marker_for(source_command)
+    with DEPLOY_LOCK.open("a+") as lock_file:
+        fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+        apply_patch_locked(marker)
+
+
+def apply_patch_locked(marker: Path) -> None:
+    if not marker.is_file():
         raise RuntimeError("deployment marker is missing")
     with tempfile.TemporaryDirectory(prefix="porerekua-deploy-") as temporary:
         temp = Path(temporary)
@@ -141,9 +174,10 @@ def apply_patch() -> None:
         manifest_path = temp / "manifest.json"
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         base_sha, head_sha = manifest.get("base"), manifest.get("head")
+        source_id = manifest.get("source", "unknown")
         if not SHA_RE.fullmatch(base_sha or "") or not SHA_RE.fullmatch(head_sha or ""):
             raise ValueError("invalid commit SHA in deployment manifest")
-        current_sha = DEPLOY_MARKER.read_text(encoding="ascii").strip()
+        current_sha = marker.read_text(encoding="ascii").strip()
         if current_sha != base_sha:
             raise RuntimeError(f"deployment base mismatch: server={current_sha}, package={base_sha}")
         if SERVER_WEB.resolve() != SERVER_WEB:
@@ -194,9 +228,9 @@ def apply_patch() -> None:
                 planned.append((relative, result.stdout))
 
         if not planned:
-            temporary_marker = DEPLOY_MARKER.with_suffix(".tmp")
+            temporary_marker = marker.with_suffix(".tmp")
             temporary_marker.write_text(head_sha + "\n", encoding="ascii")
-            os.replace(temporary_marker, DEPLOY_MARKER)
+            os.replace(temporary_marker, marker)
             print(f"No frontend files changed; advanced marker to {head_sha}")
             return
 
@@ -225,9 +259,9 @@ def apply_patch() -> None:
 
         worktree_status = run(["git", "status", "--porcelain", "--untracked-files=normal"], cwd=SERVER_WEB).decode().strip()
         if not worktree_status:
-            temporary_marker = DEPLOY_MARKER.with_suffix(".tmp")
+            temporary_marker = marker.with_suffix(".tmp")
             temporary_marker.write_text(head_sha + "\n", encoding="ascii")
-            os.replace(temporary_marker, DEPLOY_MARKER)
+            os.replace(temporary_marker, marker)
             print(f"Frontend files already match; advanced marker to {head_sha}")
             return
 
@@ -266,13 +300,13 @@ def apply_patch() -> None:
                     "git",
                     "-c", "user.name=github-actions[bot]",
                     "-c", "user.email=41898282+github-actions[bot]@users.noreply.github.com",
-                    "commit", "-m", f"deploy: OctaLuna/Porerekua@{head_sha[:12]}",
+                    "commit", "-m", f"deploy: {source_id}@{head_sha[:12]}",
                 ],
                 cwd=SERVER_WEB,
             )
-            temporary_marker = DEPLOY_MARKER.with_suffix(".tmp")
+            temporary_marker = marker.with_suffix(".tmp")
             temporary_marker.write_text(head_sha + "\n", encoding="ascii")
-            os.replace(temporary_marker, DEPLOY_MARKER)
+            os.replace(temporary_marker, marker)
         except Exception:
             try:
                 run(["docker", "tag", ROLLBACK_IMAGE, IMAGE_NAME], cwd=SERVER_STACK)
@@ -288,7 +322,7 @@ def apply_patch() -> None:
                     destination.unlink(missing_ok=True)
             raise
 
-        print(f"Deployed frontend main {head_sha}; changed {len(changed_paths)} paths")
+        print(f"Deployed frontend main {source_id}@{head_sha}; changed {len(changed_paths)} paths")
 
 
 def main() -> None:
@@ -298,15 +332,17 @@ def main() -> None:
         parser.add_argument("--base", required=True)
         parser.add_argument("--head", required=True)
         parser.add_argument("--repo-root", default=".")
+        parser.add_argument("--source-prefix", default="amazonia-viva-frontend/")
+        parser.add_argument("--source-id", default="OctaLuna/Porerekua")
         parser.add_argument("--output", required=True)
         package_patch(parser.parse_args())
         return
 
     command = os.environ.get("SSH_ORIGINAL_COMMAND", "")
-    if command == "status":
-        current_status()
-    elif command == "apply":
-        apply_patch()
+    if command in {"status", "status-amazonia"}:
+        current_status(marker_for("amazonia" if command.endswith("amazonia") else "root"))
+    elif command in {"apply", "apply-amazonia"}:
+        apply_patch("amazonia" if command.endswith("amazonia") else "root")
     else:
         raise RuntimeError("unsupported command")
 

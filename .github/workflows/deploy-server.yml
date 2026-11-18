@@ -1,0 +1,57 @@
+name: Deploy frontend main to production server
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: porerekua-production-web
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout full main history
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Configure restricted SSH access
+        env:
+          DEPLOY_KEY: ${{ secrets.PRODUCTION_SSH_PRIVATE_KEY }}
+        run: |
+          test -n "$DEPLOY_KEY" || { echo "::error::Missing PRODUCTION_SSH_PRIVATE_KEY Actions secret"; exit 1; }
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_KEY" > "$HOME/.ssh/production_key"
+          chmod 600 "$HOME/.ssh/production_key"
+          printf '%s\n' '201.131.41.89 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICRD+p89MSirQ/YPKNUGFVGXGMMvEtTydbTvCXN7qtyh' > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+
+      - name: Read last successfully deployed main commit
+        id: deployment
+        run: |
+          deployed_sha="$(ssh -T -i "$HOME/.ssh/production_key" -o IdentitiesOnly=yes -o BatchMode=yes adminkaaiya@201.131.41.89 status)"
+          [[ "$deployed_sha" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::Server returned an invalid deployment marker"; exit 1; }
+          git merge-base --is-ancestor "$deployed_sha" "$GITHUB_SHA" || { echo "::error::Server marker is not an ancestor of main; refusing an unsafe deployment"; exit 1; }
+          echo "base=$deployed_sha" >> "$GITHUB_OUTPUT"
+
+      - name: Package changes since the last successful deployment
+        run: |
+          python3 scripts/ci/deploy_frontend_patch.py package \
+            --base "${{ steps.deployment.outputs.base }}" \
+            --head "$GITHUB_SHA" \
+            --repo-root . \
+            --output "$RUNNER_TEMP/frontend-patch.tar.gz"
+
+      - name: Apply changes and rebuild only the web service
+        run: |
+          ssh -T -i "$HOME/.ssh/production_key" -o IdentitiesOnly=yes -o BatchMode=yes adminkaaiya@201.131.41.89 apply \
+            < "$RUNNER_TEMP/frontend-patch.tar.gz"

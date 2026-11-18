@@ -6,9 +6,10 @@ export interface TeamMember {
   initials: string;
   name: string;
   role: string;
-  /** Foto opcional. Con foto → efecto grayscale→color; sin foto → avatar de iniciales. */
+  /** Foto opcional. Con foto → efecto grayscale→color; sin foto → avatar de iniciales con color temático. */
   photo?: string;
   bio?: string;
+  color?: string;
 }
 
 const GRAYSCALE_OUT = 'grayscale(100%) brightness(0.9)';
@@ -59,8 +60,11 @@ const TeamCard: React.FC<{ member: TeamMember; onOpen: () => void }> = ({ member
           />
         </div>
       ) : (
-        <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-verde-brote shadow-verde-glow md:mb-4 md:h-14 md:w-14">
-          <span className="text-sm font-bold tracking-wide text-white md:text-lg">{member.initials}</span>
+        <div
+          className="mb-3 flex h-14 w-14 items-center justify-center rounded-full shadow-medium transition-transform duration-300 md:mb-4 md:h-16 md:w-16"
+          style={{ backgroundColor: member.color || 'var(--color-verde-hoja, #7A9A3E)' }}
+        >
+          <span className="text-base font-bold tracking-wider text-white md:text-xl">{member.initials}</span>
         </div>
       )}
       <h3 className="mb-1 font-serif text-sm font-bold leading-snug text-carbon dark:text-beige-arena md:mb-2 md:text-base">

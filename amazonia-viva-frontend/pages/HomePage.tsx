@@ -133,23 +133,37 @@ const HomePage: React.FC = () => {
       <div className="absolute inset-0 z-10 bg-noche-selva/15" aria-hidden="true"></div>
           <div className="relative z-20 p-4 pt-32 max-h-[calc(100vh-4rem)] overflow-y-auto">
             <motion.h1
-              className="text-4xl sm:text-5xl md:text-7xl font-extrabold font-serif text-beige-arena mb-4"
-              style={{ textShadow: '0 2px 8px rgba(0,0,0,0.7)' }}
+              className="text-4xl sm:text-5xl md:text-7xl font-extrabold font-serif text-beige-arena mb-3"
+              style={{ textShadow: '0 2px 12px rgba(0,0,0,0.7)' }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
             >
               Porerekua
             </motion.h1>
-            <motion.p 
-              className="text-xl text-beige-arena max-w-3xl mx-auto mb-8"
-              style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
-              initial={{ opacity: 0, y: 20 }}
+            <motion.p
+              className="text-xs sm:text-sm font-semibold uppercase tracking-[0.35em] text-amarillo-sol mb-6"
+              style={{ textShadow: '0 2px 6px rgba(0,0,0,0.6)' }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
             >
               Ser solidario, compartir lo que se tiene
             </motion.p>
+            <motion.div
+              className="max-w-2xl mx-auto space-y-2 text-beige-arena/95 mb-8"
+              style={{ textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+            >
+              <p className="text-lg sm:text-xl font-medium leading-snug">
+                Conectamos iniciativas que cuidan la Amazonía.
+              </p>
+              <p className="text-sm sm:text-base text-beige-arena/80 leading-relaxed">
+                Registra tu aporte y forma parte de una red que impulsa conservación, conocimiento y bienestar comunitario.
+              </p>
+            </motion.div>
           </div>
           <motion.div
             className="absolute bottom-10 z-20"

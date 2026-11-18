@@ -1,33 +1,31 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// --- Team Data ---
+// --- Team Data (Oficial Porerekua) ---
 const TEAM_CATEGORIES = [
   {
-    id: 'direccion',
-    label: 'Dirección & Estrategia',
+    id: 'coordinacion',
+    label: 'Coordinación',
     members: [
-      { initials: 'LR', name: 'Lucía Ramírez', role: 'Dirección creativa y visión estratégica' },
-      { initials: 'JP', name: 'Jorge Peña', role: 'Estratega de impacto y relaciones institucionales' },
-      { initials: 'MQ', name: 'Mara Quispe', role: 'Coordinación comunitaria — Amazonas peruano' },
+      { initials: 'JL', name: 'Jessica Lanza Butrón', role: 'PhD. — Coordinación General', color: '#7A9A3E' },
+      { initials: 'JC', name: 'Javier Andrés Claros Chavarría', role: 'PhD. — Coordinación', color: '#7A9A3E' },
     ],
   },
   {
-    id: 'digital',
-    label: 'Experiencia Digital',
+    id: 'investigacion',
+    label: 'Investigación',
     members: [
-      { initials: 'AS', name: 'Andrés Silva', role: 'Desarrollo de plataformas y arquitectura web' },
-      { initials: 'VP', name: 'Valentina Prada', role: 'Diseño UX/UI e identidad visual' },
-      { initials: 'CR', name: 'Carlos Ríos', role: 'Georreferenciación y sistemas de datos espaciales' },
+      { initials: 'AC', name: 'Alison Choque Mamani', role: 'Auxiliar en Investigación', color: '#007BFF' },
+      { initials: 'AQ', name: 'Arlenys Quispe Condori', role: 'Auxiliar en Investigación', color: '#007BFF' },
     ],
   },
   {
-    id: 'contenido',
-    label: 'Contenido & Narrativa',
+    id: 'tecnologia',
+    label: 'Desarrollo y Tecnología',
     members: [
-      { initials: 'SR', name: 'Sofía Ramos', role: 'Narrativa científica y comunicación ambiental' },
-      { initials: 'EB', name: 'Elena Bautista', role: 'Fotografía documental y edición visual' },
-      { initials: 'FM', name: 'Felipe Mora', role: 'Investigación de campo y etnobotánica' },
+      { initials: 'JH', name: 'Jaime Ignacio Huaycho Clavel', role: 'Desarrollador Backend', color: '#F39C12' },
+      { initials: 'OL', name: 'Octavio Luna Vargas', role: 'Desarrollador Backend', color: '#F39C12' },
+      { initials: 'LI', name: 'Leonardo Ibarra López', role: 'Desarrollador Frontend', color: '#F39C12' },
     ],
   },
 ];
@@ -36,6 +34,7 @@ interface Member {
   initials: string;
   name: string;
   role: string;
+  color?: string;
 }
 
 const ArrowDownIcon = () => (
@@ -46,14 +45,17 @@ const ArrowDownIcon = () => (
 );
 
 // --- Member Card ---
-const MemberCard: React.FC<Member & { index: number }> = ({ initials, name, role, index }) => (
+const MemberCard: React.FC<Member & { index: number }> = ({ initials, name, role, color, index }) => (
   <motion.div
     className="flex flex-col items-center text-center p-4 md:p-6 bg-blanco-puro/95 dark:bg-noche-selva/60 backdrop-blur-md rounded-xl shadow-medium border border-carbon/10 dark:border-white/10 transition-shadow duration-300 hover:shadow-lg"
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.4, delay: index * 0.1 }}
   >
-    <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-verde-brote flex items-center justify-center mb-3 md:mb-4 shadow-verde-glow">
+    <div
+      className="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center mb-3 md:mb-4 shadow-medium transition-transform duration-300"
+      style={{ backgroundColor: color || 'var(--color-verde-hoja, #7A9A3E)' }}
+    >
       <span className="text-white font-bold text-sm md:text-lg tracking-wide">{initials}</span>
     </div>
     <h3 className="font-bold font-serif text-carbon dark:text-beige-arena text-sm md:text-base mb-1 md:mb-2 leading-snug">

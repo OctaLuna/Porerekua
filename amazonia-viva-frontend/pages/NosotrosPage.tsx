@@ -8,7 +8,7 @@ const TEAM_CATEGORIES = [
     label: 'Coordinación',
     members: [
       { initials: 'JL', name: 'Jessica Lanza Butrón', role: 'PhD. — Coordinación General', color: '#7A9A3E' },
-      { initials: 'JC', name: 'Javier Andrés Claros Chavarría', role: 'PhD. — Coordinación', color: '#7A9A3E' },
+      { initials: 'JC', name: 'Javier Andrés Claros Chavarría', role: 'PhD. — Coordinación General', color: '#7A9A3E' },
     ],
   },
   {
@@ -144,15 +144,19 @@ const NosotrosPage: React.FC = () => {
       `}</style>
 
        <div ref={scrollContainerRef} className="snap-container">
-         <section ref={firstSectionRef} className="snap-section relative w-full flex flex-col justify-center items-center text-center text-beige-arena pt-32 pb-10 px-4 sm:px-6 lg:px-8 overflow-y-auto">
-           <div className="absolute inset-0 z-0 bg-cover bg-center" style={{ backgroundImage: 'url(/images/background/bg11.jpg)' }} aria-hidden="true"></div>
-           <div className="absolute inset-0 z-0 bg-noche-selva/35" aria-hidden="true"></div>
-           <div className="relative z-10 w-full max-w-5xl">
-              <div className="bg-blanco-puro/95 dark:bg-noche-selva/75 py-5 px-10 sm:py-8 sm:px-14 rounded-lg shadow-medium border border-carbon/10 dark:border-white/10 max-h-[calc(100vh-14rem)] overflow-y-auto">
-                <h1 className="text-2xl sm:text-3xl font-bold font-serif text-carbon dark:text-beige-arena mb-8">
+         <section ref={firstSectionRef} className="snap-section relative w-full flex flex-col justify-center items-center text-center text-beige-arena pt-32 pb-10 px-4 sm:px-6 lg:px-8 overflow-hidden bg-noche-selva">
+           <div
+             className="absolute inset-0 z-0 bg-cover bg-center filter blur-[6px] saturate-90 brightness-[0.75] scale-105"
+             style={{ backgroundImage: 'url(/images/background/bg11.jpg)' }}
+             aria-hidden="true"
+           ></div>
+           <div className="absolute inset-0 z-0 bg-noche-selva/40" aria-hidden="true"></div>
+           <div className="relative z-10 w-full max-w-5xl my-auto">
+              <div className="bg-blanco-puro/90 dark:bg-noche-selva/85 py-6 px-6 sm:py-10 sm:px-12 rounded-2xl shadow-2xl border border-carbon/10 dark:border-white/10 backdrop-blur-md max-h-[calc(100vh-14rem)] overflow-y-auto">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold font-serif text-carbon dark:text-beige-arena mb-6 sm:mb-8">
                   Una alianza entre bosque, comunidad y tecnología
                 </h1>
-                <div className="text-left">
+                <div className="text-left space-y-4">
                   <AboutItem
                     title="El nombre"
                     content={`Porerekua, voz guaraní que significa "ser solidario, compartir lo que se tiene", alude a la construcción colectiva de la sostenibilidad amazónica mediante el intercambio de conocimientos, experiencias y capacidades entre los distintos actores comprometidos con el territorio.`}
@@ -166,7 +170,7 @@ const NosotrosPage: React.FC = () => {
            </div>
 
           <motion.div
-            className="absolute bottom-10 z-20 text-beige-arena"
+            className="absolute bottom-6 z-20 text-beige-arena"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1, ease: 'easeOut' }}
@@ -186,52 +190,63 @@ const NosotrosPage: React.FC = () => {
         </section>
 
         <section
-          className="snap-section relative w-full flex flex-col justify-center items-center text-center text-beige-arena pt-32 pb-10 px-4 sm:px-6 lg:px-8 overflow-y-auto"
-          style={{
-            backgroundImage: 'url(/images/background/bg4.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
+          className="snap-section relative w-full flex flex-col justify-center items-center text-center text-beige-arena pt-32 pb-10 px-4 sm:px-6 lg:px-8 overflow-hidden bg-noche-selva"
         >
-          <div className="absolute inset-0 bg-carbon/40"></div>
-          <div className="relative z-10 w-full max-w-6xl max-h-[calc(100vh-12rem)] overflow-y-auto">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-serif mb-3 sm:mb-4 text-beige-arena">Nuestro Propósito</h2>
-            <p className="text-sm sm:text-base lg:text-lg text-beige-arena/90 max-w-3xl mx-auto mb-6 sm:mb-10">
-              Visibilizar y articular iniciativas sostenibles promovidas por empresas y fundaciones locales en la Amazonía boliviana,
-              como aporte al fortalecimiento de acciones de conservación y al bienestar de las comunidades que la habitan.
-            </p>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-              <div className="bg-blanco-puro/95 dark:bg-noche-selva/60 p-5 lg:p-7 rounded-lg shadow-medium text-left backdrop-blur-md border border-carbon/10 dark:border-white/10">
-                <h3 className="text-lg lg:text-xl font-bold text-verde-brote mb-2">Conectar</h3>
-                <p className="text-sm lg:text-base text-carbon dark:text-beige-arena/80">Conectar empresas, fundaciones, la academia y sociedad civil en torno a iniciativas sostenibles en la Amazonía, promoviendo una plataforma de colaboración multiactor.</p>
+          <div
+            className="absolute inset-0 z-0 bg-cover bg-center filter blur-[6px] saturate-90 brightness-[0.75] scale-105"
+            style={{ backgroundImage: 'url(/images/background/bg4.jpg)' }}
+            aria-hidden="true"
+          />
+          <div className="absolute inset-0 bg-noche-selva/40"></div>
+          <div className="relative z-10 w-full max-w-6xl my-auto max-h-[calc(100vh-10rem)] overflow-y-auto">
+            <div className="rounded-2xl p-6 sm:p-8 backdrop-blur-md bg-blanco-puro/90 dark:bg-noche-selva/85 border border-carbon/10 dark:border-white/10 shadow-2xl">
+              <div className="text-center mb-6 sm:mb-8">
+                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-terracota mb-2">Ejes Estratégicos</p>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-serif text-carbon dark:text-beige-arena mt-1 mb-3">Nuestro Propósito</h2>
+                <p className="text-sm sm:text-base text-gris-piedra dark:text-beige-arena/90 max-w-3xl mx-auto leading-relaxed">
+                  Visibilizar y articular iniciativas sostenibles promovidas por empresas y fundaciones locales en la Amazonía boliviana, como aporte al fortalecimiento de acciones de conservación y al bienestar de las comunidades que la habitan.
+                </p>
               </div>
-              <div className="bg-blanco-puro/95 dark:bg-noche-selva/60 p-5 lg:p-7 rounded-lg shadow-medium text-left backdrop-blur-md border border-carbon/10 dark:border-white/10">
-                <h3 className="text-lg lg:text-xl font-bold text-verde-brote mb-2">Promover</h3>
-                <p className="text-sm lg:text-base text-carbon dark:text-beige-arena/80">Promover acciones orientadas a la conservación de la biodiversidad y la protección de los ecosistemas amazónicos.</p>
-              </div>
-              <div className="bg-blanco-puro/95 dark:bg-noche-selva/60 p-5 lg:p-7 rounded-lg shadow-medium text-left backdrop-blur-md border border-carbon/10 dark:border-white/10">
-                <h3 className="text-lg lg:text-xl font-bold text-verde-brote mb-2">Empoderar</h3>
-                <p className="text-sm lg:text-base text-carbon dark:text-beige-arena/80">Empoderar a las comunidades locales e indígenas en procesos que fortalezcan su desarrollo y reconozcan sus saberes y prácticas.</p>
-              </div>
-              <div className="bg-blanco-puro/95 dark:bg-noche-selva/60 p-5 lg:p-7 rounded-lg shadow-medium text-left backdrop-blur-md border border-carbon/10 dark:border-white/10">
-                <h3 className="text-lg lg:text-xl font-bold text-verde-brote mb-2">Garantizar</h3>
-                <p className="text-sm lg:text-base text-carbon dark:text-beige-arena/80">Garantizar el acceso a información sobre estas iniciativas a través de datos verificados y estructurados, que aporten a la investigación y a la formulación de políticas públicas basadas en evidencia.</p>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+                <div className="bg-beige-arena/50 dark:bg-noche-selva/50 p-5 lg:p-6 rounded-xl shadow-sm text-left backdrop-blur-sm border border-carbon/10 dark:border-white/10">
+                  <h3 className="text-base lg:text-lg font-bold text-verde-brote mb-2">Conectar</h3>
+                  <p className="text-xs lg:text-sm text-carbon/90 dark:text-beige-arena/80 leading-relaxed">Conectar empresas, fundaciones, la academia y sociedad civil en torno a iniciativas sostenibles en la Amazonía, promoviendo una plataforma de colaboración multiactor.</p>
+                </div>
+                <div className="bg-beige-arena/50 dark:bg-noche-selva/50 p-5 lg:p-6 rounded-xl shadow-sm text-left backdrop-blur-sm border border-carbon/10 dark:border-white/10">
+                  <h3 className="text-base lg:text-lg font-bold text-verde-brote mb-2">Promover</h3>
+                  <p className="text-xs lg:text-sm text-carbon/90 dark:text-beige-arena/80 leading-relaxed">Promover acciones orientadas a la conservación de la biodiversidad y la protección de los ecosistemas amazónicos.</p>
+                </div>
+                <div className="bg-beige-arena/50 dark:bg-noche-selva/50 p-5 lg:p-6 rounded-xl shadow-sm text-left backdrop-blur-sm border border-carbon/10 dark:border-white/10">
+                  <h3 className="text-base lg:text-lg font-bold text-verde-brote mb-2">Empoderar</h3>
+                  <p className="text-xs lg:text-sm text-carbon/90 dark:text-beige-arena/80 leading-relaxed">Empoderar a las comunidades locales e indígenas en procesos que fortalezcan su desarrollo y reconozcan sus saberes y prácticas.</p>
+                </div>
+                <div className="bg-beige-arena/50 dark:bg-noche-selva/50 p-5 lg:p-6 rounded-xl shadow-sm text-left backdrop-blur-sm border border-carbon/10 dark:border-white/10">
+                  <h3 className="text-base lg:text-lg font-bold text-verde-brote mb-2">Garantizar</h3>
+                  <p className="text-xs lg:text-sm text-carbon/90 dark:text-beige-arena/80 leading-relaxed">Garantizar el acceso a información sobre estas iniciativas a través de datos verificados y estructurados, que aporten a la investigación y a la formulación de políticas públicas basadas en evidencia.</p>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="snap-section relative w-full flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-y-auto pt-32 pb-10">
-          <div className="absolute inset-0 z-0 bg-cover bg-center" style={{ backgroundImage: 'url(/images/background/bg3.jpg)' }} aria-hidden="true"></div>
-          <div className="absolute inset-0 z-0 bg-noche-selva/45" aria-hidden="true"></div>
+        <section className="snap-section relative w-full flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden pt-32 pb-10 bg-noche-selva">
+          <div
+            className="absolute inset-0 z-0 bg-cover bg-center filter blur-[6px] saturate-90 brightness-[0.75] scale-105"
+            style={{ backgroundImage: 'url(/images/background/bg3.jpg)' }}
+            aria-hidden="true"
+          ></div>
+          <div className="absolute inset-0 z-0 bg-noche-selva/40" aria-hidden="true"></div>
 
            <motion.div
-             className="relative z-10 w-full max-w-5xl rounded-2xl backdrop-blur-md bg-beige-arena/80 dark:bg-noche-selva/55 border border-white/40 dark:border-beige-arena/10 px-5 py-6 sm:px-8 sm:py-8 md:px-10 md:py-10 shadow-medium max-h-[calc(100vh-11rem)] overflow-y-auto"
+             className="relative z-10 w-full max-w-5xl rounded-2xl backdrop-blur-md bg-blanco-puro/90 dark:bg-noche-selva/85 border border-carbon/10 dark:border-white/10 px-5 py-6 sm:px-8 sm:py-8 md:px-10 md:py-10 shadow-2xl max-h-[calc(100vh-11rem)] overflow-y-auto"
              initial={{ opacity: 0, y: 40 }}
              animate={{ opacity: 1, y: 0 }}
              transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}
            >
-            <h2 className="text-xl sm:text-2xl font-bold font-serif text-carbon dark:text-beige-arena text-center mb-5 md:mb-7">Personas detrás del proyecto</h2>
+            <div className="text-center mb-6">
+              <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.25em] text-terracota mb-2">Conoce a quienes impulsan Porerekua</p>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-serif text-carbon dark:text-beige-arena mt-1 mb-3">NUESTRO EQUIPO</h2>
+            </div>
 
             <div className="flex justify-center flex-wrap gap-2 mb-5 md:mb-8">
               {TEAM_CATEGORIES.map((cat, i) => (

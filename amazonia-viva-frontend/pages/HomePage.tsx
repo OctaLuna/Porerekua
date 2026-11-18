@@ -6,6 +6,9 @@ import ProjectList from '../features/ProjectList/ProjectList';
 import { useProyectos } from '../hooks/useProyectos';
 import Skeleton from '../components/ui/Skeleton';
 import Card from '../components/ui/Card';
+import Logo from '../components/layout/Logo';
+
+const HOME_PANEL_TITLE_CLASS = 'text-2xl sm:text-3xl md:text-4xl font-bold font-serif text-carbon dark:text-beige-arena mt-1 mb-3';
 
 // Icons
 const LeafIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -123,50 +126,54 @@ const HomePage: React.FC = () => {
         ref={scrollContainerRef} 
         className="snap-container"
       >
-  {/* Act I: Image Hero */}
-  <section ref={heroRef} className="snap-section relative w-full flex flex-col items-center justify-center text-center text-white overflow-y-auto bg-noche-selva">
-      <div
-        className="absolute inset-0 w-full h-full z-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: 'url(/images/background/bg.png)' }}
-        aria-hidden="true"
-      ></div>
-      <div className="absolute inset-0 z-10 bg-noche-selva/15" aria-hidden="true"></div>
-          <div className="relative z-20 p-4 pt-32 max-h-[calc(100vh-4rem)] overflow-y-auto">
-            <motion.h1
-              className="text-4xl sm:text-5xl md:text-7xl font-extrabold font-serif text-beige-arena mb-3"
-              style={{ textShadow: '0 2px 12px rgba(0,0,0,0.7)' }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            >
-              Porerekua
-            </motion.h1>
-            <motion.p
-              className="text-xs sm:text-sm font-semibold uppercase tracking-[0.35em] text-amarillo-sol mb-6"
-              style={{ textShadow: '0 2px 6px rgba(0,0,0,0.6)' }}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-            >
-              Ser solidario, compartir lo que se tiene
-            </motion.p>
-            <motion.div
-              className="max-w-2xl mx-auto space-y-2 text-beige-arena/95 mb-8"
-              style={{ textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-            >
-              <p className="text-lg sm:text-xl font-medium leading-snug">
-                Conectamos iniciativas que cuidan la Amazonía.
-              </p>
-              <p className="text-sm sm:text-base text-beige-arena/80 leading-relaxed">
-                Registra tu aporte y forma parte de una red que impulsa conservación, conocimiento y bienestar comunitario.
-              </p>
-            </motion.div>
+        {/* Act I: Image Hero */}
+        <section ref={heroRef} className="snap-section relative w-full flex flex-col items-center justify-center text-center text-white overflow-hidden bg-noche-selva">
+          <div
+            className="absolute inset-0 w-full h-full z-0 bg-cover bg-center bg-no-repeat filter blur-[6px] saturate-90 brightness-[0.75] scale-105"
+            style={{ backgroundImage: 'url(/images/background/bg.png)' }}
+            aria-hidden="true"
+          ></div>
+          <div className="absolute inset-0 z-10 bg-noche-selva/35" aria-hidden="true"></div>
+
+          <div className="relative z-20 w-full max-w-3xl px-4 pt-28 pb-8 my-auto">
+            <div className="rounded-2xl p-6 sm:p-10 backdrop-blur-md bg-blanco-puro/90 dark:bg-noche-selva/85 border border-carbon/10 dark:border-white/10 shadow-2xl text-center">
+              <div className="inline-flex items-center justify-center mb-3">
+                <Logo className="h-10 sm:h-12 w-auto text-verde-hoja-seca dark:text-verde-brote" />
+              </div>
+              <motion.h1
+                className="text-3xl sm:text-5xl md:text-6xl font-extrabold font-serif text-carbon dark:text-beige-arena mb-2"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+              >
+                Porerekua
+              </motion.h1>
+              <motion.p
+                className="text-xs sm:text-sm font-semibold uppercase tracking-[0.35em] text-terracota mb-5"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+              >
+                Ser solidario, compartir lo que se tiene
+              </motion.p>
+              <motion.div
+                className="max-w-2xl mx-auto space-y-2 text-carbon/90 dark:text-beige-arena/90 mb-7"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+              >
+                <p className="text-base sm:text-xl font-medium leading-snug">
+                  Conectamos iniciativas que cuidan la Amazonía.
+                </p>
+                <p className="text-xs sm:text-base text-gris-piedra dark:text-beige-arena/75 leading-relaxed">
+                  Registra tu aporte y forma parte de una red que impulsa conservación, conocimiento y bienestar comunitario.
+                </p>
+              </motion.div>
+            </div>
           </div>
+
           <motion.div
-            className="absolute bottom-10 z-20"
+            className="absolute bottom-6 z-20 text-beige-arena"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1, ease: "easeOut" }}
@@ -176,7 +183,6 @@ const HomePage: React.FC = () => {
               transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
               className="cursor-pointer"
               onClick={() => {
-                // Use heroRef to scroll to next section reliably
                 try {
                   const next = heroRef.current?.nextElementSibling as HTMLElement | null;
                   if (next) {
@@ -195,76 +201,82 @@ const HomePage: React.FC = () => {
         </section>
 
         {/* CONSERVACIÓN */}
-        <section className="snap-section w-full flex flex-col justify-center items-center text-center pt-32 pb-10 px-4 sm:px-6 lg:px-8 relative overflow-y-auto">
-          <div className="absolute inset-0 z-0">
-            <img src="/images/background/bg2.jpg" alt="Un manto de vida" className="w-full h-full object-cover filter brightness-90" />
-            <div className="absolute inset-0 z-0 dark:bg-noche-selva/55 dark:backdrop-blur-md rounded-2xl dark:border dark:border-white/40 dark:border-beige-arena/10 dark:shadow-medium"></div>
+        <section className="snap-section w-full flex flex-col justify-center items-center text-center relative overflow-hidden bg-noche-selva">
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            <img src="/images/background/bg2.jpg" alt="Un manto de vida" className="w-full h-full object-cover filter blur-[6px] saturate-90 brightness-[0.75] scale-105" />
+            <div className="absolute inset-0 bg-noche-selva/40"></div>
           </div>
-          <div className="w-full max-w-6xl relative z-10 max-h-[calc(100vh-10rem)] overflow-y-auto my-auto">
-            <h3 className="text-base sm:text-xl font-semibold text-terracota tracking-wider uppercase">Un manto de vida protegido</h3>
-            <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold font-serif text-white mt-2 mb-3 sm:mb-4">CONSERVACIÓN</h2>
-            <p className="text-base sm:text-lg text-beige-arena/90 max-w-3xl mx-auto mb-6 sm:mb-10">
-              Promover la conservación de la Amazonía mediante iniciativas impulsadas por empresas y fundaciones, orientadas a proteger, mantener y gestionar responsablemente los ecosistemas, sus especies y recursos, asegurando su equilibrio y continuidad.
-            </p>
-            <div className="grid md:grid-cols-3 gap-4 md:gap-8">
-              <div className="bg-blanco-puro/95 dark:bg-noche-selva/60 backdrop-blur-md border border-carbon/10 dark:border-white/10 shadow-medium rounded-lg p-5 md:p-8 text-center">
-                <LeafIcon className="h-8 w-8 md:h-10 md:w-10 text-verde-brote mx-auto mb-3" />
-                <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold font-serif text-carbon dark:text-beige-arena">+8,500,000</h3>
-                <p className="font-semibold text-carbon dark:text-beige-arena mt-2 mb-1">Hectáreas Protegidas</p>
-                <p className="text-sm text-gris-piedra dark:text-beige-arena/80">Un área equivalente a Austria, resguardada para el futuro.</p>
+          <div className="w-full max-w-6xl relative z-10 pt-28 pb-10 px-4 sm:px-6 my-auto max-h-[calc(100vh-2rem)] overflow-y-auto">
+            <div className="rounded-2xl p-6 sm:p-8 backdrop-blur-md bg-blanco-puro/90 dark:bg-noche-selva/85 border border-carbon/10 dark:border-white/10 shadow-2xl">
+              <div className="text-center mb-6">
+                <h3 className="text-xs sm:text-sm font-semibold text-terracota tracking-[0.25em] uppercase">Un manto de vida protegido</h3>
+                <h2 className={HOME_PANEL_TITLE_CLASS}>CONSERVACIÓN</h2>
+                <p className="text-sm sm:text-base text-gris-piedra dark:text-beige-arena/90 max-w-3xl mx-auto leading-relaxed">
+                  Promover la conservación de la Amazonía mediante iniciativas impulsadas por empresas y fundaciones, orientadas a proteger, mantener y gestionar responsablemente los ecosistemas, sus especies y recursos, asegurando su equilibrio y continuidad.
+                </p>
               </div>
-              <div className="bg-blanco-puro/95 dark:bg-noche-selva/60 backdrop-blur-md border border-carbon/10 dark:border-white/10 shadow-medium rounded-lg p-5 md:p-8 text-center">
-                <PawPrintIcon className="h-8 w-8 md:h-10 md:w-10 text-verde-brote mx-auto mb-3" />
-                <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold font-serif text-carbon dark:text-beige-arena">+1,200</h3>
-                <p className="font-semibold text-carbon dark:text-beige-arena mt-2 mb-1">Especies Monitoreadas</p>
-                <p className="text-sm text-gris-piedra dark:text-beige-arena/80">Incluyendo jaguares, delfines de río y águilas harpías.</p>
-              </div>
-              <div className="bg-blanco-puro/95 dark:bg-noche-selva/60 backdrop-blur-md border border-carbon/10 dark:border-white/10 shadow-medium rounded-lg p-5 md:p-8 text-center">
-                <FlaskConicalIcon className="h-8 w-8 md:h-10 md:w-10 text-verde-brote mx-auto mb-3" />
-                <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold font-serif text-carbon dark:text-beige-arena">+45</h3>
-                <p className="font-semibold text-carbon dark:text-beige-arena mt-2 mb-1">Proyectos de Investigación</p>
-                <p className="text-sm text-gris-piedra dark:text-beige-arena/80">Generando conocimiento crucial para la toma de decisiones.</p>
+              <div className="grid md:grid-cols-3 gap-4 md:gap-6">
+                <div className="bg-beige-arena/50 dark:bg-noche-selva/50 backdrop-blur-sm border border-carbon/10 dark:border-white/10 shadow-sm rounded-xl p-5 md:p-6 text-center">
+                  <LeafIcon className="h-8 w-8 md:h-10 md:w-10 text-verde-brote mx-auto mb-2" />
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold font-serif text-carbon dark:text-beige-arena">+8,500,000</h3>
+                  <p className="font-semibold text-carbon dark:text-beige-arena mt-1 mb-1 text-sm sm:text-base">Hectáreas Protegidas</p>
+                  <p className="text-xs sm:text-sm text-gris-piedra dark:text-beige-arena/80">Un área equivalente a Austria, resguardada para el futuro.</p>
+                </div>
+                <div className="bg-beige-arena/50 dark:bg-noche-selva/50 backdrop-blur-sm border border-carbon/10 dark:border-white/10 shadow-sm rounded-xl p-5 md:p-6 text-center">
+                  <PawPrintIcon className="h-8 w-8 md:h-10 md:w-10 text-verde-brote mx-auto mb-2" />
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold font-serif text-carbon dark:text-beige-arena">+1,200</h3>
+                  <p className="font-semibold text-carbon dark:text-beige-arena mt-1 mb-1 text-sm sm:text-base">Especies Monitoreadas</p>
+                  <p className="text-xs sm:text-sm text-gris-piedra dark:text-beige-arena/80">Incluyendo jaguares, delfines de río y águilas harpías.</p>
+                </div>
+                <div className="bg-beige-arena/50 dark:bg-noche-selva/50 backdrop-blur-sm border border-carbon/10 dark:border-white/10 shadow-sm rounded-xl p-5 md:p-6 text-center">
+                  <FlaskConicalIcon className="h-8 w-8 md:h-10 md:w-10 text-verde-brote mx-auto mb-2" />
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold font-serif text-carbon dark:text-beige-arena">+45</h3>
+                  <p className="font-semibold text-carbon dark:text-beige-arena mt-1 mb-1 text-sm sm:text-base">Proyectos de Investigación</p>
+                  <p className="text-xs sm:text-sm text-gris-piedra dark:text-beige-arena/80">Generando conocimiento crucial para la toma de decisiones.</p>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* DESARROLLO COMUNITARIO */}
-        <section className="snap-section w-full flex flex-col justify-center items-center pt-32 pb-10 px-4 sm:px-6 lg:px-8 relative overflow-y-auto">
-          <div className="absolute inset-0 z-0">
-            <img src="/images/background/bg3.jpg" alt="Centinelas de la vida amazónica" className="w-full h-full object-cover filter brightness-90" />
-            <div className="absolute inset-0 z-0 dark:bg-noche-selva/55 dark:backdrop-blur-md rounded-2xl dark:border dark:border-white/40 dark:border-beige-arena/10 dark:shadow-medium"></div>
+        <section className="snap-section w-full flex flex-col justify-center items-center relative overflow-hidden bg-noche-selva">
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            <img src="/images/background/bg3.jpg" alt="Centinelas de la vida amazónica" className="w-full h-full object-cover filter blur-[6px] saturate-90 brightness-[0.75] scale-105" />
+            <div className="absolute inset-0 bg-noche-selva/40"></div>
           </div>
-          <div className="w-full max-w-6xl relative z-10 max-h-[calc(100vh-10rem)] overflow-y-auto my-auto">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="group relative rounded-lg overflow-hidden shadow-medium aspect-[4/3]">
-                <img src="/images/background/bg3.jpg" alt="Miembro de comunidad indígena" className="w-full h-full object-cover filter grayscale transition-all duration-500 ease-in-out group-hover:filter-none" />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-all duration-500 ease-in-out"></div>
-              </div>
-              <div className="text-center md:text-left">
-                <h3 className="text-xl font-semibold text-terracota tracking-wider uppercase">Centinelas de la vida amazónica</h3>
-                <h2 className="text-3xl md:text-5xl font-bold font-serif text-white mt-2 mb-6">DESARROLLO COMUNITARIO</h2>
-                <p className="text-beige-arena/80 mb-6">
-                  Fortalecer el desarrollo de los pueblos indígenas, promoviendo el ejercicio de sus derechos sobre sus territorios y recursos naturales, y favoreciendo condiciones de sostenibilidad que aseguren la continuidad de sus formas de vida, su organización y su identidad cultural.
-                </p>
-                <ul className="space-y-3 text-left">
-                  <li className="flex items-start">
-                    <LeafIcon className="h-5 w-5 text-verde-brote flex-shrink-0 mr-3 mt-1" />
-                    <span className="text-beige-arena/90">Promovemos el <strong className="font-semibold text-white">ejercicio de derechos territoriales</strong> y la gestión autónoma de recursos naturales.</span>
-                  </li>
-                  <li className="flex items-start">
-                    <LeafIcon className="h-5 w-5 text-verde-brote flex-shrink-0 mr-3 mt-1" />
-                    <span className="text-beige-arena/90">Fortalecemos <strong className="font-semibold text-white">condiciones de sostenibilidad</strong> para asegurar la continuidad de sus formas de vida.</span>
-                  </li>
-                  <li className="flex items-start">
-                    <LeafIcon className="h-5 w-5 text-verde-brote flex-shrink-0 mr-3 mt-1" />
-                    <span className="text-beige-arena/90">Apoyamos la preservación de la <strong className="font-semibold text-white">identidad cultural</strong> y sistemas de organización propios.</span>
-                  </li>
-                </ul>
-                <div className="mt-8">
-                  <Link to="/datos">
-                    <Button className="bg-terracota hover:shadow-azai-glow px-8 py-3">Conoce nuestras acciones comunitarias</Button>
-                  </Link>
+          <div className="w-full max-w-6xl relative z-10 pt-28 pb-10 px-4 sm:px-6 my-auto max-h-[calc(100vh-2rem)] overflow-y-auto">
+            <div className="rounded-2xl p-6 sm:p-8 backdrop-blur-md bg-blanco-puro/90 dark:bg-noche-selva/85 border border-carbon/10 dark:border-white/10 shadow-2xl">
+              <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
+                <div className="group relative rounded-xl overflow-hidden shadow-medium aspect-[4/3]">
+                  <img src="/images/background/bg3.jpg" alt="Miembro de comunidad indígena" className="w-full h-full object-cover filter grayscale transition-all duration-500 ease-in-out group-hover:filter-none" />
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all duration-500 ease-in-out"></div>
+                </div>
+                <div className="text-center md:text-left">
+                  <h3 className="text-xs sm:text-sm font-semibold text-terracota tracking-[0.25em] uppercase">Centinelas de la vida amazónica</h3>
+                  <h2 className={HOME_PANEL_TITLE_CLASS}>DESARROLLO COMUNITARIO</h2>
+                  <p className="text-sm sm:text-base text-gris-piedra dark:text-beige-arena/85 mb-5 leading-relaxed">
+                    Fortalecer el desarrollo de los pueblos indígenas, promoviendo el ejercicio de sus derechos sobre sus territorios y recursos naturales, y favoreciendo condiciones de sostenibilidad que aseguren la continuidad de sus formas de vida, su organización y su identidad cultural.
+                  </p>
+                  <ul className="space-y-3 text-left">
+                    <li className="flex items-start">
+                      <LeafIcon className="h-5 w-5 text-verde-brote flex-shrink-0 mr-3 mt-0.5" />
+                      <span className="text-xs sm:text-sm text-carbon/90 dark:text-beige-arena/90">Promovemos el <strong className="font-semibold text-carbon dark:text-white">ejercicio de derechos territoriales</strong> y la gestión autónoma de recursos naturales.</span>
+                    </li>
+                    <li className="flex items-start">
+                      <LeafIcon className="h-5 w-5 text-verde-brote flex-shrink-0 mr-3 mt-0.5" />
+                      <span className="text-xs sm:text-sm text-carbon/90 dark:text-beige-arena/90">Fortalecemos <strong className="font-semibold text-carbon dark:text-white">condiciones de sostenibilidad</strong> para asegurar la continuidad de sus formas de vida.</span>
+                    </li>
+                    <li className="flex items-start">
+                      <LeafIcon className="h-5 w-5 text-verde-brote flex-shrink-0 mr-3 mt-0.5" />
+                      <span className="text-xs sm:text-sm text-carbon/90 dark:text-beige-arena/90">Apoyamos la preservación de la <strong className="font-semibold text-carbon dark:text-white">identidad cultural</strong> y sistemas de organización propios.</span>
+                    </li>
+                  </ul>
+                  <div className="mt-6">
+                    <Link to="/datos">
+                      <Button className="bg-terracota hover:shadow-azai-glow px-6 py-2.5 text-xs sm:text-sm font-semibold">Conoce nuestras acciones comunitarias</Button>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -272,56 +284,59 @@ const HomePage: React.FC = () => {
         </section>
 
         {/* DEMOCRATIZAR CONOCIMIENTO */}
-        <section className="snap-section w-full flex flex-col justify-center items-center pt-32 pb-10 px-4 sm:px-6 lg:px-8 relative overflow-y-auto">
-          <div className="absolute inset-0 z-0">
-            <img src="/images/background/bg11.jpg" alt="Datos para preservar" className="w-full h-full object-cover filter brightness-90" />
-            <div className="absolute inset-0 bg-noche-selva/45"></div>
+        <section className="snap-section w-full flex flex-col justify-center items-center relative overflow-hidden bg-noche-selva">
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            <img src="/images/background/bg11.jpg" alt="Datos para preservar" className="w-full h-full object-cover filter blur-[6px] saturate-90 brightness-[0.75] scale-105" />
+            <div className="absolute inset-0 bg-noche-selva/40"></div>
           </div>
-          <div className="w-full max-w-6xl relative z-10 text-center max-h-[calc(100vh-10rem)] overflow-y-auto my-auto">
-            <h3 className="text-base sm:text-xl font-semibold text-terracota tracking-wider uppercase">Datos para preservar, conocimiento para transformar</h3>
-            <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold font-serif text-white mt-2 mb-3 sm:mb-4">DEMOCRATIZAR CONOCIMIENTO</h2>
-            <p className="text-base sm:text-lg text-beige-arena/90 max-w-3xl mx-auto mb-6 sm:mb-10">
-              Facilitar el acceso a datos sobre iniciativas de sostenibilidad de empresas y fundaciones en la Amazonía boliviana, contribuyendo a la generación de conocimiento desde la investigación y la construcción de políticas públicas.
-            </p>
-            <div className="grid md:grid-cols-3 gap-4 md:gap-8">
-              <div className="bg-blanco-puro/95 dark:bg-noche-selva/60 backdrop-blur-md border border-carbon/10 dark:border-white/10 shadow-medium rounded-lg p-5 md:p-8 text-center">
-                <LeafIcon className="h-8 w-8 md:h-10 md:w-10 text-verde-brote mx-auto mb-3" />
-                <h3 className="text-xl md:text-2xl font-bold font-serif text-carbon dark:text-beige-arena">Datos Verificados</h3>
-                <p className="text-sm text-gris-piedra dark:text-beige-arena/80 mt-2">Acceso a información estructurada y validada sobre iniciativas sostenibles en la región.</p>
+          <div className="w-full max-w-6xl relative z-10 pt-28 pb-10 px-4 sm:px-6 my-auto max-h-[calc(100vh-2rem)] overflow-y-auto">
+            <div className="rounded-2xl p-6 sm:p-8 backdrop-blur-md bg-blanco-puro/90 dark:bg-noche-selva/85 border border-carbon/10 dark:border-white/10 shadow-2xl text-center">
+              <div className="text-center mb-6">
+                <h3 className="text-xs sm:text-sm font-semibold text-terracota tracking-[0.25em] uppercase">Datos para preservar, conocimiento para transformar</h3>
+                <h2 className={HOME_PANEL_TITLE_CLASS}>DEMOCRATIZAR CONOCIMIENTO</h2>
+                <p className="text-sm sm:text-base text-gris-piedra dark:text-beige-arena/90 max-w-3xl mx-auto leading-relaxed">
+                  Facilitar el acceso a datos sobre iniciativas de sostenibilidad de empresas y fundaciones en la Amazonía boliviana, contribuyendo a la generación de conocimiento desde la investigación y la construcción de políticas públicas.
+                </p>
               </div>
-              <div className="bg-blanco-puro/95 dark:bg-noche-selva/60 backdrop-blur-md border border-carbon/10 dark:border-white/10 shadow-medium rounded-lg p-5 md:p-8 text-center">
-                <PawPrintIcon className="h-8 w-8 md:h-10 md:w-10 text-verde-brote mx-auto mb-3" />
-                <h3 className="text-xl md:text-2xl font-bold font-serif text-carbon dark:text-beige-arena">Investigación Colaborativa</h3>
-                <p className="text-sm text-gris-piedra dark:text-beige-arena/80 mt-2">Generación de conocimiento desde la academia, empresas y comunidades en conjunto.</p>
-              </div>
-              <div className="bg-blanco-puro/95 dark:bg-noche-selva/60 backdrop-blur-md border border-carbon/10 dark:border-white/10 shadow-medium rounded-lg p-5 md:p-8 text-center">
-                <FlaskConicalIcon className="h-8 w-8 md:h-10 md:w-10 text-verde-brote mx-auto mb-3" />
-                <h3 className="text-xl md:text-2xl font-bold font-serif text-carbon dark:text-beige-arena">Políticas Públicas</h3>
-                <p className="text-sm text-gris-piedra dark:text-beige-arena/80 mt-2">Aporte a la formulación de decisiones basadas en evidencia para el mediano y largo plazo.</p>
+              <div className="grid md:grid-cols-3 gap-4 md:gap-6">
+                <div className="bg-beige-arena/50 dark:bg-noche-selva/50 backdrop-blur-sm border border-carbon/10 dark:border-white/10 shadow-sm rounded-xl p-5 md:p-6 text-center">
+                  <LeafIcon className="h-8 w-8 text-verde-brote mx-auto mb-2" />
+                  <h3 className="text-lg sm:text-xl font-bold font-serif text-carbon dark:text-beige-arena">Datos Verificados</h3>
+                  <p className="text-xs sm:text-sm text-gris-piedra dark:text-beige-arena/80 mt-2">Acceso a información estructurada y validada sobre iniciativas sostenibles en la región.</p>
+                </div>
+                <div className="bg-beige-arena/50 dark:bg-noche-selva/50 backdrop-blur-sm border border-carbon/10 dark:border-white/10 shadow-sm rounded-xl p-5 md:p-6 text-center">
+                  <PawPrintIcon className="h-8 w-8 text-verde-brote mx-auto mb-2" />
+                  <h3 className="text-lg sm:text-xl font-bold font-serif text-carbon dark:text-beige-arena">Investigación Colaborativa</h3>
+                  <p className="text-xs sm:text-sm text-gris-piedra dark:text-beige-arena/80 mt-2">Generación de conocimiento desde la academia, empresas y comunidades en conjunto.</p>
+                </div>
+                <div className="bg-beige-arena/50 dark:bg-noche-selva/50 backdrop-blur-sm border border-carbon/10 dark:border-white/10 shadow-sm rounded-xl p-5 md:p-6 text-center">
+                  <FlaskConicalIcon className="h-8 w-8 text-verde-brote mx-auto mb-2" />
+                  <h3 className="text-lg sm:text-xl font-bold font-serif text-carbon dark:text-beige-arena">Políticas Públicas</h3>
+                  <p className="text-xs sm:text-sm text-gris-piedra dark:text-beige-arena/80 mt-2">Aporte a la formulación de decisiones basadas en evidencia para el mediano y largo plazo.</p>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* Act V: Proyectos que Transforman */}
-        <section
-          className="snap-section w-full flex flex-col justify-center items-center pt-32 pb-10 px-4 sm:px-6 lg:px-8 overflow-y-auto"
-        >
-          <div className="absolute inset-0 z-0">
-            <img src="/images/background/bg4.jpg?v=2" alt="Proyectos que transforman" className="w-full h-full object-cover"/>
-            <div className="absolute inset-0 bg-noche-selva/50"></div>
+        <section className="snap-section w-full flex flex-col justify-center items-center relative overflow-hidden bg-noche-selva">
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            <img src="/images/background/bg4.jpg?v=2" alt="Proyectos que transforman" className="w-full h-full object-cover filter blur-[6px] saturate-90 brightness-[0.75] scale-105"/>
+            <div className="absolute inset-0 bg-noche-selva/40"></div>
           </div>
-          <div className="w-full max-w-6xl text-center relative z-10 max-h-[calc(100vh-10rem)] overflow-y-auto my-auto">
-            <div className="bg-blanco-puro/85 dark:bg-noche-selva/60 backdrop-blur-md rounded-xl shadow-medium p-4 md:p-6 border border-carbon/10 dark:border-white/10">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-serif mb-5 md:mb-8 text-carbon dark:text-beige-arena">
-                Proyectos que Transforman
-              </h2>
+          <div className="w-full max-w-6xl text-center relative z-10 pt-28 pb-10 px-4 sm:px-6 my-auto max-h-[calc(100vh-2rem)] overflow-y-auto">
+            <div className="bg-blanco-puro/90 dark:bg-noche-selva/85 backdrop-blur-md rounded-2xl shadow-2xl p-6 md:p-8 border border-carbon/10 dark:border-white/10">
+              <div className="text-center mb-6">
+                <h3 className="text-xs sm:text-sm font-semibold text-terracota tracking-[0.25em] uppercase">Iniciativas sostenibles en la Amazonía</h3>
+                <h2 className={HOME_PANEL_TITLE_CLASS}>PROYECTOS QUE TRANSFORMAN</h2>
+              </div>
               <div>
                 {isLoading ? renderSkeletons() : projects && <ProjectList projects={projects.slice(0, 3)} />}
               </div>
               <div className="mt-8">
                 <Link to="/georeferencia">
-                  <Button className="px-8 py-4 text-lg">Ver todos los proyectos</Button>
+                  <Button className="px-8 py-3 text-base">Ver todos los proyectos</Button>
                 </Link>
               </div>
             </div>
@@ -329,24 +344,24 @@ const HomePage: React.FC = () => {
         </section>
 
         {/* Act VI: Únete a la Causa */}
-        <section
-          className="snap-section w-full flex flex-col justify-center items-center pt-32 pb-10 px-4 sm:px-6 lg:px-8 overflow-y-auto"
-        >
-          <div className="absolute inset-0 z-0">
-            <img src="/images/background/bg5.jpg?v=2" alt="Únete a la causa" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 z-0 dark:bg-noche-selva/55 dark:backdrop-blur-md rounded-2xl dark:border dark:border-white/40 dark:border-beige-arena/10 dark:shadow-medium"></div>
+        <section className="snap-section w-full flex flex-col justify-center items-center relative overflow-hidden bg-noche-selva">
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            <img src="/images/background/bg5.jpg?v=2" alt="Únete a la causa" className="w-full h-full object-cover filter blur-[6px] saturate-90 brightness-[0.75] scale-105" />
+            <div className="absolute inset-0 bg-noche-selva/40"></div>
           </div>
-          <div className="p-6 sm:p-8 md:p-12 rounded-lg text-center shadow-medium w-full max-w-4xl relative z-10 bg-blanco-puro/85 dark:bg-noche-selva/60 backdrop-blur-md border border-carbon/10 dark:border-white/10 max-h-[calc(100vh-10rem)] overflow-y-auto my-auto">
-            <h2 className="text-3xl font-bold mb-4 text-carbon dark:text-beige-arena">Únete a la Causa</h2>
-            <p className="mb-8 max-w-2xl mx-auto text-gris-piedra dark:text-beige-arena/80">
-              Cada acción cuenta. Descubre cómo puedes contribuir a la preservación de la Amazonía.
-            </p>
-            <Link
-              to="/registro"
-              className="inline-block bg-terracota hover:shadow-azai-glow px-8 py-4 text-lg rounded-md font-medium transition-all duration-300"
-            >
-              Registrate
-            </Link>
+          <div className="w-full max-w-4xl text-center relative z-10 pt-28 pb-10 px-4 sm:px-6 my-auto">
+            <div className="p-6 sm:p-10 rounded-2xl text-center shadow-2xl bg-blanco-puro/90 dark:bg-noche-selva/85 backdrop-blur-md border border-carbon/10 dark:border-white/10">
+              <h2 className={`${HOME_PANEL_TITLE_CLASS} mb-3`}>ÚNETE A LA CAUSA</h2>
+              <p className="mb-6 max-w-2xl mx-auto text-sm sm:text-base text-gris-piedra dark:text-beige-arena/80 leading-relaxed">
+                Cada acción cuenta. Descubre cómo puedes contribuir a la preservación de la Amazonía.
+              </p>
+              <Link
+                to="/registro"
+                className="inline-block bg-terracota hover:shadow-azai-glow px-8 py-3.5 text-base rounded-lg font-semibold text-white uppercase tracking-wider transition-all duration-300 shadow-md"
+              >
+                Regístrate
+              </Link>
+            </div>
           </div>
         </section>
       </div>

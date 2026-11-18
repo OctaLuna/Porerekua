@@ -146,7 +146,7 @@ const DataPage: React.FC = () => {
   return (
     <div className="relative min-h-screen overflow-hidden">
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat filter blur-[6px] saturate-90 brightness-[0.75] scale-105"
         style={{ backgroundImage: 'url(/images/background/bgDat.jpg)' }}
         aria-hidden="true"
       />
@@ -155,7 +155,7 @@ const DataPage: React.FC = () => {
       <div className="relative z-10 container mx-auto mt-40 mb-12 px-4 sm:px-6 lg:px-8 pt-12 pb-12 space-y-8 rounded-2xl border border-white/40 dark:border-beige-arena/10 bg-beige-arena/80 dark:bg-noche-selva/55 backdrop-blur-md shadow-medium">
         <Reveal className="text-center" y={20}>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-terracota">Red Kaa Iya</p>
-          <h1 className="mt-1 font-serif text-4xl md:text-5xl font-extrabold text-carbon dark:text-beige-arena">
+          <h1 className="mt-1 mb-3 font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-carbon dark:text-beige-arena">
             Datos de la Red
           </h1>
 
@@ -167,7 +167,7 @@ const DataPage: React.FC = () => {
               placeholder="Buscar organizaciones, empresas o proyectos..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-lg border border-carbon/10 dark:border-white/10 bg-blanco-puro/95 dark:bg-noche-selva/60 py-2.5 pl-10 pr-4 shadow-subtle backdrop-blur-md transition-all duration-300 focus:border-transparent focus:ring-2 focus:ring-verde-brote"
+              className="w-full rounded-lg border border-carbon/10 dark:border-white/10 bg-blanco-puro/95 dark:bg-noche-selva/60 py-2.5 pl-10 pr-4 text-sm sm:text-base text-carbon dark:text-beige-arena shadow-subtle backdrop-blur-md transition-all duration-300 focus:border-transparent focus:ring-2 focus:ring-verde-brote"
             />
           </div>
 
@@ -193,7 +193,7 @@ const DataPage: React.FC = () => {
               {Array.from({ length: 3 }).map((_, i) => <CardSkeleton key={i} />)}
             </div>
           ) : items.length === 0 ? (
-            <p className="py-16 text-center text-gris-piedra dark:text-beige-arena/80">
+            <p className="py-16 text-center text-sm sm:text-base leading-relaxed text-gris-piedra dark:text-beige-arena/80">
               No se encontraron resultados.
             </p>
           ) : (

@@ -164,7 +164,7 @@ const PublicDashboard: React.FC = () => {
       {!rRegionLoading && regionData.length > 0 && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <Card className={`${cardCls} lg:col-span-2`}>
-            <h3 className="text-xl font-bold font-serif text-carbon dark:text-beige-arena mb-4">
+            <h3 className="text-lg sm:text-xl font-bold font-serif text-carbon dark:text-beige-arena mb-4">
               Actividad por Departamento
             </h3>
             <ResponsiveContainer width="100%" height={260}>
@@ -181,7 +181,7 @@ const PublicDashboard: React.FC = () => {
           </Card>
 
           <Card className={`${cardCls} flex flex-col items-center justify-center`}>
-            <h3 className="mb-2 self-start text-lg font-bold font-serif text-carbon dark:text-beige-arena">Proyectos activos</h3>
+            <h3 className="mb-2 self-start text-lg sm:text-xl font-bold font-serif text-carbon dark:text-beige-arena">Proyectos activos</h3>
             <ProgressRing
               pct={resumen?.total_proyectos ? Math.round(((resumen.proyectos_activos ?? 0) / resumen.total_proyectos) * 100) : 0}
               label="del total en marcha"
@@ -193,7 +193,7 @@ const PublicDashboard: React.FC = () => {
 
       {/* CTA para login */}
       <Card className={`${cardCls} text-center py-8`}>
-        <h3 className="text-xl font-bold font-serif text-carbon dark:text-beige-arena mb-2">
+        <h3 className="text-lg sm:text-xl font-bold font-serif text-carbon dark:text-beige-arena mb-2">
           Ver análisis completo
         </h3>
         <p className="text-gris-piedra dark:text-beige-arena/70 mb-4 text-sm">
@@ -296,7 +296,7 @@ const PrivateDashboard: React.FC = () => {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
         {/* Anillo: % proyectos activos */}
         <Card className={`${cardCls} flex flex-col items-center justify-center`}>
-          <h3 className="mb-2 self-start text-lg font-bold font-serif text-carbon dark:text-beige-arena">Proyectos activos</h3>
+          <h3 className="mb-2 self-start text-lg sm:text-xl font-bold font-serif text-carbon dark:text-beige-arena">Proyectos activos</h3>
           {rLoading ? <Skeleton className="h-36 w-36 rounded-full" /> : (
             <ProgressRing
               pct={resumen?.total_proyectos ? Math.round(((resumen.proyectos_activos ?? 0) / resumen.total_proyectos) * 100) : 0}
@@ -308,7 +308,7 @@ const PrivateDashboard: React.FC = () => {
 
         {/* Donut: Conservación vs Desarrollo */}
         <Card className={cardCls}>
-          <h3 className="text-lg font-bold font-serif text-carbon dark:text-beige-arena mb-3">Distribución por Área</h3>
+          <h3 className="text-lg sm:text-xl font-bold font-serif text-carbon dark:text-beige-arena mb-3">Distribución por Área</h3>
           {rLoading ? <Skeleton className="h-48 w-full" /> : (
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -323,7 +323,7 @@ const PrivateDashboard: React.FC = () => {
 
         {/* Bar stacked: proyectos por región */}
         <Card className={`${cardCls} lg:col-span-2`}>
-          <h3 className="text-lg font-bold font-serif text-carbon dark:text-beige-arena mb-3">Proyectos por Departamento</h3>
+          <h3 className="text-lg sm:text-xl font-bold font-serif text-carbon dark:text-beige-arena mb-3">Proyectos por Departamento</h3>
           {regLoading ? <Skeleton className="h-48 w-full" /> : (
             <ResponsiveContainer width="100%" height={220}>
               <ReBarChart data={porRegionData} layout="vertical" margin={{ left: 8, right: 8 }}>
@@ -342,7 +342,7 @@ const PrivateDashboard: React.FC = () => {
 
       {/* Timeline */}
       <Card className={cardCls}>
-        <h3 className="text-lg font-bold font-serif text-carbon dark:text-beige-arena mb-3">Evolución histórica de registros</h3>
+        <h3 className="text-lg sm:text-xl font-bold font-serif text-carbon dark:text-beige-arena mb-3">Evolución histórica de registros</h3>
         {tlLoading ? <Skeleton className="h-56 w-full" /> : (
           <ResponsiveContainer width="100%" height={260}>
             <LineChart data={timelineData} margin={{ left: 0, right: 16 }}>
@@ -361,7 +361,7 @@ const PrivateDashboard: React.FC = () => {
 
       {/* Por tipo de proyecto */}
       <Card className={cardCls}>
-        <h3 className="text-lg font-bold font-serif text-carbon dark:text-beige-arena mb-3">Proyectos por Tipo</h3>
+        <h3 className="text-lg sm:text-xl font-bold font-serif text-carbon dark:text-beige-arena mb-3">Proyectos por Tipo</h3>
         {tLoading ? <Skeleton className="h-64 w-full" /> : (
           <ResponsiveContainer width="100%" height={320}>
             <ReBarChart data={porTipoData} layout="vertical" margin={{ left: 8, right: 8 }}>
@@ -379,7 +379,7 @@ const PrivateDashboard: React.FC = () => {
 
       {/* Tabla: por tipo con métricas adicionales */}
       <Card className={cardCls}>
-        <h3 className="text-lg font-bold font-serif text-carbon dark:text-beige-arena mb-3">Detalle por Tipo de Proyecto</h3>
+        <h3 className="text-lg sm:text-xl font-bold font-serif text-carbon dark:text-beige-arena mb-3">Detalle por Tipo de Proyecto</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -527,7 +527,7 @@ const AnalisisInteractivo: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
         <div>
-          <h3 className="text-xl font-bold font-serif text-carbon dark:text-beige-arena">Análisis Interactivo</h3>
+          <h3 className="text-lg sm:text-xl font-bold font-serif text-carbon dark:text-beige-arena">Análisis Interactivo</h3>
           <p className="text-xs text-gris-piedra dark:text-beige-arena/50 mt-0.5">
             Filtra por área y departamento · Cambia métrica y tipo de gráfica
           </p>
@@ -644,19 +644,20 @@ const DashboardPage: React.FC = () => {
   return (
     <div className="relative min-h-screen overflow-hidden">
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat filter blur-[6px] saturate-90 brightness-[0.75] scale-105"
         style={{ backgroundImage: 'url(/images/background/bgDash.jpg)' }}
         aria-hidden="true"
       />
       <div className="absolute inset-0 bg-noche-selva/35" aria-hidden="true" />
 
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-40 pb-12 min-h-screen space-y-8">
-        <div className="bg-beige-arena/80 dark:bg-noche-selva/55 backdrop-blur-md rounded-2xl border border-white/40 dark:border-beige-arena/10 p-6 sm:p-8">
-          <h1 className="text-4xl md:text-5xl font-extrabold font-serif text-carbon dark:text-beige-arena">
+      <div className="relative z-10 container mx-auto mt-40 mb-12 px-4 sm:px-6 lg:px-8 pt-12 pb-12 space-y-8 rounded-2xl border border-white/40 dark:border-beige-arena/10 bg-beige-arena/80 dark:bg-noche-selva/55 backdrop-blur-md shadow-medium">
+        <div className="text-center">
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.25em] text-terracota mb-2">Impacto en la Amazonía</p>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold font-serif text-carbon dark:text-beige-arena mt-1 mb-3">
             Dashboard de Impacto
           </h1>
           {!isAuthenticated && (
-            <p className="text-carbon/70 dark:text-beige-arena/70 mt-1 text-sm">
+            <p className="text-sm sm:text-base leading-relaxed text-gris-piedra dark:text-beige-arena/80">
               Vista pública — inicia sesión para ver el análisis completo
             </p>
           )}

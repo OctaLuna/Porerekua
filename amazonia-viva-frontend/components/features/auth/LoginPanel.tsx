@@ -71,10 +71,10 @@ const LoginPanel: React.FC = () => {
                 
                 <div className="text-center mb-8">
                     <h2 className="text-3xl font-bold font-serif text-carbon dark:text-beige-arena">
-                        Bienvenido de vuelta
+                        Bienvenido
                     </h2>
                     <p className="text-gris-piedra mt-2">
-                        Accede para gestionar tus proyectos.
+                        Accede para ver más información.
                     </p>
                 </div>
 

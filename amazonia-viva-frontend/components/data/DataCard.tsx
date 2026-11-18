@@ -59,17 +59,17 @@ const DataCard: React.FC<{ item: DataCardItem; onOpen: () => void }> = ({ item, 
 
       {/* Cuerpo */}
       <div data-dc="body" className="flex flex-1 flex-col p-5">
-        <h3 className="font-serif text-lg font-bold text-carbon dark:text-beige-arena line-clamp-2">
+        <h3 className="font-serif text-base sm:text-lg font-bold text-carbon dark:text-beige-arena leading-snug line-clamp-2">
           {nombre}
         </h3>
         {subtitulo && (
-          <p className="mt-1 flex items-center gap-1.5 text-xs text-gris-piedra dark:text-beige-arena/70">
+          <p className="mt-1 flex items-center gap-1.5 text-xs sm:text-sm leading-relaxed text-gris-piedra dark:text-beige-arena/70">
             <MapPinIcon className="shrink-0 text-terracota" />
             <span className="truncate">{subtitulo}</span>
           </p>
         )}
         {descripcion && (
-          <p className="mt-3 text-sm text-gris-piedra dark:text-beige-arena/80 line-clamp-3">
+          <p className="mt-3 text-xs sm:text-sm leading-relaxed text-gris-piedra dark:text-beige-arena/80 line-clamp-3">
             {descripcion}
           </p>
         )}

@@ -232,9 +232,28 @@ def apply_patch() -> None:
             return
 
         previous_image = run(["docker", "image", "inspect", IMAGE_NAME, "--format", "{{.Id}}"], cwd=SERVER_STACK).decode().strip()
+        run(["docker", "image", "tag", previous_image, ROLLBACK_IMAGE], cwd=SERVER_STACK)
         try:
             run(["docker", "compose", "build", "porerekua-web"], cwd=SERVER_STACK)
-            run(["docker", "run", "--rm", "--entrypoint", "nginx", IMAGE_NAME, "-t"], cwd=SERVER_STACK)
+            active_container = run(["docker", "compose", "ps", "-q", "porerekua-web"], cwd=SERVER_STACK).decode().strip()
+            if not active_container:
+                raise RuntimeError("cannot identify current web network for config validation")
+            network_names = run(
+                [
+                    "docker",
+                    "inspect",
+                    "--format",
+                    "{{range $name, $conf := .NetworkSettings.Networks}}{{$name}} {{end}}",
+                    active_container,
+                ],
+                cwd=SERVER_STACK,
+            ).decode().split()
+            if not network_names:
+                raise RuntimeError("current web container has no Docker network")
+            run(
+                ["docker", "run", "--rm", "--network", network_names[0], "--entrypoint", "nginx", IMAGE_NAME, "-t"],
+                cwd=SERVER_STACK,
+            )
             run(["docker", "compose", "up", "-d", "--no-deps", "porerekua-web"], cwd=SERVER_STACK)
             container = run(["docker", "compose", "ps", "-q", "porerekua-web"], cwd=SERVER_STACK).decode().strip()
             if not container:
@@ -256,7 +275,7 @@ def apply_patch() -> None:
             os.replace(temporary_marker, DEPLOY_MARKER)
         except Exception:
             try:
-                run(["docker", "tag", previous_image, IMAGE_NAME], cwd=SERVER_STACK)
+                run(["docker", "tag", ROLLBACK_IMAGE, IMAGE_NAME], cwd=SERVER_STACK)
                 run(["docker", "compose", "up", "-d", "--no-deps", "porerekua-web"], cwd=SERVER_STACK)
             except Exception as rollback_error:
                 print(f"container rollback failed: {rollback_error}", file=sys.stderr)

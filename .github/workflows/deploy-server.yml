@@ -38,7 +38,7 @@ jobs:
       - name: Read last successfully deployed main commit
         id: deployment
         run: |
-          deployed_sha="$(ssh -T -i "$HOME/.ssh/production_key" -o IdentitiesOnly=yes -o BatchMode=yes adminkaaiya@201.131.41.89 status)"
+          deployed_sha="$(ssh -T -i "$HOME/.ssh/production_key" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" -o GlobalKnownHostsFile=/dev/null -o HostKeyAlgorithms=ssh-ed25519 adminkaaiya@201.131.41.89 status)"
           [[ "$deployed_sha" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::Server returned an invalid deployment marker"; exit 1; }
           git merge-base --is-ancestor "$deployed_sha" "$GITHUB_SHA" || { echo "::error::Server marker is not an ancestor of main; refusing an unsafe deployment"; exit 1; }
           echo "base=$deployed_sha" >> "$GITHUB_OUTPUT"
@@ -53,5 +53,5 @@ jobs:
 
       - name: Apply changes and rebuild only the web service
         run: |
-          ssh -T -i "$HOME/.ssh/production_key" -o IdentitiesOnly=yes -o BatchMode=yes adminkaaiya@201.131.41.89 apply \
+          ssh -T -i "$HOME/.ssh/production_key" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" -o GlobalKnownHostsFile=/dev/null -o HostKeyAlgorithms=ssh-ed25519 adminkaaiya@201.131.41.89 apply \
             < "$RUNNER_TEMP/frontend-patch.tar.gz"
